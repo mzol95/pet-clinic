@@ -10,8 +10,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class WorkDay {
 
-    private LocalDateTime date;
-    private LocalTime start;
-    private LocalTime end;
+    private LocalDateTime dateOfWork;
+    private LocalTime startOfWork;
+    private LocalTime endOfWork;
 
 }
