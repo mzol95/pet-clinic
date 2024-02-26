@@ -3,7 +3,7 @@ spring:
     change-log: classpath:/db/changelog/master.xml
     enabled: true
   datasource:
-    url: jdbc:h2:mem:mydb
+    url: jdbc:h2:mem:pet-clinic
     username: sa
     password:
     driverClassName: org.h2.Driver
@@ -12,4 +12,5 @@ spring:
     hibernate:
       ddl-auto: validate
   h2:
-    console.enabled: true
+    console:
+      enabled: true
