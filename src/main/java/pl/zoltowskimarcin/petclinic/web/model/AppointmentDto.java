@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
-public class WorkDay {
+public class AppointmentDto {
 
-    private LocalDateTime dateOfWork;
-    private LocalTime startOfWork;
-    private LocalTime endOfWork;
+    private LocalDateTime appointmentDate;
+    private boolean finished;
+
+    private PetDto petDto;
+    private DoctorDto doctorDto;
 
 }

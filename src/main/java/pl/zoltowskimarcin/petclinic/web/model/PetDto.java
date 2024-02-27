@@ -9,14 +9,16 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class Pet {
+public class PetDto {
 
     private String name;
     private LocalDateTime dateOfBirth;
     private Gender gender;
 
-    private Client client;
-    private List<Appointment> appointments;
+    private ClientDto clientDto;
+    private List<AppointmentDto> appointmentDtos;
+
+
 
 
 }

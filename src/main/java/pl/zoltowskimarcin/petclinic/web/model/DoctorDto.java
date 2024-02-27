@@ -7,12 +7,12 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class Doctor {
+public class DoctorDto {
 
     private String name;
     private String surname;
 
-    private List<Appointment> appointments;
-    private WorkSchedule workSchedule;
+    private List<AppointmentDto> appointmentDtos;
+    private WorkScheduleDto workScheduleDto;
 
 }
