@@ -1,22 +1,14 @@
 package pl.zoltowskimarcin.petclinic.repository.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 
-@Entity
-@Table(name = "addresses")
+import java.util.Objects;
+
+@Embeddable
 public class Address {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "street")
     private String street;
-
-    @Column(name = "city")
     private String city;
-
-    @Column(name = "postal_code")
     private String postalCode;
 
     public Address() {
@@ -53,26 +45,25 @@ public class Address {
     }
 
     @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", street='" + street + '\'' +
-                ", city='" + city + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return id.equals(address.id);
+        return Objects.equals(street, address.street) && Objects.equals(city, address.city) && Objects.equals(postalCode, address.postalCode);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hash(street, city, postalCode);
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                '}';
     }
 }
 

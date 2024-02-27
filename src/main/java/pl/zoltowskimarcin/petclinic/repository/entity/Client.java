@@ -22,8 +22,7 @@ public class Client {
     @Column(name = "phone")
     private String phone;
 
-    @OneToOne
-    @JoinColumn(name = "address_id")
+    @Embedded
     private Address address;
 
     @OneToMany(mappedBy = "client")
@@ -32,6 +31,15 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments;
 
+    public Client() {
+    }
+
+    public Client(String name, String surname, String phone, Address address) {
+        this.name = name;
+        this.surname = surname;
+        this.phone = phone;
+        this.address = address;
+    }
 
     public void addPet(Pet pet) {
         pets.add(pet);
@@ -51,6 +59,10 @@ public class Client {
     public void removeAppointment(Appointment appointment) {
         appointments.remove(appointment);
         appointment.setClient(null);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
