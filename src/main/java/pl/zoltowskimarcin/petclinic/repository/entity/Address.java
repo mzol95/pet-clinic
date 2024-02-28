@@ -1,5 +1,6 @@
 package pl.zoltowskimarcin.petclinic.repository.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
@@ -7,8 +8,13 @@ import java.util.Objects;
 @Embeddable
 public class Address {
 
+    @Column(name = "street")
     private String street;
+
+    @Column(name = "city")
     private String city;
+
+    @Column(name = "postal_code")
     private String postalCode;
 
     public Address() {

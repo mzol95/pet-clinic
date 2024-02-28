@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.exception.Client;
+package pl.zoltowskimarcin.petclinic.exception.Client;
 
 public class ClientSavingFailedException extends ClientException {
     public ClientSavingFailedException() {

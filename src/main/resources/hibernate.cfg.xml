@@ -12,7 +12,7 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="connection.driver_class">org.h2.Driver</property>
-        <property name="connection.url">jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;</property>
+        <property name="connection.url">jdbc:h2:mem:pet-clinic;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;</property>
         <property name="connection.username">sa</property>
         <property name="connection.password"></property>
         <!-- JDBC connection pool (use the built-in) -->
@@ -30,7 +30,6 @@
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.WorkSchedule"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.WorkDay"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Doctor"/>
-        <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Address"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Client"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Pet"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Appointment"/>

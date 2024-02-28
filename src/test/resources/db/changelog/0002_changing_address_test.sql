@@ -1,4 +1,7 @@
-DROP TABLE IF EXISTS address;
+ALTER TABLE clients
+    DROP COLUMN ADDRESS_ID;
+
+DROP TABLE IF EXISTS addresses;
 
 ALTER TABLE clients
     ADD COLUMN street VARCHAR(255);
