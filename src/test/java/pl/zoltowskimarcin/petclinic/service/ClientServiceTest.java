@@ -7,8 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.Client.ClientException;
-import pl.zoltowskimarcin.petclinic.web.model.AddressDto;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
 import pl.zoltowskimarcin.petclinic.web.model.ClientDto;
 
 @SpringBootTest
@@ -24,6 +24,7 @@ class ClientServiceTest {
 
     @Autowired
     private ClientService clientService;
+    private ClientDto clientDto;
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
@@ -41,70 +42,41 @@ class ClientServiceTest {
                 .addArgumentValue("password", "")
                 .addArgumentValue("changeLogFile", "db/changelog/master_test.xml")
                 .execute();
+
+        clientDto =
+                new ClientDto(
+                        TEST_CLIENT_NAME
+                        , TEST_CLIENT_SURNAME
+                        , TEST_CLIENT_ADDRESS_STREET
+                        , TEST_CLIENT_CITY
+                        , TEST_CLIENT_POSTAL_CODE
+                        , TEST_CLIENT_PHONE
+                );
     }
 
 
     @Test
-    void creating_new_client() throws ClientException {
+    void creating_new_client_should_return_created_client() throws ClientException {
         //given
-        AddressDto clientAddressDto =
-                new AddressDto(TEST_CLIENT_ADDRESS_STREET, TEST_CLIENT_CITY, TEST_CLIENT_POSTAL_CODE);
-
-        ClientDto clientDto =
-                new ClientDto(
-                        TEST_CLIENT_NAME
-                        , TEST_CLIENT_SURNAME
-                        , clientAddressDto.getStreet()
-                        , clientAddressDto.getCity()
-                        , clientAddressDto.getPostalCode()
-                        , TEST_CLIENT_PHONE
-                );
 
         //when
-        ClientDto persistedClient = clientService.saveClient(clientDto);
+        ClientDto returnedClient = clientService.saveClient(clientDto);
 
         //then
-        Assertions.assertAll(
-                () -> Assertions.assertNotNull(persistedClient, "Client is null"),
-                () -> Assertions.assertEquals(TEST_CLIENT_NAME, persistedClient.getName(), "Name is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_SURNAME, persistedClient.getSurname(), "Surname is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_ADDRESS_STREET, persistedClient.getStreet(), "Street is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_CITY, persistedClient.getCity(), "City is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_POSTAL_CODE, persistedClient.getPostalCode(), "Postal code is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_PHONE, persistedClient.getPhone(), "Phone is not equal")
-        );
+        Assertions.assertEquals(clientDto,returnedClient,"Client is not equal");
     }
 
     @Test
-    void getClient() throws ClientException {
+    void read_after_creating_new_client_should_return_newly_created_client() throws ClientException {
         //given
-        AddressDto clientAddressDto =
-                new AddressDto(TEST_CLIENT_ADDRESS_STREET, TEST_CLIENT_CITY, TEST_CLIENT_POSTAL_CODE);
 
-        ClientDto clientDto =
-                new ClientDto(
-                        TEST_CLIENT_NAME
-                        , TEST_CLIENT_SURNAME
-                        , clientAddressDto.getStreet()
-                        , clientAddressDto.getCity()
-                        , clientAddressDto.getPostalCode()
-                        , TEST_CLIENT_PHONE
-                );
         //when
         ClientDto persistedClient = clientService.saveClient(clientDto);
-        ClientDto resultClient = clientService.getClient(ID_1);
+        ClientDto returnedClient = clientService.getClientById(ID_1)
+                .orElseThrow(ClientReadingFailedException::new);
 
         //then
-        Assertions.assertAll(
-                () -> Assertions.assertNotNull(resultClient, "Client is null"),
-                () -> Assertions.assertEquals(TEST_CLIENT_NAME, resultClient.getName(), "Name is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_SURNAME, resultClient.getSurname(), "Surname is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_ADDRESS_STREET, resultClient.getStreet(), "Street is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_CITY, resultClient.getCity(), "City is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_POSTAL_CODE, resultClient.getPostalCode(), "Postal code is not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_PHONE, resultClient.getPhone(), "Phone is not equal")
-        );
-
+        Assertions.assertEquals(clientDto,returnedClient,"Client is not equal");
     }
 
 
