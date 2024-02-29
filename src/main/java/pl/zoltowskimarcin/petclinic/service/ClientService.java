@@ -1,5 +1,7 @@
 package pl.zoltowskimarcin.petclinic.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
@@ -9,8 +11,10 @@ import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
 import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
-import pl.zoltowskimarcin.petclinic.repository.HibernateUtils;
+import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
+import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
+import pl.zoltowskimarcin.petclinic.repository.jpa.ClientRepository;
 import pl.zoltowskimarcin.petclinic.web.model.ClientDto;
 
 import java.sql.Connection;
@@ -23,12 +27,18 @@ import java.util.Optional;
 @Slf4j
 public class ClientService {
 
+    private ClientRepository clientRepository;
+
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
+
     //CREATE - Native Hibernate
     public ClientDto saveClient(ClientDto clientDto) throws ClientException {
         log.info("save " + clientDto + ")");
         Client clientToPersist = ClientMapper.getMapper().map(clientDto, Client.class);
 
-        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+        try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.persist(clientToPersist);
             session.getTransaction().commit();
@@ -59,24 +69,51 @@ public class ClientService {
                     returnedClient.setPostalCode(resultSet.getString(7));
 
                     log.info("get(...) = " + returnedClient);
-                    return Optional.ofNullable(returnedClient)  ;
+                    return Optional.ofNullable(returnedClient);
                 }
             }
         } catch (SQLException e) {
             log.error("Error while getting client", e);
-            throw new ClientReadingFailedException("Error while getting client");
+            throw new ClientReadingFailedException("Client with id: " + id + " doesn't exists in database.");
         }
         return Optional.empty();
     }
 
-    //UPDATE
-    public Client updateClient() {
-        log.info("Updating client");
-        return null;
+    //UPDATE - Spring Data JPA
+    @Transactional
+    public ClientDto updateClient(Long id, ClientDto clientDto) throws ClientReadingFailedException {
+        log.info("update " + clientDto + " with id: " + id);
+
+        Client clientToUpdate = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientReadingFailedException("Client with id: " + id + " doesn't exists in database."));
+
+        clientToUpdate.setName(clientDto.getName());
+        clientToUpdate.setSurname(clientDto.getSurname());
+        clientToUpdate.setPhone(clientDto.getPhone());
+        clientToUpdate.getAddress().setStreet(clientDto.getStreet());
+        clientToUpdate.getAddress().setCity(clientDto.getCity());
+        clientToUpdate.getAddress().setPostalCode(clientDto.getPostalCode());
+        clientRepository.save(clientToUpdate);
+
+        log.info("update(...) = " + clientToUpdate);
+        return ClientMapper.getMapper().map(clientToUpdate, ClientDto.class);
     }
 
-    //DELETE
-    public void deleteClient() {
-        log.info("Deleting client");
+    //DELETE - JpaStandard
+    public void deleteClient(Long id) throws ClientReadingFailedException {
+        EntityManager entityManager = JpaStandardUtils.getEntityManager();
+        entityManager.getTransaction().begin();
+
+        Client clientToRemove = entityManager.find(Client.class, id);
+
+        if (clientToRemove == null) {
+            entityManager.close();
+            log.error("Client with id: " + id + " doesn't exists in database.");
+            throw new ClientReadingFailedException("Client with id: " + id + " doesn't exists in database.");
+        }
+        entityManager.remove(clientToRemove);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        log.info("delete(...) = " + clientToRemove);
     }
 }

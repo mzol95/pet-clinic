@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HibernateUtilsTest {
+class NativeHibernateUtilsTest {
 
     @BeforeEach
     void setUp() {
@@ -21,7 +21,7 @@ class HibernateUtilsTest {
     @Test
     void getSessionFactory() {
         //given
-        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        SessionFactory sessionFactory = NativeHibernateUtils.getSessionFactory();
         //when
 
         //then

@@ -6,7 +6,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 
-public class HibernateUtils {
+public class NativeHibernateUtils {
 
     private static SessionFactory sessionFactory;
 
@@ -24,7 +24,7 @@ public class HibernateUtils {
         }
     }
 
-    private HibernateUtils() {
+    private NativeHibernateUtils() {
     }
 
     public static SessionFactory getSessionFactory() {
