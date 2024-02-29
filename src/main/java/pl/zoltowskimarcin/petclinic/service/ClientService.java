@@ -5,9 +5,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
-import pl.zoltowskimarcin.petclinic.exception.client.ClientException;
-import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.*;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
 import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
@@ -55,18 +53,19 @@ public class ClientService {
         log.info("getClientById with id: " + id);
 
         try (Connection connection = DataSource.getConnection();
-             PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENT_BY_ID)) {
+             PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENTS_BY_ID)) {
+
             readStatement.setLong(1, id);
 
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
                     ClientDto returnedClient = new ClientDto();
-                    returnedClient.setName(resultSet.getString(2));
-                    returnedClient.setSurname(resultSet.getString(3));
-                    returnedClient.setPhone(resultSet.getString(4));
-                    returnedClient.setStreet(resultSet.getString(5));
-                    returnedClient.setCity(resultSet.getString(6));
-                    returnedClient.setPostalCode(resultSet.getString(7));
+                    returnedClient.setName(resultSet.getString("name"));
+                    returnedClient.setSurname(resultSet.getString("surname"));
+                    returnedClient.setPhone(resultSet.getString("phone"));
+                    returnedClient.setStreet(resultSet.getString("street"));
+                    returnedClient.setCity(resultSet.getString("city"));
+                    returnedClient.setPostalCode(resultSet.getString("postal_code"));
 
                     log.info("get(...) = " + returnedClient);
                     return Optional.ofNullable(returnedClient);
@@ -74,18 +73,18 @@ public class ClientService {
             }
         } catch (SQLException e) {
             log.error("Error while getting client", e);
-            throw new ClientReadingFailedException("Client with id: " + id + " doesn't exists in database.");
+            throw new ClientReadingFailedException("Error while getting client");
         }
         return Optional.empty();
     }
 
     //UPDATE - Spring Data JPA
     @Transactional
-    public ClientDto updateClient(Long id, ClientDto clientDto) throws ClientReadingFailedException {
+    public ClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException {
         log.info("update " + clientDto + " with id: " + id);
 
         Client clientToUpdate = clientRepository.findById(id)
-                .orElseThrow(() -> new ClientReadingFailedException("Client with id: " + id + " doesn't exists in database."));
+                .orElseThrow(() -> new ClientUpdatingFailedException("Client with id: " + id + " doesn't exists in database."));
 
         clientToUpdate.setName(clientDto.getName());
         clientToUpdate.setSurname(clientDto.getSurname());
@@ -100,7 +99,7 @@ public class ClientService {
     }
 
     //DELETE - JpaStandard
-    public void deleteClient(Long id) throws ClientReadingFailedException {
+    public void deleteClient(Long id) throws ClientDeletingFailedException {
         EntityManager entityManager = JpaStandardUtils.getEntityManager();
         entityManager.getTransaction().begin();
 
@@ -109,7 +108,7 @@ public class ClientService {
         if (clientToRemove == null) {
             entityManager.close();
             log.error("Client with id: " + id + " doesn't exists in database.");
-            throw new ClientReadingFailedException("Client with id: " + id + " doesn't exists in database.");
+            throw new ClientDeletingFailedException("Client with id: " + id + " doesn't exists in database.");
         }
         entityManager.remove(clientToRemove);
         entityManager.getTransaction().commit();

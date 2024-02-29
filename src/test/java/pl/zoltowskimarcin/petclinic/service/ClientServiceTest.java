@@ -1,15 +1,20 @@
 package pl.zoltowskimarcin.petclinic.service;
 
 import liquibase.exception.CommandExecutionException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.ClientDto;
+
+import java.util.Optional;
 
 @SpringBootTest
 class ClientServiceTest {
@@ -36,7 +41,7 @@ class ClientServiceTest {
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
-        DatabaseInitializer.initialize();
+        DatabaseInitializer.initializeDatabase();
 
         clientDto = new ClientDto(TEST_CLIENT_NAME, TEST_CLIENT_SURNAME, TEST_CLIENT_ADDRESS_STREET
                 , TEST_CLIENT_CITY, TEST_CLIENT_POSTAL_CODE, TEST_CLIENT_PHONE);
@@ -44,6 +49,11 @@ class ClientServiceTest {
         updatedClientDto =
                 new ClientDto(UPDATE_TEST_CLIENT_NAME, UPDATE_TEST_CLIENT_SURNAME, UPDATE_TEST_CLIENT_ADDRESS_STREET
                         , UPDATE_TEST_CLIENT_CITY, UPDATE_TEST_CLIENT_POSTAL_CODE, UPDATE_TEST_CLIENT_PHONE);
+    }
+
+    @AfterEach
+    void tearDown() throws CommandExecutionException {
+        DatabaseInitializer.dropDatabase();
     }
 
     @Test
@@ -83,6 +93,16 @@ class ClientServiceTest {
     }
 
     @Test
+    void updating_not_existing_entity_should_throw_client_updating_failed_exception() {
+        //given
+
+        //when
+
+        //then
+        Assertions.assertThrows(ClientUpdatingFailedException.class, () -> clientService.updateClient(ID_1, updatedClientDto), "Exception not thrown");
+    }
+
+    @Test
     void after_deleting_client_should_return_null_when_try_to_read_deleted_entity() throws ClientException {
         //given
 
@@ -94,4 +114,26 @@ class ClientServiceTest {
         //then
         Assertions.assertNull(returnedClient, "Client is not null");
     }
+
+    @Test
+    void no_entity_found_while_reading_should_return_empty_optional() throws ClientReadingFailedException {
+        //given
+
+        //when
+        Optional<ClientDto> returnedClient = clientService.getClientById(ID_1);
+
+        //then
+        Assertions.assertEquals(Optional.empty(), returnedClient, "Client is not empty");
+    }
+
+    @Test
+    void deleting_not_existing_entity_should_throw_client_deleting_failed_exception() {
+        //given
+
+        //when
+
+        //then
+        Assertions.assertThrows(ClientDeletingFailedException.class, () -> clientService.deleteClient(ID_1), "Exception not thrown");
+    }
+
 }

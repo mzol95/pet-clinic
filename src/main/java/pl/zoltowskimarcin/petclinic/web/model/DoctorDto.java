@@ -1,12 +1,11 @@
 package pl.zoltowskimarcin.petclinic.web.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+
 public class DoctorDto {
 
     private String name;
@@ -15,4 +14,13 @@ public class DoctorDto {
     private List<AppointmentDto> appointmentDtos;
     private WorkScheduleDto workScheduleDto;
 
+    public DoctorDto() {
+    }
+
+    public DoctorDto(String name, String surname, List<AppointmentDto> appointmentDtos, WorkScheduleDto workScheduleDto) {
+        this.name = name;
+        this.surname = surname;
+        this.appointmentDtos = appointmentDtos;
+        this.workScheduleDto = workScheduleDto;
+    }
 }
