@@ -7,10 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.ClientException;
-import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntityDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntityException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntityReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.ClientDto;
 
@@ -71,7 +71,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void creating_new_client_should_return_created_client() throws ClientException {
+    void creating_new_client_should_return_created_client() throws EntityException {
         //given
 
         //when
@@ -82,20 +82,20 @@ class ClientServiceTest {
     }
 
     @Test
-    void read_after_creating_new_client_should_return_newly_created_client() throws ClientException {
+    void read_after_creating_new_client_should_return_newly_created_client() throws EntityException {
         //given
 
         //when
         ClientDto persistedClient = clientService.saveClient(clientDto);
         ClientDto returnedClient = clientService.getClientById(ID_1)
-                .orElseThrow(ClientReadingFailedException::new);
+                .orElseThrow(EntityReadingFailedException::new);
 
         //then
         Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
     }
 
     @Test
-    void after_updating_should_return_updated_client_entity() throws ClientException {
+    void after_updating_should_return_updated_client_entity() throws EntityException {
         //given
 
         //when
@@ -113,12 +113,12 @@ class ClientServiceTest {
         //when
 
         //then
-        Assertions.assertThrows(ClientUpdatingFailedException.class,
+        Assertions.assertThrows(EntityUpdatingFailedException.class,
                 () -> clientService.updateClient(ID_1, updatedClientDto), "Exception not thrown");
     }
 
     @Test
-    void after_deleting_client_should_return_null_when_try_to_read_deleted_entity() throws ClientException {
+    void after_deleting_client_should_return_null_when_try_to_read_deleted_entity() throws EntityException {
         //given
 
         //when
@@ -131,7 +131,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws ClientReadingFailedException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws EntityReadingFailedException {
         //given
 
         //when
@@ -148,7 +148,7 @@ class ClientServiceTest {
         //when
 
         //then
-        Assertions.assertThrows(ClientDeletingFailedException.class,
+        Assertions.assertThrows(EntityDeletingFailedException.class,
                 () -> clientService.deleteClient(ID_1), "Exception not thrown");
     }
 

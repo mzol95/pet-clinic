@@ -5,10 +5,10 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import pl.zoltowskimarcin.petclinic.exception.Doctor.DoctorDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.Doctor.DoctorReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.Doctor.DoctorSavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.Doctor.DoctorUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntityDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntityReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntitySavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
 import pl.zoltowskimarcin.petclinic.mapper.DoctorMapper;
@@ -35,7 +35,8 @@ public class DoctorDaoImpl implements DoctorDao {
     }
 
     //CREATE - Native Hibernate
-    public DoctorDto saveDoctor(DoctorDto doctorDto) throws DoctorSavingFailedException {
+    @Override
+    public DoctorDto saveDoctor(DoctorDto doctorDto) throws EntitySavingFailedException {
         log.info("save " + doctorDto + ")");
         Doctor doctorToPersist = DoctorMapper.getMapper().map(doctorDto, Doctor.class);
 
@@ -45,14 +46,15 @@ public class DoctorDaoImpl implements DoctorDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             log.error("Error while saving doctor", e);
-            throw new DoctorSavingFailedException("Error while saving doctor");
+            throw new EntitySavingFailedException("Error while saving doctor");
         }
         log.info("save(...) = " + doctorToPersist);
         return DoctorMapper.getMapper().map(doctorToPersist, DoctorDto.class);
     }
 
     //READ - JDBC
-    public Optional<DoctorDto> getDoctorById(Long id) throws DoctorReadingFailedException {
+    @Override
+    public Optional<DoctorDto> getDoctorById(Long id) throws EntityReadingFailedException {
         log.info("getDoctorById with id: " + id);
 
         try (Connection connection = DataSource.getConnection();
@@ -70,19 +72,20 @@ public class DoctorDaoImpl implements DoctorDao {
                 }
             }
         } catch (SQLException e) {
-            log.error("Error while getting client", e);
-            throw new DoctorReadingFailedException("Error while getting client");
+            log.error("Error while getting client with id: " + id, e);
+            throw new EntityReadingFailedException("Error while getting client with id: " + id);
         }
         return Optional.empty();
     }
 
     //UPDATE - Spring Data JPA
     @Transactional
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) throws DoctorUpdatingFailedException {
+    @Override
+    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) throws EntityUpdatingFailedException {
         log.info("update " + doctorDto + " with id: " + id);
 
         Doctor doctorToUpdate = doctorRepository.findById(id)
-                .orElseThrow(() -> new DoctorUpdatingFailedException("Doctor with id: " + id + " doesn't exists in database."));
+                .orElseThrow(() -> new EntityUpdatingFailedException("Doctor with id: " + id + " doesn't exists in database."));
 
         Doctor updatingDoctor = DoctorMapper.getMapper().map(doctorDto, Doctor.class);
 
@@ -97,7 +100,8 @@ public class DoctorDaoImpl implements DoctorDao {
     }
 
     //DELETE - JpaStandard
-    public void deleteDoctor(Long id) throws DoctorDeletingFailedException {
+    @Override
+    public void deleteDoctor(Long id) throws EntityDeletingFailedException {
         EntityManager entityManager = JpaStandardUtils.getEntityManager();
         entityManager.getTransaction().begin();
 
@@ -106,7 +110,7 @@ public class DoctorDaoImpl implements DoctorDao {
         if (doctorToRemove == null) {
             entityManager.close();
             log.error("Doctor with id: " + id + " doesn't exists in database.");
-            throw new DoctorDeletingFailedException("Doctor with id: " + id + " doesn't exists in database.");
+            throw new EntityDeletingFailedException("Doctor with id: " + id + " doesn't exists in database.");
         }
         entityManager.remove(doctorToRemove);
         entityManager.getTransaction().commit();
