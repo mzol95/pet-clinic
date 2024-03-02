@@ -36,6 +36,7 @@ class ClientServiceTest {
 
     @Autowired
     private ClientService clientService;
+
     private ClientDto clientDto;
     private ClientDto updatedClientDto;
 
