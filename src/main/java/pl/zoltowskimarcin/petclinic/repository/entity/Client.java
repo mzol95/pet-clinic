@@ -3,7 +3,6 @@ package pl.zoltowskimarcin.petclinic.repository.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "clients")
@@ -12,57 +11,83 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "name")
     private String name;
-
     @Column(name = "surname")
     private String surname;
-
     @Column(name = "phone")
     private String phone;
-
     @Embedded
-    private Address address;
-
+    private Address addresses;
     @OneToMany(mappedBy = "client")
     private List<Pet> pets;
-
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments;
 
-    public Client() {
+    Client() {
     }
 
-    public Client(String name, String surname, String phone, Address address) {
-        this.name = name;
-        this.surname = surname;
-        this.phone = phone;
-        this.address = address;
+    private Client(Builder builder) {
+        name = builder.name;
+        surname = builder.surname;
+        phone = builder.phone;
+        addresses = builder.addresses;
+        pets = builder.pets;
+        appointments = builder.appointments;
     }
 
-    public void addPet(Pet pet) {
-        pets.add(pet);
-        pet.setClient(this);
-    }
+    public static final class Builder {
+        private String name;
+        private String surname;
+        private String phone;
+        private Address addresses;
+        private List<Pet> pets;
+        private List<Appointment> appointments;
 
-    public void removePet(Pet pet) {
-        pets.remove(pet);
-        pet.setClient(null);
-    }
+        public Builder() {
+        }
 
-    public void addAppointment(Appointment appointment) {
-        appointments.add(appointment);
-        appointment.setClient(this);
-    }
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
 
-    public void removeAppointment(Appointment appointment) {
-        appointments.remove(appointment);
-        appointment.setClient(null);
+        public Builder surname(String val) {
+            surname = val;
+            return this;
+        }
+
+        public Builder phone(String val) {
+            phone = val;
+            return this;
+        }
+
+        public Builder addresses(Address val) {
+            addresses = val;
+            return this;
+        }
+
+        public Builder pets(List<Pet> val) {
+            pets = val;
+            return this;
+        }
+
+        public Builder appointments(List<Appointment> val) {
+            appointments = val;
+            return this;
+        }
+
+        public Client build() {
+            return new Client(this);
+        }
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -89,12 +114,12 @@ public class Client {
         this.phone = phone;
     }
 
-    public Address getAddress() {
-        return address;
+    public Address getAddresses() {
+        return addresses;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddresses(Address addresses) {
+        this.addresses = addresses;
     }
 
     public List<Pet> getPets() {
@@ -111,33 +136,5 @@ public class Client {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Client client = (Client) o;
-        return Objects.equals(id, client.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address=" + address +
-                '}';
     }
 }

@@ -30,6 +30,10 @@ public class Pet {
     @OneToOne(mappedBy = "pet")
     private Appointment appointments;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

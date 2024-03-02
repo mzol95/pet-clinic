@@ -57,13 +57,13 @@ public class DoctorService {
             readStatement.setLong(1, id);
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    DoctorDto returnedDoctor = new DoctorDto();
-                    returnedDoctor.setName(resultSet.getString("name"));
-                    returnedDoctor.setSurname(resultSet.getString("surname"));
-                    //todo - method implementation
-
-                    log.info("get(...) = " + returnedDoctor);
-                    return Optional.ofNullable(returnedDoctor);
+//                    DoctorDto returnedDoctor = new DoctorDto();
+//                    returnedDoctor.setName(resultSet.getString("name"));
+//                    returnedDoctor.setSurname(resultSet.getString("surname"));
+//                    //todo - method implementation
+//
+//                    log.info("get(...) = " + returnedDoctor);
+//                    return Optional.ofNullable(returnedDoctor);
                 }
             }
         } catch (SQLException e) {

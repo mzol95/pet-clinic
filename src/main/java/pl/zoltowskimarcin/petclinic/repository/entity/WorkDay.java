@@ -24,6 +24,10 @@ public class WorkDay {
     @Column(name = "endOfWork")
     private LocalTime endOfWork;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public LocalDateTime getDateOfWork() {
         return dateOfWork;
     }

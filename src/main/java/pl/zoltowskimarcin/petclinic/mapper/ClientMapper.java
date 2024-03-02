@@ -14,14 +14,14 @@ public class ClientMapper {
         if (modelMapper == null) {
             modelMapper = new ModelMapper();
             modelMapper.typeMap(Client.class, ClientDto.class)
-                    .addMapping(src -> src.getAddress().getStreet(), ClientDto::setStreet)
-                    .addMapping(src -> src.getAddress().getCity(), ClientDto::setCity)
-                    .addMapping(src -> src.getAddress().getPostalCode(), ClientDto::setPostalCode);
+                    .addMapping(src -> src.getAddresses().getStreet(), ClientDto::setStreet)
+                    .addMapping(src -> src.getAddresses().getCity(), ClientDto::setCity)
+                    .addMapping(src -> src.getAddresses().getPostalCode(), ClientDto::setPostalCode);
 
             modelMapper.typeMap(ClientDto.class, Client.class)
-                    .addMapping(ClientDto::getStreet, (entity, value) -> entity.getAddress().setStreet((String) value))
-                    .addMapping(ClientDto::getCity, (entity, value) -> entity.getAddress().setCity((String) value))
-                    .addMapping(ClientDto::getPostalCode, (entity, value) -> entity.getAddress().setPostalCode((String) value));
+                    .addMapping(ClientDto::getStreet, (entity, value) -> entity.getAddresses().setStreet((String) value))
+                    .addMapping(ClientDto::getCity, (entity, value) -> entity.getAddresses().setCity((String) value))
+                    .addMapping(ClientDto::getPostalCode, (entity, value) -> entity.getAddresses().setPostalCode((String) value));
         }
         return modelMapper;
     }

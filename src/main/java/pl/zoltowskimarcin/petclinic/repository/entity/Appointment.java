@@ -31,6 +31,9 @@ public class Appointment {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;

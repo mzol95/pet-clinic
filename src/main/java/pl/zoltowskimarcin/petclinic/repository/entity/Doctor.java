@@ -26,6 +26,16 @@ public class Doctor {
     @JoinColumn(name = "work_schedule_id")
     private WorkSchedule workSchedule;
 
+    public Doctor() {
+    }
+
+    private Doctor(Builder builder) {
+        name = builder.name;
+        surname = builder.surname;
+        appointments = builder.appointments;
+        workSchedule = builder.workSchedule;
+    }
+
     public void addAppointment(Appointment appointment) {
         appointments.add(appointment);
         appointment.setDoctor(this);
@@ -36,37 +46,6 @@ public class Doctor {
         appointment.setDoctor(null);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
-    }
-
-    public WorkSchedule getWorkSchedule() {
-        return workSchedule;
-    }
-
-    public void setWorkSchedule(WorkSchedule workSchedule) {
-        this.workSchedule = workSchedule;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -88,5 +67,79 @@ public class Doctor {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public WorkSchedule getWorkSchedule() {
+        return workSchedule;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public void setWorkSchedule(WorkSchedule workSchedule) {
+        this.workSchedule = workSchedule;
+    }
+
+    public static final class Builder {
+        private String name;
+        private String surname;
+        private List<Appointment> appointments;
+        private WorkSchedule workSchedule;
+
+        public Builder() {
+        }
+
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder surname(String val) {
+            surname = val;
+            return this;
+        }
+
+        public Builder appointments(List<Appointment> val) {
+            appointments = val;
+            return this;
+        }
+
+        public Builder workSchedule(WorkSchedule val) {
+            workSchedule = val;
+            return this;
+        }
+
+        public Doctor build() {
+            return new Doctor(this);
+        }
     }
 }

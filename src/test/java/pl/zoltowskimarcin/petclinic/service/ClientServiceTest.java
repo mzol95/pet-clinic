@@ -43,12 +43,25 @@ class ClientServiceTest {
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
 
-        clientDto = new ClientDto(TEST_CLIENT_NAME, TEST_CLIENT_SURNAME, TEST_CLIENT_ADDRESS_STREET
-                , TEST_CLIENT_CITY, TEST_CLIENT_POSTAL_CODE, TEST_CLIENT_PHONE);
+        clientDto = new ClientDto.Builder()
+                .name(TEST_CLIENT_NAME)
+                .surname(TEST_CLIENT_SURNAME)
+                .street(TEST_CLIENT_ADDRESS_STREET)
+                .city(TEST_CLIENT_CITY)
+                .postalCode(TEST_CLIENT_POSTAL_CODE)
+                .phone(TEST_CLIENT_PHONE)
+                .build();
 
-        updatedClientDto =
-                new ClientDto(UPDATE_TEST_CLIENT_NAME, UPDATE_TEST_CLIENT_SURNAME, UPDATE_TEST_CLIENT_ADDRESS_STREET
-                        , UPDATE_TEST_CLIENT_CITY, UPDATE_TEST_CLIENT_POSTAL_CODE, UPDATE_TEST_CLIENT_PHONE);
+
+        updatedClientDto = new ClientDto.Builder()
+                .name(UPDATE_TEST_CLIENT_NAME)
+                .surname(UPDATE_TEST_CLIENT_SURNAME)
+                .street(UPDATE_TEST_CLIENT_ADDRESS_STREET)
+                .city(UPDATE_TEST_CLIENT_CITY)
+                .postalCode(UPDATE_TEST_CLIENT_POSTAL_CODE)
+                .phone(UPDATE_TEST_CLIENT_PHONE)
+                .build();
+
     }
 
     @AfterEach
@@ -99,7 +112,8 @@ class ClientServiceTest {
         //when
 
         //then
-        Assertions.assertThrows(ClientUpdatingFailedException.class, () -> clientService.updateClient(ID_1, updatedClientDto), "Exception not thrown");
+        Assertions.assertThrows(ClientUpdatingFailedException.class,
+                () -> clientService.updateClient(ID_1, updatedClientDto), "Exception not thrown");
     }
 
     @Test
@@ -133,7 +147,8 @@ class ClientServiceTest {
         //when
 
         //then
-        Assertions.assertThrows(ClientDeletingFailedException.class, () -> clientService.deleteClient(ID_1), "Exception not thrown");
+        Assertions.assertThrows(ClientDeletingFailedException.class,
+                () -> clientService.deleteClient(ID_1), "Exception not thrown");
     }
 
 }

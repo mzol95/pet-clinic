@@ -59,14 +59,14 @@ public class ClientService {
 
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    ClientDto returnedClient = new ClientDto();
-                    returnedClient.setName(resultSet.getString("name"));
-                    returnedClient.setSurname(resultSet.getString("surname"));
-                    returnedClient.setPhone(resultSet.getString("phone"));
-                    returnedClient.setStreet(resultSet.getString("street"));
-                    returnedClient.setCity(resultSet.getString("city"));
-                    returnedClient.setPostalCode(resultSet.getString("postal_code"));
-
+                    ClientDto returnedClient = new ClientDto.Builder()
+                            .name(resultSet.getString("name"))
+                            .surname(resultSet.getString("surname"))
+                            .phone(resultSet.getString("phone"))
+                            .street(resultSet.getString("street"))
+                            .city(resultSet.getString("city"))
+                            .postalCode(resultSet.getString("postal_code"))
+                            .build();
                     log.info("get(...) = " + returnedClient);
                     return Optional.ofNullable(returnedClient);
                 }
@@ -89,9 +89,9 @@ public class ClientService {
         clientToUpdate.setName(clientDto.getName());
         clientToUpdate.setSurname(clientDto.getSurname());
         clientToUpdate.setPhone(clientDto.getPhone());
-        clientToUpdate.getAddress().setStreet(clientDto.getStreet());
-        clientToUpdate.getAddress().setCity(clientDto.getCity());
-        clientToUpdate.getAddress().setPostalCode(clientDto.getPostalCode());
+        clientToUpdate.getAddresses().setStreet(clientDto.getStreet());
+        clientToUpdate.getAddresses().setCity(clientDto.getCity());
+        clientToUpdate.getAddresses().setPostalCode(clientDto.getPostalCode());
         clientRepository.save(clientToUpdate);
 
         log.info("update(...) = " + clientToUpdate);
@@ -102,9 +102,7 @@ public class ClientService {
     public void deleteClient(Long id) throws ClientDeletingFailedException {
         EntityManager entityManager = JpaStandardUtils.getEntityManager();
         entityManager.getTransaction().begin();
-
         Client clientToRemove = entityManager.find(Client.class, id);
-
         if (clientToRemove == null) {
             entityManager.close();
             log.error("Client with id: " + id + " doesn't exists in database.");
