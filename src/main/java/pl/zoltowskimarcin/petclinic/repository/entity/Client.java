@@ -92,6 +92,16 @@ public class Client {
         this.appointments = appointments;
     }
 
+    public void addPet(Pet pet) {
+        pets.add(pet);
+        pet.setClient(this);
+    }
+
+    public void removePet(Pet comment) {
+        pets.remove(comment);
+        comment.setClient(null);
+    }
+
     public static final class Builder {
         private String name;
         private String surname;

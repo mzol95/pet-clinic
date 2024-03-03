@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.petclinic.service;
+package pl.zoltowskimarcin.petclinic.dao;
 
 import liquibase.exception.CommandExecutionException;
 import org.junit.jupiter.api.AfterEach;
@@ -11,6 +11,7 @@ import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.repository.dao.AppointmentDaoImpl;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
 
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @SpringBootTest
-class AppointmentServiceTest {
+class AppointmentDaoImplTest {
 
     private static final LocalDateTime APPOINTMENT_DATE_TIME_2000_01_01 = LocalDateTime.of(2000, 1, 1, 1, 1);
     private static final LocalDateTime APPOINTMENT_UPDATED_DATE_TIME_3000_02_02 = LocalDateTime.of(3000, 2, 2, 2, 2);
@@ -27,7 +28,7 @@ class AppointmentServiceTest {
     private static final long ID_1 = 1L;
 
     @Autowired
-    private AppointmentService appointmentService;
+    private AppointmentDaoImpl appointmentDao;
     private AppointmentDto appointmentDto;
     private AppointmentDto updatedAppointmentDto;
 
@@ -58,7 +59,7 @@ class AppointmentServiceTest {
         //given
 
         //when
-        AppointmentDto returnedAppointment = appointmentService.saveAppointment(appointmentDto);
+        AppointmentDto returnedAppointment = appointmentDao.saveAppointment(appointmentDto);
 
         //then
         Assertions.assertEquals(appointmentDto, returnedAppointment, "Appointment is not equal");
@@ -69,8 +70,8 @@ class AppointmentServiceTest {
         //given
 
         //when
-        AppointmentDto persistedAppointment = appointmentService.saveAppointment(appointmentDto);
-        AppointmentDto returnedAppointment = appointmentService.getAppointmentById(ID_1)
+        AppointmentDto persistedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        AppointmentDto returnedAppointment = appointmentDao.getAppointmentById(ID_1)
                 .orElseThrow(EntityReadingFailedException::new);
 
         //then
@@ -82,8 +83,8 @@ class AppointmentServiceTest {
         //given
 
         //when
-        AppointmentDto persistedAppointment = appointmentService.saveAppointment(appointmentDto);
-        AppointmentDto updatedAppointment = appointmentService.updateAppointment(ID_1, updatedAppointmentDto);
+        AppointmentDto persistedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        AppointmentDto updatedAppointment = appointmentDao.updateAppointment(ID_1, updatedAppointmentDto);
 
         //then
         Assertions.assertEquals(updatedAppointmentDto, updatedAppointment, "Appointment is not equal");
@@ -97,7 +98,7 @@ class AppointmentServiceTest {
 
         //then
         Assertions.assertThrows(EntityUpdatingFailedException.class,
-                () -> appointmentService.updateAppointment(ID_1, updatedAppointmentDto), "Exception not thrown");
+                () -> appointmentDao.updateAppointment(ID_1, updatedAppointmentDto), "Exception not thrown");
     }
 
     @Test
@@ -105,9 +106,9 @@ class AppointmentServiceTest {
         //given
 
         //when
-        AppointmentDto persistedAppointment = appointmentService.saveAppointment(appointmentDto);
-        appointmentService.deleteAppointment(ID_1);
-        AppointmentDto returnedAppointment = appointmentService.getAppointmentById(ID_1).orElse(null);
+        AppointmentDto persistedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        appointmentDao.deleteAppointment(ID_1);
+        AppointmentDto returnedAppointment = appointmentDao.getAppointmentById(ID_1).orElse(null);
 
         //then
         Assertions.assertNull(returnedAppointment, "Appointment is not null");
@@ -118,7 +119,7 @@ class AppointmentServiceTest {
         //given
 
         //when
-        Optional<AppointmentDto> returnedAppointment = appointmentService.getAppointmentById(ID_1);
+        Optional<AppointmentDto> returnedAppointment = appointmentDao.getAppointmentById(ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedAppointment, "Appointment is not empty");
@@ -132,7 +133,7 @@ class AppointmentServiceTest {
 
         //then
         Assertions.assertThrows(EntityDeletingFailedException.class,
-                () -> appointmentService.deleteAppointment(ID_1), "Exception not thrown");
+                () -> appointmentDao.deleteAppointment(ID_1), "Exception not thrown");
     }
 
 }

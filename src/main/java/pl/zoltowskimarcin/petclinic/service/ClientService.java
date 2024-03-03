@@ -7,7 +7,7 @@ import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDao;
-import pl.zoltowskimarcin.petclinic.web.model.ClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 
 import java.util.Optional;
 
@@ -21,23 +21,23 @@ public class ClientService {
         this.clientDao = clientDao;
     }
 
-    public ClientDto saveClient(ClientDto clientDto) throws EntitySavingFailedException {
-        log.info("save " + clientDto + ")");
-        ClientDto resultClient = clientDao.saveClient(clientDto);
+    public BasicClientDto saveClient(BasicClientDto basicClientDto) throws EntitySavingFailedException {
+        log.info("save " + basicClientDto + ")");
+        BasicClientDto resultClient = clientDao.saveClient(basicClientDto);
         log.info("save(...) = " + resultClient);
         return resultClient;
     }
 
-    public Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException {
+    public Optional<BasicClientDto> getClientById(Long id) throws EntityReadingFailedException {
         log.info("getClientById with id: " + id);
-        Optional<ClientDto> resultClient = clientDao.getClientById(id);
+        Optional<BasicClientDto> resultClient = clientDao.getClientById(id);
         log.info("getClientById(...) = " + resultClient);
         return resultClient;
     }
 
-    public ClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {
-        log.info("updateClient with id: " + id + " and clientDto: " + clientDto);
-        ClientDto resultClient = clientDao.updateClient(id, clientDto);
+    public BasicClientDto updateClient(Long id, BasicClientDto basicClient) throws EntityUpdatingFailedException {
+        log.info("updateClient with id: " + id + " and basicClient: " + basicClient);
+        BasicClientDto resultClient = clientDao.updateClient(id, basicClient);
         log.info("updateClient(...) = " + resultClient);
         return resultClient;
     }

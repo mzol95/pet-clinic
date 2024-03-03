@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.petclinic.service;
+package pl.zoltowskimarcin.petclinic.dao;
 
 import liquibase.exception.CommandExecutionException;
 import org.junit.jupiter.api.AfterEach;
@@ -11,13 +11,14 @@ import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.repository.dao.DoctorDaoImpl;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 
 import java.util.Optional;
 
 @SpringBootTest
-class DoctorServiceTest {
+class DoctorDaoImplTest {
 
     private static final String DOCTOR_TEST_NAME = "Test name";
     private static final String DOCTOR_TEST_SURNAME = "Test surname";
@@ -26,7 +27,7 @@ class DoctorServiceTest {
     private static final Long ID_1 = 1L;
 
     @Autowired
-    private DoctorService doctorService;
+    private DoctorDaoImpl doctorDao;
 
     private DoctorDto doctorDto;
     private DoctorDto updatedDoctorDto;
@@ -57,7 +58,7 @@ class DoctorServiceTest {
         //given
 
         //when
-        DoctorDto returnedDoctor = doctorService.saveDoctor(doctorDto);
+        DoctorDto returnedDoctor = doctorDao.saveDoctor(doctorDto);
 
         //then
         Assertions.assertEquals(doctorDto, returnedDoctor, "Doctor is not equal");
@@ -68,8 +69,8 @@ class DoctorServiceTest {
         //given
 
         //when
-        DoctorDto persistedDoctor = doctorService.saveDoctor(doctorDto);
-        DoctorDto returnedDoctor = doctorService.getDoctorById(ID_1)
+        DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
+        DoctorDto returnedDoctor = doctorDao.getDoctorById(ID_1)
                 .orElseThrow(EntityReadingFailedException::new);
 
         //then
@@ -81,8 +82,8 @@ class DoctorServiceTest {
         //given
 
         //when
-        DoctorDto persistedDoctor = doctorService.saveDoctor(doctorDto);
-        DoctorDto updatedDoctor = doctorService.updateDoctor(ID_1, updatedDoctorDto);
+        DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
+        DoctorDto updatedDoctor = doctorDao.updateDoctor(ID_1, updatedDoctorDto);
 
         //then
         Assertions.assertEquals(updatedDoctorDto, updatedDoctor, "Doctor is not equal");
@@ -96,7 +97,7 @@ class DoctorServiceTest {
 
         //then
         Assertions.assertThrows(EntityUpdatingFailedException.class,
-                () -> doctorService.updateDoctor(ID_1, updatedDoctorDto), "Exception not thrown");
+                () -> doctorDao.updateDoctor(ID_1, updatedDoctorDto), "Exception not thrown");
     }
 
     @Test
@@ -104,9 +105,9 @@ class DoctorServiceTest {
         //given
 
         //when
-        DoctorDto persistedDoctor = doctorService.saveDoctor(doctorDto);
-        doctorService.deleteDoctor(ID_1);
-        DoctorDto returnedDoctor = doctorService.getDoctorById(ID_1).orElse(null);
+        DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
+        doctorDao.deleteDoctor(ID_1);
+        DoctorDto returnedDoctor = doctorDao.getDoctorById(ID_1).orElse(null);
 
         //then
         Assertions.assertNull(returnedDoctor, "Doctor is not null");
@@ -117,7 +118,7 @@ class DoctorServiceTest {
         //given
 
         //when
-        Optional<DoctorDto> returnedDoctor = doctorService.getDoctorById(ID_1);
+        Optional<DoctorDto> returnedDoctor = doctorDao.getDoctorById(ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedDoctor, "Doctor is not empty");
@@ -131,6 +132,6 @@ class DoctorServiceTest {
 
         //then
         Assertions.assertThrows(EntityDeletingFailedException.class,
-                () -> doctorService.deleteDoctor(ID_1), "Exception not thrown");
+                () -> doctorDao.deleteDoctor(ID_1), "Exception not thrown");
     }
 }

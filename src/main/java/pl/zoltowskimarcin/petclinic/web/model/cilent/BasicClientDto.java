@@ -1,17 +1,15 @@
-package pl.zoltowskimarcin.petclinic.web.model;
+package pl.zoltowskimarcin.petclinic.web.model.cilent;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Setter
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ClientDto {
+public class BasicClientDto {
 
     private String name;
     private String surname;
@@ -19,21 +17,17 @@ public class ClientDto {
     private String city;
     private String postalCode;
     private String phone;
-    private List<PetDto> petDtos;
-    private List<AppointmentDto> appointmentDtos;
 
-    private ClientDto() {
+    BasicClientDto() {
     }
 
-    private ClientDto(Builder builder) {
+    private BasicClientDto(Builder builder) {
         setName(builder.name);
         setSurname(builder.surname);
         setStreet(builder.street);
         setCity(builder.city);
         setPostalCode(builder.postalCode);
         setPhone(builder.phone);
-        setPetDtos(builder.petDtos);
-        setAppointmentDtos(builder.appointmentDtos);
     }
 
 
@@ -44,8 +38,6 @@ public class ClientDto {
         private String city;
         private String postalCode;
         private String phone;
-        private List<PetDto> petDtos;
-        private List<AppointmentDto> appointmentDtos;
 
         public Builder() {
         }
@@ -80,20 +72,8 @@ public class ClientDto {
             return this;
         }
 
-        public Builder petDtos(List<PetDto> val) {
-            petDtos = val;
-            return this;
-        }
-
-        public Builder appointmentDtos(List<AppointmentDto> val) {
-            appointmentDtos = val;
-            return this;
-        }
-
-        public ClientDto build() {
-            return new ClientDto(this);
+        public BasicClientDto build() {
+            return new BasicClientDto(this);
         }
     }
-
-
 }

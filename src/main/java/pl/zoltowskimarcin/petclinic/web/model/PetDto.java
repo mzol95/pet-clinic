@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.time.LocalDate;
 import java.util.List;

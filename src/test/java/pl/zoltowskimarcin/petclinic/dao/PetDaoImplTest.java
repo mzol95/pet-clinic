@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.petclinic.service;
+package pl.zoltowskimarcin.petclinic.dao;
 
 import liquibase.exception.CommandExecutionException;
 import org.junit.jupiter.api.AfterEach;
@@ -11,6 +11,7 @@ import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.repository.dao.PetDaoImpl;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
 import pl.zoltowskimarcin.petclinic.web.model.PetDto;
@@ -19,7 +20,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @SpringBootTest
-class PetServiceTest {
+class PetDaoImplTest {
 
     private static final String PET_TEST_NAME = "Test name";
     private static final LocalDate PET_TEST_DATE = LocalDate.of(2000, 1, 1);
@@ -32,7 +33,7 @@ class PetServiceTest {
     private static final Long ID_1 = 1L;
 
     @Autowired
-    private PetService petService;
+    private PetDaoImpl petDao;
 
     private PetDto petDto;
     private PetDto updatedPetDto;
@@ -65,7 +66,7 @@ class PetServiceTest {
         //given
 
         //when
-        PetDto returnedPet = petService.savePet(petDto);
+        PetDto returnedPet = petDao.savePet(petDto);
 
         //then
         Assertions.assertEquals(petDto, returnedPet, "Pet is not equal");
@@ -76,8 +77,8 @@ class PetServiceTest {
         //given
 
         //when
-        PetDto persistedPet = petService.savePet(petDto);
-        PetDto returnedPet = petService.getPetById(ID_1)
+        PetDto persistedPet = petDao.savePet(petDto);
+        PetDto returnedPet = petDao.getPetById(ID_1)
                 .orElseThrow(EntityReadingFailedException::new);
 
         //then
@@ -89,8 +90,8 @@ class PetServiceTest {
         //given
 
         //when
-        PetDto persistedPet = petService.savePet(petDto);
-        PetDto updatedPet = petService.updatePet(ID_1, updatedPetDto);
+        PetDto persistedPet = petDao.savePet(petDto);
+        PetDto updatedPet = petDao.updatePet(ID_1, updatedPetDto);
 
         //then
         Assertions.assertEquals(updatedPetDto, updatedPet, "Pet is not equal");
@@ -104,7 +105,7 @@ class PetServiceTest {
 
         //then
         Assertions.assertThrows(EntityUpdatingFailedException.class,
-                () -> petService.updatePet(ID_1, updatedPetDto), "Exception not thrown");
+                () -> petDao.updatePet(ID_1, updatedPetDto), "Exception not thrown");
     }
 
     @Test
@@ -112,9 +113,9 @@ class PetServiceTest {
         //given
 
         //when
-        PetDto persistedPet = petService.savePet(petDto);
-        petService.deletePet(ID_1);
-        PetDto returnedPet = petService.getPetById(ID_1).orElse(null);
+        PetDto persistedPet = petDao.savePet(petDto);
+        petDao.deletePet(ID_1);
+        PetDto returnedPet = petDao.getPetById(ID_1).orElse(null);
 
         //then
         Assertions.assertNull(returnedPet, "Pet is not null");
@@ -125,7 +126,7 @@ class PetServiceTest {
         //given
 
         //when
-        Optional<PetDto> returnedPet = petService.getPetById(ID_1);
+        Optional<PetDto> returnedPet = petDao.getPetById(ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedPet, "Pet is not empty");
@@ -139,6 +140,6 @@ class PetServiceTest {
 
         //then
         Assertions.assertThrows(EntityDeletingFailedException.class,
-                () -> petService.deletePet(ID_1), "Exception not thrown");
+                () -> petDao.deletePet(ID_1), "Exception not thrown");
     }
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pl.zoltowskimarcin.petclinic.repository.entity.Address;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
-import pl.zoltowskimarcin.petclinic.web.model.ClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 class ClientMapperTest {
 

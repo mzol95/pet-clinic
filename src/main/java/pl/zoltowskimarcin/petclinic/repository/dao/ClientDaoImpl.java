@@ -16,12 +16,15 @@ import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 import pl.zoltowskimarcin.petclinic.repository.jpa.ClientRepository;
-import pl.zoltowskimarcin.petclinic.web.model.ClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.LiteClientDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -36,9 +39,9 @@ public class ClientDaoImpl implements ClientDao {
 
     //CREATE - Native Hibernate
     @Override
-    public ClientDto saveClient(ClientDto clientDto) throws EntitySavingFailedException {
-        log.info("save " + clientDto + ")");
-        Client clientToPersist = ClientMapper.getMapper().map(clientDto, Client.class);
+    public BasicClientDto saveClient(BasicClientDto basicClient) throws EntitySavingFailedException {
+        log.info("save " + basicClient + ")");
+        Client clientToPersist = ClientMapper.getMapper().map(basicClient, Client.class);
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -49,12 +52,12 @@ public class ClientDaoImpl implements ClientDao {
             throw new EntitySavingFailedException("Error while saving client");
         }
         log.info("save(...) = " + clientToPersist);
-        return ClientMapper.getMapper().map(clientToPersist, ClientDto.class);
+        return ClientMapper.getMapper().map(clientToPersist, BasicClientDto.class);
     }
 
     //READ - JDBC
     @Override
-    public Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException {
+    public Optional<BasicClientDto> getClientById(Long id) throws EntityReadingFailedException {
         log.info("getClientById with id: " + id);
 
         try (Connection connection = DataSource.getConnection();
@@ -64,7 +67,7 @@ public class ClientDaoImpl implements ClientDao {
 
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    ClientDto returnedClient = new ClientDto.Builder()
+                    BasicClientDto returnedClient = new BasicClientDto.Builder()
                             .name(resultSet.getString("name"))
                             .surname(resultSet.getString("surname"))
                             .phone(resultSet.getString("phone"))
@@ -83,25 +86,50 @@ public class ClientDaoImpl implements ClientDao {
         return Optional.empty();
     }
 
+    //READ ALL - JDBC
+    @Override
+    public List<LiteClientDto> getAllClients() throws EntityReadingFailedException {
+        log.info("getAllClients()");
+
+        List<LiteClientDto> returnedClients = new ArrayList<>();
+
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_ALL_CLIENTS)) {
+
+            try (ResultSet resultSet = readStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    String surname = resultSet.getString("surname");
+                    returnedClients.add(new LiteClientDto(name, surname));
+                }
+                log.info("getAllClients(...) = " + returnedClients);
+            }
+        } catch (SQLException e) {
+            log.error("Error while getting clients", e);
+            throw new EntityReadingFailedException("Error while getting clients");
+        }
+        return returnedClients;
+    }
+
     //UPDATE - Spring Data JPA
     @Override
     @Transactional
-    public ClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {
-        log.info("update " + clientDto + " with id: " + id);
+    public BasicClientDto updateClient(Long id, BasicClientDto basicClientDto) throws EntityUpdatingFailedException {
+        log.info("update " + basicClientDto + " with id: " + id);
 
         Client clientToUpdate = clientRepository.findById(id)
                 .orElseThrow(() -> new EntityUpdatingFailedException("Client with id: " + id + " doesn't exists in database."));
 
-        clientToUpdate.setName(clientDto.getName());
-        clientToUpdate.setSurname(clientDto.getSurname());
-        clientToUpdate.setPhone(clientDto.getPhone());
-        clientToUpdate.getAddresses().setStreet(clientDto.getStreet());
-        clientToUpdate.getAddresses().setCity(clientDto.getCity());
-        clientToUpdate.getAddresses().setPostalCode(clientDto.getPostalCode());
+        clientToUpdate.setName(basicClientDto.getName());
+        clientToUpdate.setSurname(basicClientDto.getSurname());
+        clientToUpdate.setPhone(basicClientDto.getPhone());
+        clientToUpdate.getAddresses().setStreet(basicClientDto.getStreet());
+        clientToUpdate.getAddresses().setCity(basicClientDto.getCity());
+        clientToUpdate.getAddresses().setPostalCode(basicClientDto.getPostalCode());
         clientRepository.save(clientToUpdate);
 
         log.info("update(...) = " + clientToUpdate);
-        return ClientMapper.getMapper().map(clientToUpdate, ClientDto.class);
+        return ClientMapper.getMapper().map(clientToUpdate, BasicClientDto.class);
     }
 
     //DELETE - JpaStandard
@@ -110,11 +138,13 @@ public class ClientDaoImpl implements ClientDao {
         EntityManager entityManager = JpaStandardUtils.getEntityManager();
         entityManager.getTransaction().begin();
         Client clientToRemove = entityManager.find(Client.class, id);
+
         if (clientToRemove == null) {
             entityManager.close();
             log.error("Client with id: " + id + " doesn't exists in database.");
             throw new EntityDeletingFailedException("Client with id: " + id + " doesn't exists in database.");
         }
+
         entityManager.remove(clientToRemove);
         entityManager.getTransaction().commit();
         entityManager.close();
