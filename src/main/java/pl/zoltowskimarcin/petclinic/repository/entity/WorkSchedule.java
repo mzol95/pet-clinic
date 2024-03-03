@@ -19,12 +19,16 @@ public class WorkSchedule {
     @OneToOne(mappedBy = "workSchedule")
     private Doctor doctor;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public List<WorkDay> getWorkDays() {
         return workDays;
     }
 
-    public void setWorkDays(List<WorkDay> workDays) {
-        this.workDays = workDays;
+    public void setWorkDays(List<WorkDay> workDayEntities) {
+        this.workDays = workDayEntities;
     }
 
     public Doctor getDoctor() {

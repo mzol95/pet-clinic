@@ -1,0 +1,12 @@
+ALTER TABLE clients
+    DROP COLUMN ADDRESS_ID;
+
+DROP TABLE IF EXISTS addresses;
+
+ALTER TABLE clients
+    ADD COLUMN street VARCHAR(255);
+ALTER TABLE clients
+    ADD COLUMN city VARCHAR(255);
+ALTER TABLE clients
+    ADD COLUMN postal_code VARCHAR(255);
+

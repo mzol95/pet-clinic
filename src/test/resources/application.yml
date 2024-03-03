@@ -1,7 +1,8 @@
 spring:
   liquibase:
-    change-log: classpath:/db/changelog/master.xml
+    change-log: classpath:/db/changelog/master_test.xml
     enabled: true
+    drop-first: true
   datasource:
     url: jdbc:h2:mem:pet-clinic
     username: sa

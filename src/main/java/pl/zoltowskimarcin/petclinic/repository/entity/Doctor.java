@@ -26,6 +26,16 @@ public class Doctor {
     @JoinColumn(name = "work_schedule_id")
     private WorkSchedule workSchedule;
 
+    Doctor() {
+    }
+
+    private Doctor(Builder builder) {
+        name = builder.name;
+        surname = builder.surname;
+        appointments = builder.appointments;
+        workSchedule = builder.workSchedule;
+    }
+
     public void addAppointment(Appointment appointment) {
         appointments.add(appointment);
         appointment.setDoctor(this);
@@ -34,6 +44,37 @@ public class Doctor {
     public void removeAppointment(Appointment appointment) {
         appointments.remove(appointment);
         appointment.setDoctor(null);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Doctor doctor = (Doctor) o;
+        return Objects.equals(id, doctor.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -68,25 +109,37 @@ public class Doctor {
         this.workSchedule = workSchedule;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Doctor doctor = (Doctor) o;
-        return Objects.equals(id, doctor.id);
-    }
+    public static final class Builder {
+        private String name;
+        private String surname;
+        private List<Appointment> appointments;
+        private WorkSchedule workSchedule;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+        public Builder() {
+        }
 
-    @Override
-    public String toString() {
-        return "Doctor{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder surname(String val) {
+            surname = val;
+            return this;
+        }
+
+        public Builder appointments(List<Appointment> val) {
+            appointments = val;
+            return this;
+        }
+
+        public Builder workSchedule(WorkSchedule val) {
+            workSchedule = val;
+            return this;
+        }
+
+        public Doctor build() {
+            return new Doctor(this);
+        }
     }
 }

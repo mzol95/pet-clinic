@@ -3,14 +3,12 @@ package pl.zoltowskimarcin.petclinic.web.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
-public class Address {
+public class WorkScheduleDto {
 
-    private String street;
-    private String city;
-    private String postalCode;
+    private List<WorkDayDto> workDayDto;
 
 }
-
-
