@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.petclinic.exception.client;
+package pl.zoltowskimarcin.petclinic.exception;
 
 public class EntityDeletingFailedException extends EntityException {
     public EntityDeletingFailedException() {

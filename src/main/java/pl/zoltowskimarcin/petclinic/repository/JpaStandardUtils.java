@@ -8,7 +8,7 @@ import jakarta.persistence.Persistence;
 public class JpaStandardUtils {
 
     private static EntityManager entityManager;
-    private static EntityManagerFactory entityManagerFactory;
+    private static final EntityManagerFactory entityManagerFactory;
 
     static {
         entityManagerFactory =

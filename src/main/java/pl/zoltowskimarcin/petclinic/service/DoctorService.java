@@ -2,10 +2,10 @@ package pl.zoltowskimarcin.petclinic.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pl.zoltowskimarcin.petclinic.exception.client.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DoctorDao;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 

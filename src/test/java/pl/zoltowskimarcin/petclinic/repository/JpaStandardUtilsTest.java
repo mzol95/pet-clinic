@@ -11,7 +11,7 @@ class JpaStandardUtilsTest {
         //given
 
         //when
-        EntityManager entityManager  = JpaStandardUtils.getEntityManager();
+        EntityManager entityManager = JpaStandardUtils.getEntityManager();
         //then
         Assertions.assertNotNull(entityManager, "Entity manager is null");
 

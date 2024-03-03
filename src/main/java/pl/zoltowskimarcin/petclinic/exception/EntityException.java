@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.petclinic.exception.client;
+package pl.zoltowskimarcin.petclinic.exception;
 
 public class EntityException extends Exception {
     public EntityException() {

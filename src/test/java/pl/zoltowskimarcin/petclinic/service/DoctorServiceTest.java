@@ -7,10 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.client.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.EntityException;
-import pl.zoltowskimarcin.petclinic.exception.client.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.client.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityException;
+import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 

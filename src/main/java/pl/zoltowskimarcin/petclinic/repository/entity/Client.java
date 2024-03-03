@@ -36,52 +36,6 @@ public class Client {
         appointments = builder.appointments;
     }
 
-    public static final class Builder {
-        private String name;
-        private String surname;
-        private String phone;
-        private Address addresses;
-        private List<Pet> pets;
-        private List<Appointment> appointments;
-
-        public Builder() {
-        }
-
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Builder surname(String val) {
-            surname = val;
-            return this;
-        }
-
-        public Builder phone(String val) {
-            phone = val;
-            return this;
-        }
-
-        public Builder addresses(Address val) {
-            addresses = val;
-            return this;
-        }
-
-        public Builder pets(List<Pet> val) {
-            pets = val;
-            return this;
-        }
-
-        public Builder appointments(List<Appointment> val) {
-            appointments = val;
-            return this;
-        }
-
-        public Client build() {
-            return new Client(this);
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -136,5 +90,51 @@ public class Client {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public static final class Builder {
+        private String name;
+        private String surname;
+        private String phone;
+        private Address addresses;
+        private List<Pet> pets;
+        private List<Appointment> appointments;
+
+        public Builder() {
+        }
+
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder surname(String val) {
+            surname = val;
+            return this;
+        }
+
+        public Builder phone(String val) {
+            phone = val;
+            return this;
+        }
+
+        public Builder addresses(Address val) {
+            addresses = val;
+            return this;
+        }
+
+        public Builder pets(List<Pet> val) {
+            pets = val;
+            return this;
+        }
+
+        public Builder appointments(List<Appointment> val) {
+            appointments = val;
+            return this;
+        }
+
+        public Client build() {
+            return new Client(this);
+        }
     }
 }

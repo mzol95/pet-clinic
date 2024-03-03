@@ -2,28 +2,49 @@ package pl.zoltowskimarcin.petclinic.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.repository.dao.AppointmentDao;
+import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
 public class AppointmentService {
 
-    //CREATE
-    public void saveAppointment() {
-        System.out.println("Saving appointment");
+    private final AppointmentDao appointmentDao;
+
+    public AppointmentService(AppointmentDao appointmentDao) {
+        this.appointmentDao = appointmentDao;
     }
 
-    //READ
-    public void getAppointment() {
-        System.out.println("Getting appointment");
+    public AppointmentDto saveAppointment(AppointmentDto appointmentDto) throws EntitySavingFailedException {
+        log.info("save " + appointmentDto + ")");
+        AppointmentDto resultAppointment = appointmentDao.saveAppointment(appointmentDto);
+        log.info("save(...) = " + resultAppointment);
+        return resultAppointment;
     }
 
-    //UPDATE
-    public void updateAppointment() {
-        System.out.println("Updating appointment");
+    public Optional<AppointmentDto> getAppointmentById(Long id) throws EntityReadingFailedException {
+        log.info("getAppointmentById with id: " + id);
+        Optional<AppointmentDto> resultAppointment = appointmentDao.getAppointmentById(id);
+        log.info("getAppointmentById(...) = " + resultAppointment);
+        return resultAppointment;
     }
 
-    //DELETE
-    public void deleteAppointment() {
-        System.out.println("Deleting appointment");
+    public AppointmentDto updateAppointment(Long id, AppointmentDto appointmentDto) throws EntityUpdatingFailedException {
+        log.info("updateAppointment with id: " + id + " and appointmentDto: " + appointmentDto);
+        AppointmentDto resultAppointment = appointmentDao.updateAppointment(id, appointmentDto);
+        log.info("updateAppointment(...) = " + resultAppointment);
+        return resultAppointment;
+    }
+
+    public void deleteAppointment(Long id) throws EntityDeletingFailedException {
+        log.info("deleteAppointment with id: " + id);
+        appointmentDao.deleteAppointment(id);
+        log.info("deleteAppointment(...) = void");
     }
 }

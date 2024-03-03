@@ -26,7 +26,7 @@ public class Doctor {
     @JoinColumn(name = "work_schedule_id")
     private WorkSchedule workSchedule;
 
-    public Doctor() {
+    Doctor() {
     }
 
     private Doctor(Builder builder) {
@@ -73,36 +73,36 @@ public class Doctor {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public WorkSchedule getWorkSchedule() {
-        return workSchedule;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public WorkSchedule getWorkSchedule() {
+        return workSchedule;
     }
 
     public void setWorkSchedule(WorkSchedule workSchedule) {
