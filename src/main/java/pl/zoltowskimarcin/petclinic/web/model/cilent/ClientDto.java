@@ -7,6 +7,7 @@ import lombok.ToString;
 import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
 import pl.zoltowskimarcin.petclinic.web.model.PetDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -15,6 +16,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class ClientDto {
 
+    private Long id;
     private String name;
     private String surname;
     private String street;
@@ -28,6 +30,7 @@ public class ClientDto {
     }
 
     private ClientDto(Builder builder) {
+        setId(builder.id);
         setName(builder.name);
         setSurname(builder.surname);
         setStreet(builder.street);
@@ -40,16 +43,22 @@ public class ClientDto {
 
 
     public static final class Builder {
+        private Long id;
         private String name;
         private String surname;
         private String street;
         private String city;
         private String postalCode;
         private String phone;
-        private List<PetDto> petDtos;
-        private List<AppointmentDto> appointmentDtos;
+        private List<PetDto> petDtos = new ArrayList<>();
+        private List<AppointmentDto> appointmentDtos = new ArrayList<>();
 
         public Builder() {
+        }
+
+        public Builder id(Long val) {
+            id = val;
+            return this;
         }
 
         public Builder name(String val) {
@@ -96,6 +105,4 @@ public class ClientDto {
             return new ClientDto(this);
         }
     }
-
-
 }

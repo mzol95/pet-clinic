@@ -147,4 +147,16 @@ public class Client {
             return new Client(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", phone='" + phone + '\'' +
+                ", addresses=" + addresses +
+                ", pets=" + pets +
+                ", appointments=" + appointments +
+                '}';
+    }
 }

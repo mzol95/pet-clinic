@@ -11,15 +11,16 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class LiteClientDto {
 
+    private Long id;
     private String name;
     private String surname;
 
     LiteClientDto() {
     }
 
-    public LiteClientDto(String name, String surname) {
+    public LiteClientDto(Long id, String name, String surname) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
     }
-
 }

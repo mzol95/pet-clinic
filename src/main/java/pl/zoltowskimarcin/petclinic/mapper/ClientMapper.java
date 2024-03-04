@@ -20,6 +20,7 @@ public class ClientMapper {
                     .addMapping(src -> src.getAddresses().getPostalCode(), ClientDto::setPostalCode);
 
             modelMapper.typeMap(ClientDto.class, Client.class)
+                    .addMappings(mapper -> mapper.skip(Client::setId))
                     .addMapping(ClientDto::getStreet, (entity, value) -> entity.getAddresses().setStreet((String) value))
                     .addMapping(ClientDto::getCity, (entity, value) -> entity.getAddresses().setCity((String) value))
                     .addMapping(ClientDto::getPostalCode, (entity, value) -> entity.getAddresses().setPostalCode((String) value));
