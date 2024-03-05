@@ -6,7 +6,9 @@ import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDao;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.util.Optional;
@@ -21,23 +23,28 @@ public class ClientService {
         this.clientDao = clientDao;
     }
 
-    public ClientDto saveClient(ClientDto clientDto) throws EntitySavingFailedException {
+    public BasicClientDto saveClient(ClientDto clientDto) throws EntitySavingFailedException {
         log.info("save " + clientDto + ")");
-        ClientDto resultClient = clientDao.saveClient(clientDto);
+        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.saveClient(clientDto), BasicClientDto.class);
         log.info("save(...) = " + resultClient);
         return resultClient;
     }
 
-    public Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException {
+    public BasicClientDto getClientById(Long id) throws EntityReadingFailedException {
         log.info("getClientById with id: " + id);
-        Optional<ClientDto> resultClient = clientDao.getClientById(id);
-        log.info("getClientById(...) = " + resultClient);
+        Optional<ClientDto> client = clientDao.getClientById(id);
+        BasicClientDto resultClient = null;
+
+        if (client.isPresent()) {
+            resultClient = ClientMapper.getMapper().map(client.get(), BasicClientDto.class);
+            log.info("getClientById(...) = " + resultClient);
+        }
         return resultClient;
     }
 
-    public ClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {
+    public BasicClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {
         log.info("updateClient with id: " + id + " and clientDto: " + clientDto);
-        ClientDto resultClient = clientDao.updateClient(id, clientDto);
+        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.updateClient(id, clientDto), BasicClientDto.class);
         log.info("updateClient(...) = " + resultClient);
         return resultClient;
     }

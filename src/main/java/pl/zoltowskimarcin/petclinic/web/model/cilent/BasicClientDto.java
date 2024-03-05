@@ -11,7 +11,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class BasicClientDto {
 
-    private Long id;
     private String name;
     private String surname;
     private String street;

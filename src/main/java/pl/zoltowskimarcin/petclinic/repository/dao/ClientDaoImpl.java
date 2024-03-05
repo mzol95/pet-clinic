@@ -54,10 +54,11 @@ public class ClientDaoImpl implements ClientDao {
         return ClientMapper.getMapper().map(clientToPersist, ClientDto.class);
     }
 
-
     @Override
     public Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException {
         log.info("getClientById with id: " + id);
+
+        ClientDto returnedClient = null;
 
         try (Connection connection = DataSource.getConnection();
              PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENT_BY_ID)) {
@@ -66,7 +67,7 @@ public class ClientDaoImpl implements ClientDao {
 
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    ClientDto returnedClient = new ClientDto.Builder()
+                    returnedClient = new ClientDto.Builder()
                             .id(resultSet.getLong("id"))
                             .name(resultSet.getString("name"))
                             .surname(resultSet.getString("surname"))
@@ -76,14 +77,13 @@ public class ClientDaoImpl implements ClientDao {
                             .postalCode(resultSet.getString("postal_code"))
                             .build();
                     log.info("get(...) = " + returnedClient);
-                    return Optional.ofNullable(returnedClient);
                 }
             }
         } catch (SQLException e) {
             log.error("Error while getting client", e);
             throw new EntityReadingFailedException("Error while getting client with id: " + id);
         }
-        return Optional.empty();
+        return Optional.ofNullable(returnedClient);
     }
 
     //READ ALL - JDBC
