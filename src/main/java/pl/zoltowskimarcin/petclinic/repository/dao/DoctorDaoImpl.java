@@ -92,7 +92,6 @@ public class DoctorDaoImpl implements DoctorDao {
         doctorToUpdate.setName(updatingDoctor.getName());
         doctorToUpdate.setSurname(updatingDoctor.getSurname());
         doctorToUpdate.setAppointments(updatingDoctor.getAppointments());
-        doctorToUpdate.setWorkSchedule(updatingDoctor.getWorkSchedule());
         doctorRepository.save(doctorToUpdate);
 
         log.info("update(...) = " + doctorToUpdate);

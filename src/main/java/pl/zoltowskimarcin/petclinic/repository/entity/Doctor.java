@@ -22,10 +22,6 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
 
-    @OneToOne
-    @JoinColumn(name = "work_schedule_id")
-    private WorkSchedule workSchedule;
-
     Doctor() {
     }
 
@@ -33,7 +29,6 @@ public class Doctor {
         name = builder.name;
         surname = builder.surname;
         appointments = builder.appointments;
-        workSchedule = builder.workSchedule;
     }
 
     public void addAppointment(Appointment appointment) {
@@ -101,19 +96,10 @@ public class Doctor {
         this.appointments = appointments;
     }
 
-    public WorkSchedule getWorkSchedule() {
-        return workSchedule;
-    }
-
-    public void setWorkSchedule(WorkSchedule workSchedule) {
-        this.workSchedule = workSchedule;
-    }
-
     public static final class Builder {
         private String name;
         private String surname;
         private List<Appointment> appointments;
-        private WorkSchedule workSchedule;
 
         public Builder() {
         }
@@ -130,11 +116,6 @@ public class Doctor {
 
         public Builder appointments(List<Appointment> val) {
             appointments = val;
-            return this;
-        }
-
-        public Builder workSchedule(WorkSchedule val) {
-            workSchedule = val;
             return this;
         }
 

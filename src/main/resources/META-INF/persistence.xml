@@ -12,8 +12,6 @@
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Pet</class>
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Address</class>
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Doctor</class>
-        <class>pl.zoltowskimarcin.petclinic.repository.entity.WorkDay</class>
-        <class>pl.zoltowskimarcin.petclinic.repository.entity.WorkSchedule</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="jakarta.persistence.jdbc.url"
