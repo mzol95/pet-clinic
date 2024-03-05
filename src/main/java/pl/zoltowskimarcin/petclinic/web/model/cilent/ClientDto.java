@@ -7,7 +7,6 @@ import lombok.ToString;
 import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
 import pl.zoltowskimarcin.petclinic.web.model.PetDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -50,8 +49,8 @@ public class ClientDto {
         private String city;
         private String postalCode;
         private String phone;
-        private List<PetDto> petDtos = new ArrayList<>();
-        private List<AppointmentDto> appointmentDtos = new ArrayList<>();
+        private List<PetDto> petDtos;
+        private List<AppointmentDto> appointmentDtos;
 
         public Builder() {
         }

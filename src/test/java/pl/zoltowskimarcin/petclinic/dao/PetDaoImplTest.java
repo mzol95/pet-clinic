@@ -30,7 +30,7 @@ class PetDaoImplTest {
     private static final String PET_UPDATE_NAME = "Update name";
     private static final LocalDate PET_UPDATE_DATE = LocalDate.of(3000, 2, 2);
     private static final Gender PET_UPDATE_GENDER_FEMALE = Gender.FEMALE;
-    private static final Long ID_1 = 1L;
+    private static final Long PET_ID_1 = 1L;
 
     @Autowired
     private PetDaoImpl petDao;
@@ -44,12 +44,15 @@ class PetDaoImplTest {
 
         petDto = new PetDto
                 .Builder()
+                .id(PET_ID_1)
                 .name(PET_TEST_NAME)
                 .dateOfBirth(PET_TEST_DATE)
                 .gender(PET_TEST_GENDER_MALE)
                 .build();
 
-        updatedPetDto = new PetDto.Builder()
+        updatedPetDto = new PetDto
+                .Builder()
+                .id(PET_ID_1)
                 .name(PET_UPDATE_NAME)
                 .dateOfBirth(PET_UPDATE_DATE)
                 .gender(PET_UPDATE_GENDER_FEMALE)
@@ -78,7 +81,7 @@ class PetDaoImplTest {
 
         //when
         PetDto persistedPet = petDao.savePet(petDto);
-        PetDto returnedPet = petDao.getPetById(ID_1)
+        PetDto returnedPet = petDao.getPetById(PET_ID_1)
                 .orElseThrow(EntityReadingFailedException::new);
 
         //then
@@ -91,7 +94,7 @@ class PetDaoImplTest {
 
         //when
         PetDto persistedPet = petDao.savePet(petDto);
-        PetDto updatedPet = petDao.updatePet(ID_1, updatedPetDto);
+        PetDto updatedPet = petDao.updatePet(PET_ID_1, updatedPetDto);
 
         //then
         Assertions.assertEquals(updatedPetDto, updatedPet, "Pet is not equal");
@@ -105,7 +108,7 @@ class PetDaoImplTest {
 
         //then
         Assertions.assertThrows(EntityUpdatingFailedException.class,
-                () -> petDao.updatePet(ID_1, updatedPetDto), "Exception not thrown");
+                () -> petDao.updatePet(PET_ID_1, updatedPetDto), "Exception not thrown");
     }
 
     @Test
@@ -114,8 +117,8 @@ class PetDaoImplTest {
 
         //when
         PetDto persistedPet = petDao.savePet(petDto);
-        petDao.deletePet(ID_1);
-        PetDto returnedPet = petDao.getPetById(ID_1).orElse(null);
+        petDao.deletePet(PET_ID_1);
+        PetDto returnedPet = petDao.getPetById(PET_ID_1).orElse(null);
 
         //then
         Assertions.assertNull(returnedPet, "Pet is not null");
@@ -126,7 +129,7 @@ class PetDaoImplTest {
         //given
 
         //when
-        Optional<PetDto> returnedPet = petDao.getPetById(ID_1);
+        Optional<PetDto> returnedPet = petDao.getPetById(PET_ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedPet, "Pet is not empty");
@@ -140,6 +143,6 @@ class PetDaoImplTest {
 
         //then
         Assertions.assertThrows(EntityDeletingFailedException.class,
-                () -> petDao.deletePet(ID_1), "Exception not thrown");
+                () -> petDao.deletePet(PET_ID_1), "Exception not thrown");
     }
 }

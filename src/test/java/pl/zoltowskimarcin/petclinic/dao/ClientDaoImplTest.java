@@ -14,7 +14,6 @@ import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDaoImpl;
 import pl.zoltowskimarcin.petclinic.repository.dao.PetDaoImpl;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.util.List;
@@ -61,7 +60,6 @@ class ClientDaoImplTest {
                 .postalCode(TEST_CLIENT_POSTAL_CODE)
                 .phone(TEST_CLIENT_PHONE)
                 .build();
-        //clientDto.setId(ID_1);
 
         updatedClientDto = new ClientDto.Builder()
                 .id(CLIENT_ID_1)
@@ -140,24 +138,14 @@ class ClientDaoImplTest {
     @Test
     void read_after_creating_new_client_should_return_newly_created_client() throws EntityException {
         //given
-        PetDto pet = new PetDto.Builder()
-                .id(1L)
-                .name("Test pet")
-                .dateOfBirth(null)
-                .build();
+
         //when
-
-        petDao.savePet(pet);
-        clientDto.getPetDtos().add(pet);
-
         ClientDto persistedClient = clientDao.saveClient(clientDto);
 
         ClientDto returnedClient = clientDao.getClientById(CLIENT_ID_1)
                 .orElseThrow(EntityReadingFailedException::new);
-
-        System.out.println(returnedClient);
         //then
-        //Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
+        Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
     }
 
     @Test

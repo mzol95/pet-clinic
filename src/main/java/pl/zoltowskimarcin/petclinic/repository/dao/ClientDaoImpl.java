@@ -16,7 +16,6 @@ import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 import pl.zoltowskimarcin.petclinic.repository.jpa.ClientRepository;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.sql.Connection;
@@ -55,43 +54,13 @@ public class ClientDaoImpl implements ClientDao {
         return ClientMapper.getMapper().map(clientToPersist, ClientDto.class);
     }
 
-    //READ - JDBC
-//    @Override
-//    public Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException {
-//        log.info("getClientById with id: " + id);
-//
-//        try (Connection connection = DataSource.getConnection();
-//             PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENTS_BY_ID)) {
-//
-//            readStatement.setLong(1, id);
-//
-//            try (ResultSet resultSet = readStatement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    ClientDto returnedClient = new ClientDto.Builder()
-//                            .name(resultSet.getString("name"))
-//                            .surname(resultSet.getString("surname"))
-//                            .phone(resultSet.getString("phone"))
-//                            .street(resultSet.getString("street"))
-//                            .city(resultSet.getString("city"))
-//                            .postalCode(resultSet.getString("postal_code"))
-//                            .build();
-//                    returnedClient.setId(resultSet.getLong("id"));
-//                    log.info("get(...) = " + returnedClient);
-//                    return Optional.ofNullable(returnedClient);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            log.error("Error while getting client", e);
-//            throw new EntityReadingFailedException("Error while getting client with id: " + id);
-//        }
-//        return Optional.empty();
-//    }
+
     @Override
     public Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException {
         log.info("getClientById with id: " + id);
 
         try (Connection connection = DataSource.getConnection();
-             PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENT_BY_ID_WITH_DETAILS)) {
+             PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENT_BY_ID)) {
 
             readStatement.setLong(1, id);
 
@@ -106,18 +75,7 @@ public class ClientDaoImpl implements ClientDao {
                             .city(resultSet.getString("city"))
                             .postalCode(resultSet.getString("postal_code"))
                             .build();
-
-                    //if (resultSet.getObject("pet_id") != null) {
-                        PetDto petDto = new PetDto.Builder()
-                                .id(resultSet.getLong("pet_id"))
-                                .name(resultSet.getString("pet_name"))
-                                //.dateOfBirth(resultSet.getDate("pet_date_of_birth").toLocalDate())
-                                .build();
-                        returnedClient.getPetDtos().add(petDto);
-                    //}
-
                     log.info("get(...) = " + returnedClient);
-
                     return Optional.ofNullable(returnedClient);
                 }
             }
@@ -127,7 +85,6 @@ public class ClientDaoImpl implements ClientDao {
         }
         return Optional.empty();
     }
-
 
     //READ ALL - JDBC
     @Override

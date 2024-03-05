@@ -65,6 +65,7 @@ public class PetDaoImpl implements PetDao {
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
                     PetDto returnedPet = new PetDto.Builder()
+                            .id(resultSet.getLong("id"))
                             .name(resultSet.getString("name"))
                             .dateOfBirth(resultSet.getDate("date_of_birth").toLocalDate())
                             .gender(Gender.valueOfLabel(resultSet.getInt("gender")))

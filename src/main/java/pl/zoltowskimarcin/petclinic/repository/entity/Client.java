@@ -151,12 +151,11 @@ public class Client {
     @Override
     public String toString() {
         return "Client{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", phone='" + phone + '\'' +
                 ", addresses=" + addresses +
-                ", pets=" + pets +
-                ", appointments=" + appointments +
                 '}';
     }
 }
