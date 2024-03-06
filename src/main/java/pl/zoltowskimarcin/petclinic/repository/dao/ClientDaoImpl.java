@@ -16,7 +16,9 @@ import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 import pl.zoltowskimarcin.petclinic.repository.jpa.ClientRepository;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.BasicAppointmentDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.pet.BasicPetDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,6 +88,70 @@ public class ClientDaoImpl implements ClientDao {
         return Optional.ofNullable(returnedClient);
     }
 
+    @Override
+    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws EntityReadingFailedException {
+        log.info("getClientByIdWithDetails with id: " + id);
+
+        ClientDto returnedClient = null;
+        List<BasicPetDto> pets = new ArrayList<>();
+        List<BasicAppointmentDto> appointments = new ArrayList<>();
+
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement readClientStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENT_BY_ID);
+             PreparedStatement readPetsStatement = connection.prepareStatement(JdbcQueries.FIND_PETS_BY_CLIENT_ID);
+             PreparedStatement readAppointmentsStatement = connection.prepareStatement(JdbcQueries.FIND_APPOINTMENTS_BY_CLIENT_ID);
+        ) {
+            readClientStatement.setLong(1, id);
+            readPetsStatement.setLong(1, id);
+            readAppointmentsStatement.setLong(1, id);
+
+            try (
+                    ResultSet resultPetsSet = readPetsStatement.executeQuery();
+                    ResultSet resultAppointmentsSet = readAppointmentsStatement.executeQuery();
+                    ResultSet resultClientsSet = readClientStatement.executeQuery();
+            ) {
+
+                while (!resultPetsSet.wasNull() && resultPetsSet.next()) {
+                    BasicPetDto pet = new BasicPetDto.Builder()
+                            .id(resultPetsSet.getLong("id"))
+                            .name(resultPetsSet.getString("name"))
+                            .dateOfBirth(resultPetsSet.getDate("date_of_birth").toLocalDate())
+                            .build();
+                    pets.add(pet);
+                }
+
+                while (!resultAppointmentsSet.wasNull() && resultAppointmentsSet.next()) {
+                    BasicAppointmentDto appointment = new BasicAppointmentDto.Builder()
+                            .id(resultAppointmentsSet.getLong("id"))
+                            .appointmentDate(resultAppointmentsSet.getTimestamp("appointment_date").toLocalDateTime())
+                            .finished(resultAppointmentsSet.getBoolean("finished"))
+                            .build();
+                    appointments.add(appointment);
+                }
+
+                while (resultClientsSet.next()) {
+                    returnedClient = new ClientDto.Builder()
+                            .id(resultClientsSet.getLong("id"))
+                            .name(resultClientsSet.getString("name"))
+                            .surname(resultClientsSet.getString("surname"))
+                            .phone(resultClientsSet.getString("phone"))
+                            .street(resultClientsSet.getString("street"))
+                            .city(resultClientsSet.getString("city"))
+                            .postalCode(resultClientsSet.getString("postal_code"))
+                            .petDtos(pets)
+                            .appointmentDtos(appointments)
+                            .build();
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error while getting client", e);
+            throw new EntityReadingFailedException("Error while getting client with id: " + id);
+        }
+
+        log.info("get(...) = " + returnedClient);
+        return Optional.ofNullable(returnedClient);
+    }
+
     //READ ALL - JDBC
     @Override
     public List<ClientDto> getAllClients() throws EntityReadingFailedException {
@@ -118,6 +184,7 @@ public class ClientDaoImpl implements ClientDao {
         }
         return returnedClients;
     }
+
 
     //UPDATE - Spring Data JPA
     @Override

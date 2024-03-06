@@ -4,8 +4,8 @@ public class JdbcQueries {
 
     //Client
     public static final String FIND_CLIENT_BY_ID = "SELECT * FROM clients WHERE id = ?";
-    public static final String FIND_PETS_BY_CLIENT_ID = "SELECT * FROM clients WHERE id = ?";
-    public static final String FIND_APPOINTMENTS_BY_CLIENT_ID = "SELECT * FROM clients WHERE id = ?";
+    public static final String FIND_PETS_BY_CLIENT_ID = "SELECT * FROM pets WHERE client_id = ?";
+    public static final String FIND_APPOINTMENTS_BY_CLIENT_ID = "SELECT * FROM appointments WHERE client_id = ?";
     public static final String FIND_ALL_CLIENTS = "SELECT * FROM clients";
 
     public static final String FIND_CLIENT_BY_ID_WITH_DETAILS =

@@ -16,7 +16,7 @@ import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Appointment;
 import pl.zoltowskimarcin.petclinic.repository.jpa.AppointmentRepository;
-import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

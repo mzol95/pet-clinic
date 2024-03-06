@@ -4,8 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.BasicAppointmentDto;
+import pl.zoltowskimarcin.petclinic.web.model.pet.BasicPetDto;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ public class ClientDto {
     private String city;
     private String postalCode;
     private String phone;
-    private List<PetDto> petDtos;
-    private List<AppointmentDto> appointmentDtos;
+    private List<BasicPetDto> petDtos;
+    private List<BasicAppointmentDto> appointmentDtos;
 
     private ClientDto() {
     }
@@ -49,8 +49,8 @@ public class ClientDto {
         private String city;
         private String postalCode;
         private String phone;
-        private List<PetDto> petDtos;
-        private List<AppointmentDto> appointmentDtos;
+        private List<BasicPetDto> petDtos;
+        private List<BasicAppointmentDto> appointmentDtos;
 
         public Builder() {
         }
@@ -90,12 +90,12 @@ public class ClientDto {
             return this;
         }
 
-        public Builder petDtos(List<PetDto> val) {
+        public Builder petDtos(List<BasicPetDto> val) {
             petDtos = val;
             return this;
         }
 
-        public Builder appointmentDtos(List<AppointmentDto> val) {
+        public Builder appointmentDtos(List<BasicAppointmentDto> val) {
             appointmentDtos = val;
             return this;
         }

@@ -17,7 +17,7 @@ import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Pet;
 import pl.zoltowskimarcin.petclinic.repository.jpa.PetRepository;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
+import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

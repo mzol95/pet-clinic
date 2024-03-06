@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pl.zoltowskimarcin.petclinic.repository.entity.Pet;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
+import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
 import java.time.LocalDate;
 

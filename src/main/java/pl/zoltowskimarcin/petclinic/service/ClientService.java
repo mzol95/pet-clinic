@@ -10,7 +10,10 @@ import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDao;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.LiteClientDto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,7 +33,7 @@ public class ClientService {
         return resultClient;
     }
 
-    public BasicClientDto getClientById(Long id) throws EntityReadingFailedException {
+    public Optional<BasicClientDto> getClientById(Long id) throws EntityReadingFailedException {
         log.info("getClientById with id: " + id);
         Optional<ClientDto> client = clientDao.getClientById(id);
         BasicClientDto resultClient = null;
@@ -39,7 +42,29 @@ public class ClientService {
             resultClient = ClientMapper.getMapper().map(client.get(), BasicClientDto.class);
             log.info("getClientById(...) = " + resultClient);
         }
-        return resultClient;
+        return Optional.ofNullable(resultClient);
+    }
+
+    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws EntityReadingFailedException {
+        log.info("getClientByIdWithDetails with id: " + id);
+        Optional<ClientDto> clientWithDetails  = clientDao.getClientByIdWithDetails(id);
+        log.info("getClientByIdWithDetails(...) = " + clientWithDetails);
+        return clientWithDetails;
+    }
+
+    public List<LiteClientDto> getAllClients() throws EntityReadingFailedException {
+        log.info("getAllClients()");
+        List<ClientDto> clients = clientDao.getAllClients();
+
+        List<LiteClientDto> mappedClients = new ArrayList<>();
+
+        clients.stream().forEach(client -> {
+            LiteClientDto mappedClient = ClientMapper.getMapper().map(client, LiteClientDto.class);
+            mappedClients.add(mappedClient);
+        });
+
+        log.info("getAllClients(...) = " + mappedClients);
+        return mappedClients;
     }
 
     public BasicClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {

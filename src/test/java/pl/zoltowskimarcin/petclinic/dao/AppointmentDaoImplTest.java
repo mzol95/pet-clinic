@@ -13,7 +13,7 @@ import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.AppointmentDaoImpl;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -44,6 +44,7 @@ class AppointmentDaoImplTest {
 
         updatedAppointmentDto = new AppointmentDto
                 .Builder()
+                .id(ID_1)
                 .appointmentDate(APPOINTMENT_UPDATED_DATE_TIME_3000_02_02)
                 .finished(APPOINTMENT_STATUS_TRUE)
                 .build();
@@ -60,6 +61,7 @@ class AppointmentDaoImplTest {
 
         //when
         AppointmentDto returnedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        appointmentDto.setId(ID_1);
 
         //then
         Assertions.assertEquals(appointmentDto, returnedAppointment, "Appointment is not equal");

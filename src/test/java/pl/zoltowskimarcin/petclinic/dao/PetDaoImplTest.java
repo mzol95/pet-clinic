@@ -14,7 +14,7 @@ import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.PetDaoImpl;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
+import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
 import java.time.LocalDate;
 import java.util.Optional;

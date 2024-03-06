@@ -15,6 +15,8 @@ public interface ClientDao {
 
     Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException;
 
+    Optional<ClientDto> getClientByIdWithDetails(Long id) throws EntityReadingFailedException;
+
     List<ClientDto> getAllClients() throws EntityReadingFailedException;
 
     ClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException;

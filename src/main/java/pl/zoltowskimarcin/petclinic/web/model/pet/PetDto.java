@@ -1,10 +1,11 @@
-package pl.zoltowskimarcin.petclinic.web.model;
+package pl.zoltowskimarcin.petclinic.web.model.pet;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.time.LocalDate;
