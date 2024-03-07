@@ -62,4 +62,14 @@ class PetMapperTest {
                 () -> Assertions.assertEquals(PET_TEST_GENDER_FEMALE, mappedGender)
         );
     }
+
+    @Test
+    void from() {
+        //given
+
+        //when
+
+        //then
+
+    }
 }

@@ -25,10 +25,3 @@ public class JdbcQueries {
     public static final String FIND_APPOINTMENT_BY_ID = "SELECT * FROM appointments WHERE id = ?";
 }
 
-
-//private String name;
-//private LocalDate dateOfBirth;
-//private Gender gender;
-//
-//private ClientDto clientDto;
-//private List<AppointmentDto> appointmentDtos;

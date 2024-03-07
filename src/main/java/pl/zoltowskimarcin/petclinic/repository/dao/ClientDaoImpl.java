@@ -87,7 +87,7 @@ public class ClientDaoImpl implements ClientDao {
         }
         return Optional.ofNullable(returnedClient);
     }
-
+//todo group by distinct
     @Override
     public Optional<ClientDto> getClientByIdWithDetails(Long id) throws EntityReadingFailedException {
         log.info("getClientByIdWithDetails with id: " + id);

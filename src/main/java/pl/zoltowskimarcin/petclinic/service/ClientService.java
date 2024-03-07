@@ -38,7 +38,7 @@ public class ClientService {
         Optional<ClientDto> client = clientDao.getClientById(id);
         BasicClientDto resultClient = null;
 
-        if (client.isPresent()) {
+        if (client.isPresent()) { //todo lepiej wyjatek
             resultClient = ClientMapper.getMapper().map(client.get(), BasicClientDto.class);
             log.info("getClientById(...) = " + resultClient);
         }

@@ -147,7 +147,7 @@ class ClientDaoImplTest {
         //then
         Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
     }
-
+//todo integracyjne
     @Test
     void after_updating_should_return_updated_client_entity() throws EntityException {
         //given

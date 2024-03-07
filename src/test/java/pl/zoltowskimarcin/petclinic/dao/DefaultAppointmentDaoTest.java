@@ -11,7 +11,7 @@ import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.repository.dao.AppointmentDaoImpl;
+import pl.zoltowskimarcin.petclinic.repository.dao.DefaultAppointmentDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @SpringBootTest
-class AppointmentDaoImplTest {
+class DefaultAppointmentDaoTest {
 
     private static final LocalDateTime APPOINTMENT_DATE_TIME_2000_01_01 = LocalDateTime.of(2000, 1, 1, 1, 1);
     private static final LocalDateTime APPOINTMENT_UPDATED_DATE_TIME_3000_02_02 = LocalDateTime.of(3000, 2, 2, 2, 2);
@@ -28,7 +28,7 @@ class AppointmentDaoImplTest {
     private static final long ID_1 = 1L;
 
     @Autowired
-    private AppointmentDaoImpl appointmentDao;
+    private DefaultAppointmentDao appointmentDao;
     private AppointmentDto appointmentDto;
     private AppointmentDto updatedAppointmentDto;
 

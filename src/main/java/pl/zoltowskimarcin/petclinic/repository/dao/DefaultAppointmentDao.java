@@ -26,11 +26,11 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
-public class AppointmentDaoImpl implements AppointmentDao {
+public class DefaultAppointmentDao implements AppointmentDao {
 
     private final AppointmentRepository appointmentRepository;
 
-    public AppointmentDaoImpl(AppointmentRepository appointmentRepository) {
+    public DefaultAppointmentDao(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
     }
 

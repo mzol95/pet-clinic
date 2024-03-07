@@ -24,7 +24,7 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments;
 
-    Client() {
+    public Client() {
     }
 
     private Client(Builder builder) {
