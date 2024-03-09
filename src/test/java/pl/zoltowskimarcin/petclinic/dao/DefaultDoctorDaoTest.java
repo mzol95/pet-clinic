@@ -18,7 +18,7 @@ import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 import java.util.Optional;
 
 @SpringBootTest
-class DoctorDaoImplTest {
+class DefaultDoctorDaoTest {
 
     private static final String DOCTOR_TEST_NAME = "Test name";
     private static final String DOCTOR_TEST_SURNAME = "Test surname";

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-class ClientDaoImplTest {
+class DefaultClientDaoTest {
 
     private static final String TEST_CLIENT_ADDRESS_STREET = "Test street";
     private static final String TEST_CLIENT_CITY = "Test city";

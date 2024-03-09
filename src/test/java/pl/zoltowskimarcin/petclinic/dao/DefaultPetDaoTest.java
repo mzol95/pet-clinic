@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @SpringBootTest
-class PetDaoImplTest {
+class DefaultPetDaoTest {
 
     private static final String PET_TEST_NAME = "Test name";
     private static final LocalDate PET_TEST_DATE = LocalDate.of(2000, 1, 1);
