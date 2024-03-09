@@ -5,10 +5,10 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
 import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
@@ -30,17 +30,17 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
-public class ClientDaoImpl implements ClientDao {
+public class DefaultClientDao implements ClientDao {
 
     private final ClientRepository clientRepository;
 
-    public ClientDaoImpl(ClientRepository clientRepository) {
+    public DefaultClientDao(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
     //CREATE - Native Hibernate
     @Override
-    public ClientDto saveClient(ClientDto client) throws EntitySavingFailedException {
+    public ClientDto saveClient(ClientDto client) throws ClientSavingFailedException {
         log.info("save " + client + ")");
         Client clientToPersist = ClientMapper.getMapper().map(client, Client.class);
 
@@ -50,14 +50,14 @@ public class ClientDaoImpl implements ClientDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             log.error("Error while saving client", e);
-            throw new EntitySavingFailedException("Error while saving client");
+            throw new ClientSavingFailedException("Error while saving client");
         }
         log.info("save(...) = " + clientToPersist);
         return ClientMapper.getMapper().map(clientToPersist, ClientDto.class);
     }
 
     @Override
-    public Optional<ClientDto> getClientById(Long id) throws EntityReadingFailedException {
+    public Optional<ClientDto> getClientById(Long id) throws ClientReadingFailedException {
         log.info("getClientById with id: " + id);
 
         ClientDto returnedClient = null;
@@ -83,13 +83,13 @@ public class ClientDaoImpl implements ClientDao {
             }
         } catch (SQLException e) {
             log.error("Error while getting client", e);
-            throw new EntityReadingFailedException("Error while getting client with id: " + id);
+            throw new ClientReadingFailedException("Error while getting client with id: " + id);
         }
         return Optional.ofNullable(returnedClient);
     }
 //todo group by distinct
     @Override
-    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws EntityReadingFailedException {
+    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws ClientReadingFailedException {
         log.info("getClientByIdWithDetails with id: " + id);
 
         ClientDto returnedClient = null;
@@ -145,7 +145,7 @@ public class ClientDaoImpl implements ClientDao {
             }
         } catch (SQLException e) {
             log.error("Error while getting client", e);
-            throw new EntityReadingFailedException("Error while getting client with id: " + id);
+            throw new ClientReadingFailedException("Error while getting client with id: " + id);
         }
 
         log.info("get(...) = " + returnedClient);
@@ -154,7 +154,7 @@ public class ClientDaoImpl implements ClientDao {
 
     //READ ALL - JDBC
     @Override
-    public List<ClientDto> getAllClients() throws EntityReadingFailedException {
+    public List<ClientDto> getAllClients() throws ClientReadingFailedException {
         log.info("getAllClients()");
 
         List<ClientDto> returnedClients = new ArrayList<>();
@@ -180,7 +180,7 @@ public class ClientDaoImpl implements ClientDao {
             }
         } catch (SQLException e) {
             log.error("Error while getting clients", e);
-            throw new EntityReadingFailedException("Error while getting clients");
+            throw new ClientReadingFailedException("Error while getting clients");
         }
         return returnedClients;
     }
@@ -189,11 +189,11 @@ public class ClientDaoImpl implements ClientDao {
     //UPDATE - Spring Data JPA
     @Override
     @Transactional
-    public ClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {
+    public ClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException {
         log.info("update " + clientDto + " with id: " + id);
 
         Client clientToUpdate = clientRepository.findById(id)
-                .orElseThrow(() -> new EntityUpdatingFailedException("Client with id: " + id + " doesn't exists in database."));
+                .orElseThrow(() -> new ClientUpdatingFailedException("Client with id: " + id + " doesn't exists in database."));
 
         clientToUpdate.setName(clientDto.getName());
         clientToUpdate.setSurname(clientDto.getSurname());
@@ -210,7 +210,7 @@ public class ClientDaoImpl implements ClientDao {
 
     //DELETE - JpaStandard
     @Override
-    public void deleteClient(Long id) throws EntityDeletingFailedException {
+    public void deleteClient(Long id) throws ClientDeletingFailedException {
         EntityManager entityManager = JpaStandardUtils.getEntityManager();
         entityManager.getTransaction().begin();
         Client clientToRemove = entityManager.find(Client.class, id);
@@ -218,7 +218,7 @@ public class ClientDaoImpl implements ClientDao {
         if (clientToRemove == null) {
             entityManager.close();
             log.error("Client with id: " + id + " doesn't exists in database.");
-            throw new EntityDeletingFailedException("Client with id: " + id + " doesn't exists in database.");
+            throw new ClientDeletingFailedException("Client with id: " + id + " doesn't exists in database.");
         }
 
         entityManager.remove(clientToRemove);

@@ -5,10 +5,10 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
 import pl.zoltowskimarcin.petclinic.mapper.AppointmentMapper;
@@ -36,7 +36,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
 
     //CREATE - Native Hibernate
     @Override
-    public AppointmentDto saveAppointment(AppointmentDto appointmentDto) throws EntitySavingFailedException {
+    public AppointmentDto saveAppointment(AppointmentDto appointmentDto) throws AppointmentSavingFailedException {
         log.info("save " + appointmentDto + ")");
         Appointment appointmentToPersist = AppointmentMapper.getMapper().map(appointmentDto, Appointment.class);
 
@@ -46,7 +46,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             log.error("Error while saving appointment", e);
-            throw new EntitySavingFailedException("Error while saving appointment");
+            throw new AppointmentSavingFailedException("Error while saving appointment");
         }
         log.info("save(...) = " + appointmentToPersist);
         return AppointmentMapper.getMapper().map(appointmentToPersist, AppointmentDto.class);
@@ -54,7 +54,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
 
     //READ - JDBC
     @Override
-    public Optional<AppointmentDto> getAppointmentById(Long id) throws EntityReadingFailedException {
+    public Optional<AppointmentDto> getAppointmentById(Long id) throws AppointmentReadingFailedException {
         log.info("getAppointmentById with id: " + id);
 
         try (Connection connection = DataSource.getConnection();
@@ -73,7 +73,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
             }
         } catch (SQLException e) {
             log.error("Error while getting client with id: " + id, e);
-            throw new EntityReadingFailedException("Error while getting client with id: " + id);
+            throw new AppointmentReadingFailedException("Error while getting client with id: " + id);
         }
         return Optional.empty();
     }
@@ -81,11 +81,11 @@ public class DefaultAppointmentDao implements AppointmentDao {
     //UPDATE - Spring Data JPA
     @Transactional
     @Override
-    public AppointmentDto updateAppointment(Long id, AppointmentDto appointmentDto) throws EntityUpdatingFailedException {
+    public AppointmentDto updateAppointment(Long id, AppointmentDto appointmentDto) throws AppointmentUpdatingFailedException {
         log.info("update " + appointmentDto + " with id: " + id);
 
         Appointment appointmentToUpdate = appointmentRepository.findById(id)
-                .orElseThrow(() -> new EntityUpdatingFailedException("Appointment with id: " + id + " doesn't exists in database."));
+                .orElseThrow(() -> new AppointmentUpdatingFailedException("Appointment with id: " + id + " doesn't exists in database."));
 
         Appointment updatingAppointment = AppointmentMapper.getMapper().map(appointmentDto, Appointment.class);
 
@@ -100,7 +100,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
 
     //DELETE - JpaStandard
     @Override
-    public void deleteAppointment(Long id) throws EntityDeletingFailedException {
+    public void deleteAppointment(Long id) throws AppointmentDeletingFailedException {
         EntityManager entityManager = JpaStandardUtils.getEntityManager();
         entityManager.getTransaction().begin();
 
@@ -109,7 +109,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
         if (appointmentToRemove == null) {
             entityManager.close();
             log.error("Appointment with id: " + id + " doesn't exists in database.");
-            throw new EntityDeletingFailedException("Appointment with id: " + id + " doesn't exists in database.");
+            throw new AppointmentDeletingFailedException("Appointment with id: " + id + " doesn't exists in database.");
         }
         entityManager.remove(appointmentToRemove);
         entityManager.getTransaction().commit();

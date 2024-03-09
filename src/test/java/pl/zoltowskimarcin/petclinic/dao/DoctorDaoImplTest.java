@@ -7,11 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.repository.dao.DoctorDaoImpl;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.repository.dao.DefaultDoctorDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 
@@ -27,7 +27,7 @@ class DoctorDaoImplTest {
     private static final Long ID_1 = 1L;
 
     @Autowired
-    private DoctorDaoImpl doctorDao;
+    private DefaultDoctorDao doctorDao;
 
     private DoctorDto doctorDto;
     private DoctorDto updatedDoctorDto;
@@ -54,7 +54,7 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void creating_new_doctor_should_return_created_doctor() throws EntityException {
+    void creating_new_doctor_should_return_created_doctor() throws DoctorException {
         //given
 
         //when
@@ -65,20 +65,20 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void read_after_creating_new_doctor_should_return_newly_created_doctor() throws EntityException {
+    void read_after_creating_new_doctor_should_return_newly_created_doctor() throws DoctorException {
         //given
 
         //when
         DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
         DoctorDto returnedDoctor = doctorDao.getDoctorById(ID_1)
-                .orElseThrow(EntityReadingFailedException::new);
+                .orElseThrow(DoctorReadingFailedException::new);
 
         //then
         Assertions.assertEquals(doctorDto, returnedDoctor, "Doctor is not equal");
     }
 
     @Test
-    void after_updating_should_return_updated_doctor_entity() throws EntityException {
+    void after_updating_should_return_updated_doctor_entity() throws DoctorException {
         //given
 
         //when
@@ -96,12 +96,12 @@ class DoctorDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityUpdatingFailedException.class,
+        Assertions.assertThrows(DoctorUpdatingFailedException.class,
                 () -> doctorDao.updateDoctor(ID_1, updatedDoctorDto), "Exception not thrown");
     }
 
     @Test
-    void after_deleting_doctor_should_return_null_when_try_to_read_deleted_entity() throws EntityException {
+    void after_deleting_doctor_should_return_null_when_try_to_read_deleted_entity() throws DoctorException {
         //given
 
         //when
@@ -114,7 +114,7 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws EntityReadingFailedException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws DoctorException {
         //given
 
         //when
@@ -131,7 +131,7 @@ class DoctorDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityDeletingFailedException.class,
+        Assertions.assertThrows(DoctorDeletingFailedException.class,
                 () -> doctorDao.deleteDoctor(ID_1), "Exception not thrown");
     }
 }

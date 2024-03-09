@@ -2,10 +2,10 @@ package pl.zoltowskimarcin.petclinic.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDao;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
@@ -26,14 +26,14 @@ public class ClientService {
         this.clientDao = clientDao;
     }
 
-    public BasicClientDto saveClient(ClientDto clientDto) throws EntitySavingFailedException {
+    public BasicClientDto saveClient(ClientDto clientDto) throws ClientSavingFailedException {
         log.info("save " + clientDto + ")");
         BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.saveClient(clientDto), BasicClientDto.class);
         log.info("save(...) = " + resultClient);
         return resultClient;
     }
 
-    public Optional<BasicClientDto> getClientById(Long id) throws EntityReadingFailedException {
+    public Optional<BasicClientDto> getClientById(Long id) throws ClientReadingFailedException {
         log.info("getClientById with id: " + id);
         Optional<ClientDto> client = clientDao.getClientById(id);
         BasicClientDto resultClient = null;
@@ -45,14 +45,14 @@ public class ClientService {
         return Optional.ofNullable(resultClient);
     }
 
-    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws EntityReadingFailedException {
+    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws ClientReadingFailedException {
         log.info("getClientByIdWithDetails with id: " + id);
-        Optional<ClientDto> clientWithDetails  = clientDao.getClientByIdWithDetails(id);
+        Optional<ClientDto> clientWithDetails = clientDao.getClientByIdWithDetails(id);
         log.info("getClientByIdWithDetails(...) = " + clientWithDetails);
         return clientWithDetails;
     }
 
-    public List<LiteClientDto> getAllClients() throws EntityReadingFailedException {
+    public List<LiteClientDto> getAllClients() throws ClientReadingFailedException {
         log.info("getAllClients()");
         List<ClientDto> clients = clientDao.getAllClients();
 
@@ -67,14 +67,14 @@ public class ClientService {
         return mappedClients;
     }
 
-    public BasicClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {
+    public BasicClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException {
         log.info("updateClient with id: " + id + " and clientDto: " + clientDto);
         BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.updateClient(id, clientDto), BasicClientDto.class);
         log.info("updateClient(...) = " + resultClient);
         return resultClient;
     }
 
-    public void deleteClient(Long id) throws EntityDeletingFailedException {
+    public void deleteClient(Long id) throws ClientDeletingFailedException {
         log.info("deleteClient with id: " + id);
         clientDao.deleteClient(id);
         log.info("deleteClient(...) = void");
