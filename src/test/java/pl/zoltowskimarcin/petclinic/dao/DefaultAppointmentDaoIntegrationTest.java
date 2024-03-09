@@ -7,19 +7,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentException;
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultAppointmentDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @SpringBootTest
-class DefaultAppointmentDaoTest {
+class DefaultAppointmentDaoIntegrationTest {
 
     private static final LocalDateTime APPOINTMENT_DATE_TIME_2000_01_01 = LocalDateTime.of(2000, 1, 1, 1, 1);
     private static final LocalDateTime APPOINTMENT_UPDATED_DATE_TIME_3000_02_02 = LocalDateTime.of(3000, 2, 2, 2, 2);
@@ -56,49 +53,43 @@ class DefaultAppointmentDaoTest {
     }
 
     @Test
-    void creating_new_appointment_should_return_created_appointment() throws AppointmentException {
+    void read_after_creating_new_appointment_should_return_newly_created_appointment() throws AppointmentException {
         //given
 
         //when
-        AppointmentDto returnedAppointment = appointmentDao.saveAppointment(appointmentDto);
-        appointmentDto.setId(ID_1);
+        AppointmentDto persistedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        AppointmentDto returnedAppointment = appointmentDao.getAppointmentById(ID_1)
+                .orElseThrow(AppointmentReadingFailedException::new);
 
         //then
         Assertions.assertEquals(appointmentDto, returnedAppointment, "Appointment is not equal");
     }
 
     @Test
-    void updating_not_existing_entity_should_throw_appointment_updating_failed_exception() {
+    void after_updating_should_return_updated_appointment_entity() throws AppointmentException {
         //given
 
         //when
+        AppointmentDto persistedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        AppointmentDto updatedAppointment = appointmentDao.updateAppointment(ID_1, updatedAppointmentDto);
 
         //then
-        Assertions.assertThrows(AppointmentUpdatingFailedException.class,
-                () -> appointmentDao.updateAppointment(ID_1, updatedAppointmentDto), "Exception not thrown");
+        Assertions.assertEquals(updatedAppointmentDto, updatedAppointment, "Appointment is not equal");
     }
 
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws AppointmentReadingFailedException {
+    void after_deleting_appointment_should_return_null_when_try_to_read_deleted_entity() throws AppointmentException {
         //given
 
         //when
-        Optional<AppointmentDto> returnedAppointment = appointmentDao.getAppointmentById(ID_1);
+        AppointmentDto persistedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        appointmentDao.deleteAppointment(ID_1);
+        AppointmentDto returnedAppointment = appointmentDao.getAppointmentById(ID_1).orElse(null);
 
         //then
-        Assertions.assertEquals(Optional.empty(), returnedAppointment, "Appointment is not empty");
+        Assertions.assertNull(returnedAppointment, "Appointment is not null");
     }
 
-    @Test
-    void deleting_not_existing_entity_should_throw_appointment_deleting_failed_exception() {
-        //given
-
-        //when
-
-        //then
-        Assertions.assertThrows(AppointmentDeletingFailedException.class,
-                () -> appointmentDao.deleteAppointment(ID_1), "Exception not thrown");
-    }
 
 }
