@@ -6,9 +6,14 @@ import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDao;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.LiteClientDto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,23 +26,50 @@ public class ClientService {
         this.clientDao = clientDao;
     }
 
-    public BasicClientDto saveClient(BasicClientDto basicClientDto) throws EntitySavingFailedException {
-        log.info("save " + basicClientDto + ")");
-        BasicClientDto resultClient = clientDao.saveClient(basicClientDto);
+    public BasicClientDto saveClient(ClientDto clientDto) throws EntitySavingFailedException {
+        log.info("save " + clientDto + ")");
+        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.saveClient(clientDto), BasicClientDto.class);
         log.info("save(...) = " + resultClient);
         return resultClient;
     }
 
     public Optional<BasicClientDto> getClientById(Long id) throws EntityReadingFailedException {
         log.info("getClientById with id: " + id);
-        Optional<BasicClientDto> resultClient = clientDao.getClientById(id);
-        log.info("getClientById(...) = " + resultClient);
-        return resultClient;
+        Optional<ClientDto> client = clientDao.getClientById(id);
+        BasicClientDto resultClient = null;
+
+        if (client.isPresent()) { //todo lepiej wyjatek
+            resultClient = ClientMapper.getMapper().map(client.get(), BasicClientDto.class);
+            log.info("getClientById(...) = " + resultClient);
+        }
+        return Optional.ofNullable(resultClient);
     }
 
-    public BasicClientDto updateClient(Long id, BasicClientDto basicClient) throws EntityUpdatingFailedException {
-        log.info("updateClient with id: " + id + " and basicClient: " + basicClient);
-        BasicClientDto resultClient = clientDao.updateClient(id, basicClient);
+    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws EntityReadingFailedException {
+        log.info("getClientByIdWithDetails with id: " + id);
+        Optional<ClientDto> clientWithDetails  = clientDao.getClientByIdWithDetails(id);
+        log.info("getClientByIdWithDetails(...) = " + clientWithDetails);
+        return clientWithDetails;
+    }
+
+    public List<LiteClientDto> getAllClients() throws EntityReadingFailedException {
+        log.info("getAllClients()");
+        List<ClientDto> clients = clientDao.getAllClients();
+
+        List<LiteClientDto> mappedClients = new ArrayList<>();
+
+        clients.stream().forEach(client -> {
+            LiteClientDto mappedClient = ClientMapper.getMapper().map(client, LiteClientDto.class);
+            mappedClients.add(mappedClient);
+        });
+
+        log.info("getAllClients(...) = " + mappedClients);
+        return mappedClients;
+    }
+
+    public BasicClientDto updateClient(Long id, ClientDto clientDto) throws EntityUpdatingFailedException {
+        log.info("updateClient with id: " + id + " and clientDto: " + clientDto);
+        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.updateClient(id, clientDto), BasicClientDto.class);
         log.info("updateClient(...) = " + resultClient);
         return resultClient;
     }

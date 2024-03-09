@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pl.zoltowskimarcin.petclinic.repository.entity.Pet;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
+import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
 import java.time.LocalDate;
 
@@ -61,5 +61,15 @@ class PetMapperTest {
                 () -> Assertions.assertEquals(PET_TEST_DATE_OF_BIRTH_01_01_2000, mappedDateOfBirth, "Date of birth is not mapped correctly"),
                 () -> Assertions.assertEquals(PET_TEST_GENDER_FEMALE, mappedGender)
         );
+    }
+
+    @Test
+    void from() {
+        //given
+
+        //when
+
+        //then
+
     }
 }

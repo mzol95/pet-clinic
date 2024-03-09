@@ -24,7 +24,7 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments;
 
-    Client() {
+    public Client() {
     }
 
     private Client(Builder builder) {
@@ -146,5 +146,16 @@ public class Client {
         public Client build() {
             return new Client(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", phone='" + phone + '\'' +
+                ", addresses=" + addresses +
+                '}';
     }
 }

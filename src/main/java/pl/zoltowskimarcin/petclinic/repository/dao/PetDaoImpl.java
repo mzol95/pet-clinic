@@ -17,7 +17,7 @@ import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Pet;
 import pl.zoltowskimarcin.petclinic.repository.jpa.PetRepository;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
-import pl.zoltowskimarcin.petclinic.web.model.PetDto;
+import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -65,6 +65,7 @@ public class PetDaoImpl implements PetDao {
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
                     PetDto returnedPet = new PetDto.Builder()
+                            .id(resultSet.getLong("id"))
                             .name(resultSet.getString("name"))
                             .dateOfBirth(resultSet.getDate("date_of_birth").toLocalDate())
                             .gender(Gender.valueOfLabel(resultSet.getInt("gender")))

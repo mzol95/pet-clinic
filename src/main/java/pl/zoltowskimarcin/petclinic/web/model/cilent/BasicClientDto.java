@@ -11,6 +11,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class BasicClientDto {
 
+    private Long id;
     private String name;
     private String surname;
     private String street;
@@ -22,6 +23,7 @@ public class BasicClientDto {
     }
 
     private BasicClientDto(Builder builder) {
+        setId(builder.id);
         setName(builder.name);
         setSurname(builder.surname);
         setStreet(builder.street);
@@ -32,6 +34,7 @@ public class BasicClientDto {
 
 
     public static final class Builder {
+        private Long id;
         private String name;
         private String surname;
         private String street;
@@ -40,6 +43,11 @@ public class BasicClientDto {
         private String phone;
 
         public Builder() {
+        }
+
+        public Builder id(Long val) {
+            id = val;
+            return this;
         }
 
         public Builder name(String val) {

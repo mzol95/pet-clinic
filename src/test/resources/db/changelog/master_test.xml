@@ -7,4 +7,5 @@
     <include file="0001_creating_tables_test.sql" relativeToChangelogFile="true"/>
     <include file="0002_changing_address_test.sql" relativeToChangelogFile="true"/>
     <include file="0003_changing_column_type_test.sql" relativeToChangelogFile="true"/>
+    <include file="0004_deleting_tables_test.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

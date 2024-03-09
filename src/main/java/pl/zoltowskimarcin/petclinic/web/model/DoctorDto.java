@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.util.List;
 
@@ -16,7 +17,6 @@ public class DoctorDto {
     private String name;
     private String surname;
     private List<AppointmentDto> appointmentDtos;
-    private WorkScheduleDto workScheduleDto;
 
     private DoctorDto() {
     }
@@ -25,7 +25,6 @@ public class DoctorDto {
         name = builder.name;
         surname = builder.surname;
         appointmentDtos = builder.appointmentDtos;
-        workScheduleDto = builder.workScheduleDto;
     }
 
 
@@ -33,7 +32,6 @@ public class DoctorDto {
         private String name;
         private String surname;
         private List<AppointmentDto> appointmentDtos;
-        private WorkScheduleDto workScheduleDto;
 
         public Builder() {
         }
@@ -50,11 +48,6 @@ public class DoctorDto {
 
         public Builder appointmentDtos(List<AppointmentDto> val) {
             appointmentDtos = val;
-            return this;
-        }
-
-        public Builder workScheduleDto(WorkScheduleDto val) {
-            workScheduleDto = val;
             return this;
         }
 

@@ -3,7 +3,7 @@ package pl.zoltowskimarcin.petclinic.mapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pl.zoltowskimarcin.petclinic.repository.entity.Appointment;
-import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.time.LocalDateTime;
 

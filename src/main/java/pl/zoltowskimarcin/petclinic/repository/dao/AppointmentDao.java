@@ -4,7 +4,7 @@ import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.util.Optional;
 

@@ -12,9 +12,9 @@ import pl.zoltowskimarcin.petclinic.exception.EntityException;
 import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDaoImpl;
+import pl.zoltowskimarcin.petclinic.repository.dao.PetDaoImpl;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.LiteClientDto;
+import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,21 +35,24 @@ class ClientDaoImplTest {
     private static final String UPDATE_TEST_CLIENT_NAME = "Update Test name";
     private static final String UPDATE_TEST_CLIENT_SURNAME = "Update Test surname";
     private static final String UPDATE_TEST_CLIENT_PHONE = "Update Test phone";
-    private static final long ID_1 = 1L;
+    private static final long CLIENT_ID_1 = 1L;
     private static final int LIST_SIZE_2 = 2;
     private static final int LIST_SIZE_0 = 0;
 
     @Autowired
     private ClientDaoImpl clientDao;
+    @Autowired
+    private PetDaoImpl petDao;
 
-    private BasicClientDto basicClientDto;
-    private BasicClientDto updatedBasicClientDto;
+    private ClientDto clientDto;
+    private ClientDto updatedClientDto;
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
 
-        basicClientDto = new BasicClientDto.Builder()
+        clientDto = new ClientDto.Builder()
+                .id(CLIENT_ID_1)
                 .name(TEST_CLIENT_NAME)
                 .surname(TEST_CLIENT_SURNAME)
                 .street(TEST_CLIENT_ADDRESS_STREET)
@@ -58,7 +61,8 @@ class ClientDaoImplTest {
                 .phone(TEST_CLIENT_PHONE)
                 .build();
 
-        updatedBasicClientDto = new BasicClientDto.Builder()
+        updatedClientDto = new ClientDto.Builder()
+                .id(CLIENT_ID_1)
                 .name(UPDATE_TEST_CLIENT_NAME)
                 .surname(UPDATE_TEST_CLIENT_SURNAME)
                 .street(UPDATE_TEST_CLIENT_ADDRESS_STREET)
@@ -79,23 +83,23 @@ class ClientDaoImplTest {
         //given
 
         //when
-        clientDao.saveClient(basicClientDto);
-        clientDao.saveClient(basicClientDto);
+        clientDao.saveClient(clientDto);
+        clientDao.saveClient(clientDto);
 
-        List<LiteClientDto> clients = clientDao.getAllClients();
+        List<ClientDto> clients = clientDao.getAllClients();
         int listSize = clients.size();
         //then
         Assertions.assertEquals(LIST_SIZE_2, listSize, "List size isn't equal 2");
     }
 
     @Test
-    void getting_clients_should_return_lite_client_dto() throws EntityException {
+    void getting_clients_should_return_client_dto() throws EntityException {
         //given
 
         //when
-        clientDao.saveClient(basicClientDto);
+        clientDao.saveClient(clientDto);
 
-        List<LiteClientDto> clients = clientDao.getAllClients();
+        List<ClientDto> clients = clientDao.getAllClients();
         String resultName = clients.get(0).getName();
         String resultSurname = clients.get(0).getSurname();
 
@@ -111,7 +115,7 @@ class ClientDaoImplTest {
         //given
 
         //when
-        List<LiteClientDto> clients = clientDao.getAllClients();
+        List<ClientDto> clients = clientDao.getAllClients();
         int listSize = clients.size();
 
         //then
@@ -124,10 +128,11 @@ class ClientDaoImplTest {
         //given
 
         //when
-        BasicClientDto returnedClient = clientDao.saveClient(basicClientDto);
+        ClientDto returnedClient = clientDao.saveClient(clientDto);
+        clientDto.setId(CLIENT_ID_1);
 
         //then
-        Assertions.assertEquals(basicClientDto, returnedClient, "Client is not equal");
+        Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
     }
 
     @Test
@@ -135,24 +140,25 @@ class ClientDaoImplTest {
         //given
 
         //when
-        BasicClientDto persistedClient = clientDao.saveClient(basicClientDto);
-        BasicClientDto returnedClient = clientDao.getClientById(ID_1)
+        ClientDto persistedClient = clientDao.saveClient(clientDto);
+
+        ClientDto returnedClient = clientDao.getClientById(CLIENT_ID_1)
                 .orElseThrow(EntityReadingFailedException::new);
-
         //then
-        Assertions.assertEquals(basicClientDto, returnedClient, "Client is not equal");
+        Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
     }
-
+//todo integracyjne
     @Test
     void after_updating_should_return_updated_client_entity() throws EntityException {
         //given
 
         //when
-        BasicClientDto persistedClient = clientDao.saveClient(basicClientDto);
-        BasicClientDto updatedClient = clientDao.updateClient(ID_1, updatedBasicClientDto);
+        ClientDto persistedClient = clientDao.saveClient(clientDto);
+
+        ClientDto updatedClient = clientDao.updateClient(CLIENT_ID_1, updatedClientDto);
 
         //then
-        Assertions.assertEquals(updatedBasicClientDto, updatedClient, "Client is not equal");
+        Assertions.assertEquals(updatedClientDto, updatedClient, "Client is not equal");
     }
 
     @Test
@@ -163,7 +169,7 @@ class ClientDaoImplTest {
 
         //then
         Assertions.assertThrows(EntityUpdatingFailedException.class,
-                () -> clientDao.updateClient(ID_1, updatedBasicClientDto), "Exception not thrown");
+                () -> clientDao.updateClient(CLIENT_ID_1, updatedClientDto), "Exception not thrown");
     }
 
     @Test
@@ -171,9 +177,9 @@ class ClientDaoImplTest {
         //given
 
         //when
-        BasicClientDto persistedClient = clientDao.saveClient(basicClientDto);
-        clientDao.deleteClient(ID_1);
-        BasicClientDto returnedClient = clientDao.getClientById(ID_1).orElse(null);
+        ClientDto persistedClient = clientDao.saveClient(clientDto);
+        clientDao.deleteClient(CLIENT_ID_1);
+        ClientDto returnedClient = clientDao.getClientById(CLIENT_ID_1).orElse(null);
 
         //then
         Assertions.assertNull(returnedClient, "Client is not null");
@@ -184,7 +190,7 @@ class ClientDaoImplTest {
         //given
 
         //when
-        Optional<BasicClientDto> returnedClient = clientDao.getClientById(ID_1);
+        Optional<ClientDto> returnedClient = clientDao.getClientById(CLIENT_ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedClient, "Client is not empty");
@@ -198,7 +204,7 @@ class ClientDaoImplTest {
 
         //then
         Assertions.assertThrows(EntityDeletingFailedException.class,
-                () -> clientDao.deleteClient(ID_1), "Exception not thrown");
+                () -> clientDao.deleteClient(CLIENT_ID_1), "Exception not thrown");
     }
 
 }

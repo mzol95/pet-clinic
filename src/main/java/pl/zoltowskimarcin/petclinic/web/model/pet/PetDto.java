@@ -1,10 +1,11 @@
-package pl.zoltowskimarcin.petclinic.web.model;
+package pl.zoltowskimarcin.petclinic.web.model.pet;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class PetDto {
 
+    private Long id;
     private String name;
     private LocalDate dateOfBirth;
     private Gender gender;
@@ -27,15 +29,17 @@ public class PetDto {
     }
 
     private PetDto(Builder builder) {
-        name = builder.name;
-        dateOfBirth = builder.dateOfBirth;
-        gender = builder.gender;
-        clientDto = builder.clientDto;
-        appointmentDtos = builder.appointmentDtos;
+        setId(builder.id);
+        setName(builder.name);
+        setDateOfBirth(builder.dateOfBirth);
+        setGender(builder.gender);
+        setClientDto(builder.clientDto);
+        setAppointmentDtos(builder.appointmentDtos);
     }
 
 
     public static final class Builder {
+        private Long id;
         private String name;
         private LocalDate dateOfBirth;
         private Gender gender;
@@ -43,6 +47,11 @@ public class PetDto {
         private List<AppointmentDto> appointmentDtos;
 
         public Builder() {
+        }
+
+        public Builder id(Long val) {
+            id = val;
+            return this;
         }
 
         public Builder name(String val) {

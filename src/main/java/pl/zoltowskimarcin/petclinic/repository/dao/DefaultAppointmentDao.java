@@ -16,7 +16,7 @@ import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Appointment;
 import pl.zoltowskimarcin.petclinic.repository.jpa.AppointmentRepository;
-import pl.zoltowskimarcin.petclinic.web.model.AppointmentDto;
+import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,11 +26,11 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
-public class AppointmentDaoImpl implements AppointmentDao {
+public class DefaultAppointmentDao implements AppointmentDao {
 
     private final AppointmentRepository appointmentRepository;
 
-    public AppointmentDaoImpl(AppointmentRepository appointmentRepository) {
+    public DefaultAppointmentDao(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
     }
 

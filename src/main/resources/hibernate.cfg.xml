@@ -19,8 +19,6 @@
         <property name="cache.provider_class">org.hibernate.cache.internal.DisabledCaching</property>
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
-        <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.WorkSchedule"/>
-        <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.WorkDay"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Doctor"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Client"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Pet"/>
