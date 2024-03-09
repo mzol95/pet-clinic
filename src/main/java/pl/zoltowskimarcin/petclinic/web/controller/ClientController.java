@@ -3,10 +3,10 @@ package pl.zoltowskimarcin.petclinic.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.service.ClientService;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
@@ -29,7 +29,7 @@ public class ClientController {
     }
 
     @PostMapping()
-    public ResponseEntity<BasicClientDto> create(@RequestBody ClientDto client) throws EntitySavingFailedException {
+    public ResponseEntity<BasicClientDto> create(@RequestBody ClientDto client) throws ClientSavingFailedException {
         log.info("create(" + client + ")");
         BasicClientDto createdClient = clientService.saveClient(client);
         log.info("create(...) = " + createdClient);
@@ -37,7 +37,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BasicClientDto> readById(@PathVariable Long id) throws EntityReadingFailedException {
+    public ResponseEntity<BasicClientDto> readById(@PathVariable Long id) throws ClientReadingFailedException {
         log.info("read(id: " + id + ")");
         Optional<BasicClientDto> readClient = clientService.getClientById(id);
 
@@ -51,7 +51,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}/details")
-    public ResponseEntity<ClientDto> readByIdWithDetails(@PathVariable Long id) throws EntityReadingFailedException {
+    public ResponseEntity<ClientDto> readByIdWithDetails(@PathVariable Long id) throws ClientReadingFailedException {
         log.info("read(id: " + id + ")");
         Optional<ClientDto> readClient = clientService.getClientByIdWithDetails(id);
 
@@ -65,7 +65,7 @@ public class ClientController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<LiteClientDto>> readAllClients() throws EntityReadingFailedException {
+    public ResponseEntity<List<LiteClientDto>> readAllClients() throws ClientReadingFailedException {
         log.info("readAllClients()");
         List<LiteClientDto> clients = clientService.getAllClients();
         log.info("readAllClients(...) = " + clients);
@@ -73,7 +73,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BasicClientDto> update(@PathVariable Long id, ClientDto client) throws EntityUpdatingFailedException {
+    public ResponseEntity<BasicClientDto> update(@PathVariable Long id, ClientDto client) throws ClientUpdatingFailedException {
         log.info("update(" + client + ")");
         BasicClientDto resultClient = clientService.updateClient(id, client);
         log.info("update(...) = " + resultClient);
@@ -81,7 +81,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) throws EntityDeletingFailedException {
+    public ResponseEntity delete(@PathVariable Long id) throws ClientDeletingFailedException {
         log.info("delete(id: " + id + ")");
         clientService.deleteClient(id);
         log.info("delete(...) succeed");

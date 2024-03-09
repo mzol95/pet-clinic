@@ -7,12 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.repository.dao.ClientDaoImpl;
-import pl.zoltowskimarcin.petclinic.repository.dao.PetDaoImpl;
+import pl.zoltowskimarcin.petclinic.repository.dao.DefaultClientDao;
+import pl.zoltowskimarcin.petclinic.repository.dao.DefaultPetDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
@@ -40,9 +36,9 @@ class ClientDaoImplTest {
     private static final int LIST_SIZE_0 = 0;
 
     @Autowired
-    private ClientDaoImpl clientDao;
+    private DefaultClientDao clientDao;
     @Autowired
-    private PetDaoImpl petDao;
+    private DefaultPetDao petDao;
 
     private ClientDto clientDto;
     private ClientDto updatedClientDto;

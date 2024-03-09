@@ -2,10 +2,10 @@ package pl.zoltowskimarcin.petclinic.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DoctorDao;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 
@@ -22,7 +22,7 @@ public class DoctorService {
     }
 
     //CREATE
-    public DoctorDto saveDoctor(DoctorDto doctorDto) throws EntitySavingFailedException {
+    public DoctorDto saveDoctor(DoctorDto doctorDto) throws DoctorSavingFailedException {
         log.info("saveDoctor(" + doctorDto + ")");
         DoctorDto resultDoctor = doctorDao.saveDoctor(doctorDto);
         log.info("saveDoctor(...) = " + resultDoctor);
@@ -30,7 +30,7 @@ public class DoctorService {
     }
 
     //READ
-    public Optional<DoctorDto> getDoctorById(Long id) throws EntityReadingFailedException {
+    public Optional<DoctorDto> getDoctorById(Long id) throws DoctorReadingFailedException {
         log.info("getDoctorById with id: " + id);
         Optional<DoctorDto> resultDoctor = doctorDao.getDoctorById(id);
         log.info("getDoctorById(...) = " + resultDoctor);
@@ -38,7 +38,7 @@ public class DoctorService {
     }
 
     //UPDATE
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) throws EntityUpdatingFailedException {
+    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) throws DoctorUpdatingFailedException {
         log.info("updateDoctor with id: " + id + " and doctorDto: " + doctorDto);
         DoctorDto resultDoctor = doctorDao.updateDoctor(id, doctorDto);
         log.info("updateDoctor(...) = " + resultDoctor);
@@ -46,7 +46,7 @@ public class DoctorService {
     }
 
     //DELETE
-    public void deleteDoctor(Long id) throws EntityDeletingFailedException {
+    public void deleteDoctor(Long id) throws DoctorDeletingFailedException {
         log.info("deleteDoctor with id: " + id);
         doctorDao.deleteDoctor(id);
         log.info("deleteDoctor(...) = void");

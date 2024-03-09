@@ -7,11 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.repository.dao.PetDaoImpl;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.repository.dao.DefaultPetDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
 import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
@@ -33,7 +33,7 @@ class PetDaoImplTest {
     private static final Long PET_ID_1 = 1L;
 
     @Autowired
-    private PetDaoImpl petDao;
+    private DefaultPetDao petDao;
 
     private PetDto petDto;
     private PetDto updatedPetDto;
@@ -65,7 +65,7 @@ class PetDaoImplTest {
     }
 
     @Test
-    void creating_new_pet_should_return_created_pet() throws EntityException {
+    void creating_new_pet_should_return_created_pet() throws PetException {
         //given
 
         //when
@@ -76,20 +76,20 @@ class PetDaoImplTest {
     }
 
     @Test
-    void read_after_creating_new_pet_should_return_newly_created_pet() throws EntityException {
+    void read_after_creating_new_pet_should_return_newly_created_pet() throws PetException {
         //given
 
         //when
         PetDto persistedPet = petDao.savePet(petDto);
         PetDto returnedPet = petDao.getPetById(PET_ID_1)
-                .orElseThrow(EntityReadingFailedException::new);
+                .orElseThrow(PetReadingFailedException::new);
 
         //then
         Assertions.assertEquals(petDto, returnedPet, "Pet is not equal");
     }
 
     @Test
-    void after_updating_should_return_updated_pet_entity() throws EntityException {
+    void after_updating_should_return_updated_pet_entity() throws PetException {
         //given
 
         //when
@@ -107,12 +107,12 @@ class PetDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityUpdatingFailedException.class,
+        Assertions.assertThrows(PetUpdatingFailedException.class,
                 () -> petDao.updatePet(PET_ID_1, updatedPetDto), "Exception not thrown");
     }
 
     @Test
-    void after_deleting_pet_should_return_null_when_try_to_read_deleted_entity() throws EntityException {
+    void after_deleting_pet_should_return_null_when_try_to_read_deleted_entity() throws PetException {
         //given
 
         //when
@@ -125,7 +125,7 @@ class PetDaoImplTest {
     }
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws EntityReadingFailedException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws PetException {
         //given
 
         //when
@@ -142,7 +142,7 @@ class PetDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityDeletingFailedException.class,
+        Assertions.assertThrows(PetDeletingFailedException.class,
                 () -> petDao.deletePet(PET_ID_1), "Exception not thrown");
     }
 }

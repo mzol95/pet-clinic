@@ -7,11 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.repository.dao.DoctorDaoImpl;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorException;
+import pl.zoltowskimarcin.petclinic.repository.dao.DefaultDoctorDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 
@@ -27,7 +24,7 @@ class DoctorDaoImplTest {
     private static final Long ID_1 = 1L;
 
     @Autowired
-    private DoctorDaoImpl doctorDao;
+    private DefaultDoctorDao doctorDao;
 
     private DoctorDto doctorDto;
     private DoctorDto updatedDoctorDto;
@@ -54,7 +51,7 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void creating_new_doctor_should_return_created_doctor() throws EntityException {
+    void creating_new_doctor_should_return_created_doctor() throws DoctorException {
         //given
 
         //when
@@ -65,7 +62,7 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void read_after_creating_new_doctor_should_return_newly_created_doctor() throws EntityException {
+    void read_after_creating_new_doctor_should_return_newly_created_doctor() throws DoctorException {
         //given
 
         //when
@@ -78,7 +75,7 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void after_updating_should_return_updated_doctor_entity() throws EntityException {
+    void after_updating_should_return_updated_doctor_entity() throws DoctorException {
         //given
 
         //when
@@ -101,7 +98,7 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void after_deleting_doctor_should_return_null_when_try_to_read_deleted_entity() throws EntityException {
+    void after_deleting_doctor_should_return_null_when_try_to_read_deleted_entity() throws DoctorException {
         //given
 
         //when
@@ -114,7 +111,7 @@ class DoctorDaoImplTest {
     }
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws EntityReadingFailedException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws DoctorException {
         //given
 
         //when

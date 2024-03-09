@@ -5,10 +5,10 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
 import pl.zoltowskimarcin.petclinic.mapper.PetMapper;
@@ -27,17 +27,17 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
-public class PetDaoImpl implements PetDao {
+public class DefaultPetDao implements PetDao {
 
     private final PetRepository petRepository;
 
-    public PetDaoImpl(PetRepository petRepository) {
+    public DefaultPetDao(PetRepository petRepository) {
         this.petRepository = petRepository;
     }
 
     //CREATE - Native Hibernate
     @Override
-    public PetDto savePet(PetDto petDto) throws EntitySavingFailedException {
+    public PetDto savePet(PetDto petDto) throws PetSavingFailedException {
         log.info("save " + petDto + ")");
         Pet petToPersist = PetMapper.getMapper().map(petDto, Pet.class);
 
@@ -47,7 +47,7 @@ public class PetDaoImpl implements PetDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             log.error("Error while saving pet", e);
-            throw new EntitySavingFailedException("Error while saving pet");
+            throw new PetSavingFailedException("Error while saving pet");
         }
         log.info("save(...) = " + petToPersist);
         return PetMapper.getMapper().map(petToPersist, PetDto.class);
@@ -55,7 +55,7 @@ public class PetDaoImpl implements PetDao {
 
     //READ - JDBC
     @Override
-    public Optional<PetDto> getPetById(Long id) throws EntityReadingFailedException {
+    public Optional<PetDto> getPetById(Long id) throws PetReadingFailedException {
         log.info("getPetById with id: " + id);
 
         try (Connection connection = DataSource.getConnection();
@@ -76,7 +76,7 @@ public class PetDaoImpl implements PetDao {
             }
         } catch (SQLException e) {
             log.error("Error while getting client with id: " + id, e);
-            throw new EntityReadingFailedException("Error while getting client with id: " + id);
+            throw new PetReadingFailedException("Error while getting client with id: " + id);
         }
         return Optional.empty();
     }
@@ -84,11 +84,11 @@ public class PetDaoImpl implements PetDao {
     //UPDATE - Spring Data JPA
     @Transactional
     @Override
-    public PetDto updatePet(Long id, PetDto petDto) throws EntityUpdatingFailedException {
+    public PetDto updatePet(Long id, PetDto petDto) throws PetUpdatingFailedException {
         log.info("update " + petDto + " with id: " + id);
 
         Pet petToUpdate = petRepository.findById(id)
-                .orElseThrow(() -> new EntityUpdatingFailedException("Pet with id: " + id + " doesn't exists in database."));
+                .orElseThrow(() -> new PetUpdatingFailedException("Pet with id: " + id + " doesn't exists in database."));
 
         Pet updatingPet = PetMapper.getMapper().map(petDto, Pet.class);
 
@@ -105,7 +105,7 @@ public class PetDaoImpl implements PetDao {
 
     //DELETE - JpaStandard
     @Override
-    public void deletePet(Long id) throws EntityDeletingFailedException {
+    public void deletePet(Long id) throws PetDeletingFailedException {
         EntityManager entityManager = JpaStandardUtils.getEntityManager();
         entityManager.getTransaction().begin();
 
@@ -114,7 +114,7 @@ public class PetDaoImpl implements PetDao {
         if (petToRemove == null) {
             entityManager.close();
             log.error("Pet with id: " + id + " doesn't exists in database.");
-            throw new EntityDeletingFailedException("Pet with id: " + id + " doesn't exists in database.");
+            throw new PetDeletingFailedException("Pet with id: " + id + " doesn't exists in database.");
         }
         entityManager.remove(petToRemove);
         entityManager.getTransaction().commit();

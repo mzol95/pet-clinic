@@ -2,10 +2,10 @@ package pl.zoltowskimarcin.petclinic.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntitySavingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetSavingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.PetDao;
 import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
@@ -22,7 +22,7 @@ public class PetService {
     }
 
     //CREATE
-    public PetDto savePet(PetDto petDto) throws EntitySavingFailedException {
+    public PetDto savePet(PetDto petDto) throws PetSavingFailedException {
         log.info("savePet(" + petDto + ")");
         PetDto resultPet = petDao.savePet(petDto);
         log.info("savePet(...) = " + resultPet);
@@ -30,7 +30,7 @@ public class PetService {
     }
 
     //READ
-    public Optional<PetDto> getPetById(Long id) throws EntityReadingFailedException {
+    public Optional<PetDto> getPetById(Long id) throws PetReadingFailedException {
         log.info("getPetById with id: " + id);
         Optional<PetDto> resultPet = petDao.getPetById(id);
         log.info("getPetById(...) = " + resultPet);
@@ -38,7 +38,7 @@ public class PetService {
     }
 
     //UPDATE
-    public PetDto updatePet(Long id, PetDto petDto) throws EntityUpdatingFailedException {
+    public PetDto updatePet(Long id, PetDto petDto) throws PetUpdatingFailedException {
         log.info("updatePet with id: " + id + " and petDto: " + petDto);
         PetDto resultPet = petDao.updatePet(id, petDto);
         log.info("updatePet(...) = " + resultPet);
@@ -46,7 +46,7 @@ public class PetService {
     }
 
     //DELETE
-    public void deletePet(Long id) throws EntityDeletingFailedException {
+    public void deletePet(Long id) throws PetDeletingFailedException {
         log.info("deletePet with id: " + id);
         petDao.deletePet(id);
         log.info("deletePet(...) = void");

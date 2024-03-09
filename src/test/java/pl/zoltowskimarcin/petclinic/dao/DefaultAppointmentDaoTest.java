@@ -7,10 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.zoltowskimarcin.petclinic.exception.EntityDeletingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityException;
-import pl.zoltowskimarcin.petclinic.exception.EntityReadingFailedException;
-import pl.zoltowskimarcin.petclinic.exception.EntityUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultAppointmentDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
@@ -56,7 +56,7 @@ class DefaultAppointmentDaoTest {
     }
 
     @Test
-    void creating_new_appointment_should_return_created_appointment() throws EntityException {
+    void creating_new_appointment_should_return_created_appointment() throws AppointmentException {
         //given
 
         //when
@@ -68,20 +68,20 @@ class DefaultAppointmentDaoTest {
     }
 
     @Test
-    void read_after_creating_new_appointment_should_return_newly_created_appointment() throws EntityException {
+    void read_after_creating_new_appointment_should_return_newly_created_appointment() throws AppointmentException {
         //given
 
         //when
         AppointmentDto persistedAppointment = appointmentDao.saveAppointment(appointmentDto);
         AppointmentDto returnedAppointment = appointmentDao.getAppointmentById(ID_1)
-                .orElseThrow(EntityReadingFailedException::new);
+                .orElseThrow(AppointmentReadingFailedException::new);
 
         //then
         Assertions.assertEquals(appointmentDto, returnedAppointment, "Appointment is not equal");
     }
 
     @Test
-    void after_updating_should_return_updated_appointment_entity() throws EntityException {
+    void after_updating_should_return_updated_appointment_entity() throws AppointmentException {
         //given
 
         //when
@@ -99,12 +99,12 @@ class DefaultAppointmentDaoTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityUpdatingFailedException.class,
+        Assertions.assertThrows(AppointmentUpdatingFailedException.class,
                 () -> appointmentDao.updateAppointment(ID_1, updatedAppointmentDto), "Exception not thrown");
     }
 
     @Test
-    void after_deleting_appointment_should_return_null_when_try_to_read_deleted_entity() throws EntityException {
+    void after_deleting_appointment_should_return_null_when_try_to_read_deleted_entity() throws AppointmentException {
         //given
 
         //when
@@ -117,7 +117,7 @@ class DefaultAppointmentDaoTest {
     }
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws EntityReadingFailedException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws AppointmentReadingFailedException {
         //given
 
         //when
@@ -134,7 +134,7 @@ class DefaultAppointmentDaoTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityDeletingFailedException.class,
+        Assertions.assertThrows(AppointmentDeletingFailedException.class,
                 () -> appointmentDao.deleteAppointment(ID_1), "Exception not thrown");
     }
 
