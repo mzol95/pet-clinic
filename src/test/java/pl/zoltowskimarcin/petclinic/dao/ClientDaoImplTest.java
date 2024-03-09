@@ -7,6 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultClientDao;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultPetDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
@@ -75,7 +79,7 @@ class ClientDaoImplTest {
 
 
     @Test
-    void getting_all_clients_should_return_all_clients_list() throws EntityException {
+    void getting_all_clients_should_return_all_clients_list() throws ClientException {
         //given
 
         //when
@@ -89,7 +93,7 @@ class ClientDaoImplTest {
     }
 
     @Test
-    void getting_clients_should_return_client_dto() throws EntityException {
+    void getting_clients_should_return_client_dto() throws ClientException {
         //given
 
         //when
@@ -107,7 +111,7 @@ class ClientDaoImplTest {
     }
 
     @Test
-    void getting_empty_table_should_return_empty_list() throws EntityReadingFailedException {
+    void getting_empty_table_should_return_empty_list() throws ClientReadingFailedException {
         //given
 
         //when
@@ -120,7 +124,7 @@ class ClientDaoImplTest {
 
 
     @Test
-    void creating_new_client_should_return_created_client() throws EntityException {
+    void creating_new_client_should_return_created_client() throws ClientException {
         //given
 
         //when
@@ -132,20 +136,20 @@ class ClientDaoImplTest {
     }
 
     @Test
-    void read_after_creating_new_client_should_return_newly_created_client() throws EntityException {
+    void read_after_creating_new_client_should_return_newly_created_client() throws ClientException {
         //given
 
         //when
         ClientDto persistedClient = clientDao.saveClient(clientDto);
 
         ClientDto returnedClient = clientDao.getClientById(CLIENT_ID_1)
-                .orElseThrow(EntityReadingFailedException::new);
+                .orElseThrow(ClientReadingFailedException::new);
         //then
         Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
     }
 //todo integracyjne
     @Test
-    void after_updating_should_return_updated_client_entity() throws EntityException {
+    void after_updating_should_return_updated_client_entity() throws ClientException {
         //given
 
         //when
@@ -164,12 +168,12 @@ class ClientDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityUpdatingFailedException.class,
+        Assertions.assertThrows(ClientUpdatingFailedException.class,
                 () -> clientDao.updateClient(CLIENT_ID_1, updatedClientDto), "Exception not thrown");
     }
 
     @Test
-    void after_deleting_client_should_return_null_when_try_to_read_deleted_entity() throws EntityException {
+    void after_deleting_client_should_return_null_when_try_to_read_deleted_entity() throws ClientException {
         //given
 
         //when
@@ -182,7 +186,7 @@ class ClientDaoImplTest {
     }
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws EntityReadingFailedException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws ClientReadingFailedException {
         //given
 
         //when
@@ -199,7 +203,7 @@ class ClientDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityDeletingFailedException.class,
+        Assertions.assertThrows(ClientDeletingFailedException.class,
                 () -> clientDao.deleteClient(CLIENT_ID_1), "Exception not thrown");
     }
 

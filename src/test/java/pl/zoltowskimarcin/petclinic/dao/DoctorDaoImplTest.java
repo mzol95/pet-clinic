@@ -7,7 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorReadingFailedException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultDoctorDao;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
@@ -68,7 +71,7 @@ class DoctorDaoImplTest {
         //when
         DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
         DoctorDto returnedDoctor = doctorDao.getDoctorById(ID_1)
-                .orElseThrow(EntityReadingFailedException::new);
+                .orElseThrow(DoctorReadingFailedException::new);
 
         //then
         Assertions.assertEquals(doctorDto, returnedDoctor, "Doctor is not equal");
@@ -93,7 +96,7 @@ class DoctorDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityUpdatingFailedException.class,
+        Assertions.assertThrows(DoctorUpdatingFailedException.class,
                 () -> doctorDao.updateDoctor(ID_1, updatedDoctorDto), "Exception not thrown");
     }
 
@@ -128,7 +131,7 @@ class DoctorDaoImplTest {
         //when
 
         //then
-        Assertions.assertThrows(EntityDeletingFailedException.class,
+        Assertions.assertThrows(DoctorDeletingFailedException.class,
                 () -> doctorDao.deleteDoctor(ID_1), "Exception not thrown");
     }
 }
