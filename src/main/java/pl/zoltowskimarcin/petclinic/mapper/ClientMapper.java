@@ -1,5 +1,6 @@
 package pl.zoltowskimarcin.petclinic.mapper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
@@ -7,8 +8,8 @@ import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 @Component
+@Slf4j
 public class ClientMapper {
-
     private static ModelMapper modelMapper;
 
     public static ModelMapper getMapper() {
@@ -37,5 +38,6 @@ public class ClientMapper {
         }
         return modelMapper;
     }
+
 
 }
