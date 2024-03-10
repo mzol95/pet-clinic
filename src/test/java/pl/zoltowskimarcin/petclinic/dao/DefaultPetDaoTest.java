@@ -43,7 +43,6 @@ class DefaultPetDaoTest {
 
         petDto = new PetDto
                 .Builder()
-                .id(PET_ID_1)
                 .name(PET_TEST_NAME)
                 .dateOfBirth(PET_TEST_DATE)
                 .gender(PET_TEST_GENDER_MALE)
@@ -51,7 +50,6 @@ class DefaultPetDaoTest {
 
         updatedPetDto = new PetDto
                 .Builder()
-                .id(PET_ID_1)
                 .name(PET_UPDATE_NAME)
                 .dateOfBirth(PET_UPDATE_DATE)
                 .gender(PET_UPDATE_GENDER_FEMALE)

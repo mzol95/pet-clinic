@@ -39,7 +39,7 @@ public class DefaultPetDao implements PetDao {
     @Override
     public PetDto savePet(PetDto petDto) throws PetSavingFailedException {
         log.info("save " + petDto + ")");
-        Pet petToPersist = PetMapper.getMapper().map(petDto, Pet.class);
+        Pet petToPersist = new PetMapper().mapToEntity(petDto);
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -50,7 +50,7 @@ public class DefaultPetDao implements PetDao {
             throw new PetSavingFailedException("Error while saving pet");
         }
         log.info("save(...) = " + petToPersist);
-        return PetMapper.getMapper().map(petToPersist, PetDto.class);
+        return new PetMapper().mapToDto(petToPersist, PetDto.class);
     }
 
     //READ - JDBC
@@ -65,7 +65,6 @@ public class DefaultPetDao implements PetDao {
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
                     PetDto returnedPet = new PetDto.Builder()
-                            .id(resultSet.getLong("id"))
                             .name(resultSet.getString("name"))
                             .dateOfBirth(resultSet.getDate("date_of_birth").toLocalDate())
                             .gender(Gender.valueOfLabel(resultSet.getInt("gender")))
@@ -90,7 +89,7 @@ public class DefaultPetDao implements PetDao {
         Pet petToUpdate = petRepository.findById(id)
                 .orElseThrow(() -> new PetUpdatingFailedException("Pet with id: " + id + " doesn't exists in database."));
 
-        Pet updatingPet = PetMapper.getMapper().map(petDto, Pet.class);
+        Pet updatingPet = new PetMapper().mapToEntity(petDto);
 
         petToUpdate.setName(updatingPet.getName());
         petToUpdate.setDateOfBirth(updatingPet.getDateOfBirth());
@@ -100,7 +99,7 @@ public class DefaultPetDao implements PetDao {
         petRepository.save(petToUpdate);
 
         log.info("update(...) = " + petToUpdate);
-        return PetMapper.getMapper().map(petToUpdate, PetDto.class);
+        return new PetMapper().mapToDto(petToUpdate, PetDto.class);
     }
 
     //DELETE - JpaStandard

@@ -49,22 +49,14 @@ class DefaultClientDaoIntegrationTest {
         DatabaseInitializer.initializeDatabase();
 
         clientDto = new ClientDto.Builder()
-                .id(CLIENT_ID_1)
                 .name(TEST_CLIENT_NAME)
                 .surname(TEST_CLIENT_SURNAME)
-                .street(TEST_CLIENT_ADDRESS_STREET)
-                .city(TEST_CLIENT_CITY)
-                .postalCode(TEST_CLIENT_POSTAL_CODE)
                 .phone(TEST_CLIENT_PHONE)
                 .build();
 
         updatedClientDto = new ClientDto.Builder()
-                .id(CLIENT_ID_1)
                 .name(UPDATE_TEST_CLIENT_NAME)
                 .surname(UPDATE_TEST_CLIENT_SURNAME)
-                .street(UPDATE_TEST_CLIENT_ADDRESS_STREET)
-                .city(UPDATE_TEST_CLIENT_CITY)
-                .postalCode(UPDATE_TEST_CLIENT_POSTAL_CODE)
                 .phone(UPDATE_TEST_CLIENT_PHONE)
                 .build();
     }

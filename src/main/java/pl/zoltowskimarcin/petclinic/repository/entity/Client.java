@@ -17,8 +17,9 @@ public class Client {
     private String surname;
     @Column(name = "phone")
     private String phone;
-    @Embedded
-    private Address addresses;
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
     @OneToMany(mappedBy = "client")
     private List<Pet> pets;
     @OneToMany(mappedBy = "client")
@@ -31,7 +32,7 @@ public class Client {
         name = builder.name;
         surname = builder.surname;
         phone = builder.phone;
-        addresses = builder.addresses;
+        address = builder.address;
         pets = builder.pets;
         appointments = builder.appointments;
     }
@@ -68,12 +69,12 @@ public class Client {
         this.phone = phone;
     }
 
-    public Address getAddresses() {
-        return addresses;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddresses(Address addresses) {
-        this.addresses = addresses;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public List<Pet> getPets() {
@@ -106,7 +107,7 @@ public class Client {
         private String name;
         private String surname;
         private String phone;
-        private Address addresses;
+        private Address address;
         private List<Pet> pets;
         private List<Appointment> appointments;
 
@@ -129,7 +130,7 @@ public class Client {
         }
 
         public Builder addresses(Address val) {
-            addresses = val;
+            address = val;
             return this;
         }
 
@@ -155,7 +156,7 @@ public class Client {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", phone='" + phone + '\'' +
-                ", addresses=" + addresses +
+                ", addresses=" + address +
                 '}';
     }
 }

@@ -16,8 +16,6 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 public class PetDto {
-
-    private Long id;
     private String name;
     private LocalDate dateOfBirth;
     private Gender gender;
@@ -29,7 +27,6 @@ public class PetDto {
     }
 
     private PetDto(Builder builder) {
-        setId(builder.id);
         setName(builder.name);
         setDateOfBirth(builder.dateOfBirth);
         setGender(builder.gender);
@@ -39,7 +36,6 @@ public class PetDto {
 
 
     public static final class Builder {
-        private Long id;
         private String name;
         private LocalDate dateOfBirth;
         private Gender gender;
@@ -47,11 +43,6 @@ public class PetDto {
         private List<AppointmentDto> appointmentDtos;
 
         public Builder() {
-        }
-
-        public Builder id(Long val) {
-            id = val;
-            return this;
         }
 
         public Builder name(String val) {

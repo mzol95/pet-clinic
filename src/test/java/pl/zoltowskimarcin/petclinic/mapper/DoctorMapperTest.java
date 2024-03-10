@@ -20,7 +20,7 @@ class DoctorMapperTest {
                 .build();
 
         //when
-        Doctor mappedDoctorEntity = DoctorMapper.getMapper().map(doctorDto, Doctor.class);
+        Doctor mappedDoctorEntity = new DoctorMapper().mapToEntity(doctorDto);
         String mappedName = mappedDoctorEntity.getName();
         String mappedSurname = mappedDoctorEntity.getSurname();
 
@@ -40,7 +40,7 @@ class DoctorMapperTest {
                 .build();
 
         //when
-        DoctorDto mappedDoctor = DoctorMapper.getMapper().map(doctor, DoctorDto.class);
+        DoctorDto mappedDoctor = new DoctorMapper().mapToDto(doctor, DoctorDto.class);
         String mappedName = mappedDoctor.getName();
         String mappedSurname = mappedDoctor.getSurname();
 

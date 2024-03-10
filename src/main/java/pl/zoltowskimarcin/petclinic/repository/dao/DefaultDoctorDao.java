@@ -38,7 +38,7 @@ public class DefaultDoctorDao implements DoctorDao {
     @Override
     public DoctorDto saveDoctor(DoctorDto doctorDto) throws DoctorSavingFailedException {
         log.info("save " + doctorDto + ")");
-        Doctor doctorToPersist = DoctorMapper.getMapper().map(doctorDto, Doctor.class);
+        Doctor doctorToPersist = new DoctorMapper().mapToEntity(doctorDto);
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -49,7 +49,7 @@ public class DefaultDoctorDao implements DoctorDao {
             throw new DoctorSavingFailedException("Error while saving doctor");
         }
         log.info("save(...) = " + doctorToPersist);
-        return DoctorMapper.getMapper().map(doctorToPersist, DoctorDto.class);
+        return new DoctorMapper().mapToDto(doctorToPersist, DoctorDto.class);
     }
 
     //READ - JDBC
@@ -87,7 +87,7 @@ public class DefaultDoctorDao implements DoctorDao {
         Doctor doctorToUpdate = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorUpdatingFailedException("Doctor with id: " + id + " doesn't exists in database."));
 
-        Doctor updatingDoctor = DoctorMapper.getMapper().map(doctorDto, Doctor.class);
+        Doctor updatingDoctor = new DoctorMapper().mapToEntity(doctorDto);
 
         doctorToUpdate.setName(updatingDoctor.getName());
         doctorToUpdate.setSurname(updatingDoctor.getSurname());
@@ -95,7 +95,7 @@ public class DefaultDoctorDao implements DoctorDao {
         doctorRepository.save(doctorToUpdate);
 
         log.info("update(...) = " + doctorToUpdate);
-        return DoctorMapper.getMapper().map(doctorToUpdate, DoctorDto.class);
+        return new DoctorMapper().mapToDto(doctorToUpdate, DoctorDto.class);
     }
 
     //DELETE - JpaStandard

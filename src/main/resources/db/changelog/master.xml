@@ -8,4 +8,5 @@
     <include file="0002_changing_address.sql" relativeToChangelogFile="true"/>
     <include file="0003_changing_column_type.sql" relativeToChangelogFile="true"/>
     <include file="0004_deleting_tables.sql" relativeToChangelogFile="true"/>
+    <include file="0005_add_addresses_table_test.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

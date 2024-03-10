@@ -8,7 +8,6 @@ import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedExceptio
 import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.service.ClientService;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.LiteClientDto;
 
@@ -29,17 +28,18 @@ public class ClientController {
     }
 
     @PostMapping()
-    public ResponseEntity<BasicClientDto> create(@RequestBody ClientDto client) throws ClientSavingFailedException {
+    public ResponseEntity<ClientDto> create(@RequestBody ClientDto client) throws ClientSavingFailedException {
         log.info("create(" + client + ")");
-        BasicClientDto createdClient = clientService.saveClient(client);
+        ClientDto createdClient = clientService.saveClient(client);
         log.info("create(...) = " + createdClient);
-        return ResponseEntity.created(URI.create("/" + client.getId())).body(createdClient);
+        //TODO id
+        return ResponseEntity.created(URI.create("/" + 1)).body(createdClient);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BasicClientDto> readById(@PathVariable Long id) throws ClientReadingFailedException {
+    public ResponseEntity<ClientDto> readById(@PathVariable Long id) throws ClientReadingFailedException {
         log.info("read(id: " + id + ")");
-        Optional<BasicClientDto> readClient = clientService.getClientById(id);
+        Optional<ClientDto> readClient = clientService.getClientById(id);
 
         if (readClient.isPresent()) {
             log.info("read(...) = " + readClient);
@@ -73,9 +73,9 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BasicClientDto> update(@PathVariable Long id, ClientDto client) throws ClientUpdatingFailedException {
+    public ResponseEntity<ClientDto> update(@PathVariable Long id, ClientDto client) throws ClientUpdatingFailedException {
         log.info("update(" + client + ")");
-        BasicClientDto resultClient = clientService.updateClient(id, client);
+        ClientDto resultClient = clientService.updateClient(id, client);
         log.info("update(...) = " + resultClient);
         return ResponseEntity.ok(resultClient);
     }

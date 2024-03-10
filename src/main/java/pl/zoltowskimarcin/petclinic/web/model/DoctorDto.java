@@ -13,7 +13,6 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 public class DoctorDto {
-
     private String name;
     private String surname;
     private List<AppointmentDto> appointmentDtos;
@@ -22,9 +21,9 @@ public class DoctorDto {
     }
 
     private DoctorDto(Builder builder) {
-        name = builder.name;
-        surname = builder.surname;
-        appointmentDtos = builder.appointmentDtos;
+        setName(builder.name);
+        setSurname(builder.surname);
+        setAppointmentDtos(builder.appointmentDtos);
     }
 
 

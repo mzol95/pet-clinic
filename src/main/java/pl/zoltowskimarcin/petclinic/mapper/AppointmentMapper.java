@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.appointmentclinic.mapper;
+package pl.zoltowskimarcin.petclinic.mapper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -13,26 +13,27 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AppointmentMapper {
 
-    public AppointmentDto mapToDto(Appointment appointment) {
+    public <T> T mapToDto(Appointment appointment, Class<T> type) {
         ModelMapper modelMapper = new ModelMapper();
         log.info("Mapping Appointment: " + appointment + "to AppointmentDto");
-        AppointmentDto mappedAppointment = modelMapper.map(appointment, AppointmentDto.class);
+        T mappedAppointment = modelMapper.map(appointment, type);
         log.info("Mapped Appointment: " + appointment + "to AppointmentDto: " + mappedAppointment);
         return mappedAppointment;
     }
 
     public Appointment mapToEntity(AppointmentDto appointmentDto) {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(AppointmentDto.class, Appointment.class).addMappings(mapper -> mapper.skip(Appointment::setId));
         log.info("Mapping AppointmentDto: " + appointmentDto + "to Appointment");
         Appointment mappedAppointment = modelMapper.map(appointmentDto, Appointment.class);
         log.info("Mapped AppointmentDto: " + appointmentDto + "to Appointment: " + mappedAppointment);
         return mappedAppointment;
     }
 
-    public List<AppointmentDto> mapToDtoList(List<Appointment> appointments) {
+    public <T> List<T> mapToDtoList(List<Appointment> appointments, Class<T> type) {
         log.info("Mapping List<Appointment> to List<AppointmentDto>");
-        List<AppointmentDto> appointmentDtos = appointments.stream()
-                .map(this::mapToDto)
+        List<T> appointmentDtos = appointments.stream()
+                .map(src -> mapToDto(src, type))
                 .collect(Collectors.toList());
         return appointmentDtos;
     }

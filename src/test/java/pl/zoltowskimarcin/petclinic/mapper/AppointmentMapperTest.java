@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 class AppointmentMapperTest {
 
-
     private static final LocalDateTime APPOINTMENT_DATE_TIME_2000_01_01 = LocalDateTime.of(2000, 1, 1, 1, 1);
     private static final LocalDateTime APPOINTMENT_UPDATED_DATE_TIME_3000_02_02 = LocalDateTime.of(3000, 2, 2, 2, 2);
     private static final boolean APPOINTMENT_STATUS_FALSE = false;
@@ -26,11 +25,10 @@ class AppointmentMapperTest {
                 .build();
 
         //when
-        Appointment mappedAppointmentEntity = AppointmentMapper.getMapper().map(appointmentDto, Appointment.class);
+        Appointment mappedAppointmentEntity = new AppointmentMapper().mapToEntity(appointmentDto);
 
         LocalDateTime mappedAppointmentDate = mappedAppointmentEntity.getAppointmentDate();
         boolean mappedFinished = mappedAppointmentEntity.isFinished();
-
 
         //then
         Assertions.assertAll(
@@ -42,12 +40,12 @@ class AppointmentMapperTest {
     @Test
     void map_from_entity_to_model() {
         //given
-        Appointment doctor = new Appointment.Builder()
+        Appointment appointment = new Appointment.Builder()
                 .appointmentDate(APPOINTMENT_DATE_TIME_2000_01_01)
                 .finished(APPOINTMENT_STATUS_FALSE)
                 .build();
         //when
-        AppointmentDto mappedAppointment = AppointmentMapper.getMapper().map(doctor, AppointmentDto.class);
+        AppointmentDto mappedAppointment = new AppointmentMapper().mapToDto(appointment, AppointmentDto.class);
         LocalDateTime mappedAppointmentDate = mappedAppointment.getAppointmentDate();
         boolean mappedFinished = mappedAppointment.isFinished();
 

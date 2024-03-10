@@ -26,7 +26,7 @@ class PetMapperTest {
                 .build();
 
         //when
-        Pet mappedPetEntity = PetMapper.getMapper().map(petDto, Pet.class);
+        Pet mappedPetEntity = new PetMapper().mapToEntity(petDto);
 
         String mappedName = mappedPetEntity.getName();
         LocalDate mappedDateOfBirth = mappedPetEntity.getDateOfBirth();
@@ -50,7 +50,7 @@ class PetMapperTest {
                 .build();
 
         //when
-        PetDto mappedPet = PetMapper.getMapper().map(pet, PetDto.class);
+        PetDto mappedPet = new PetMapper().mapToDto(pet, PetDto.class);
         String mappedName = mappedPet.getName();
         LocalDate mappedDateOfBirth = mappedPet.getDateOfBirth();
         Gender mappedGender = mappedPet.getGender();

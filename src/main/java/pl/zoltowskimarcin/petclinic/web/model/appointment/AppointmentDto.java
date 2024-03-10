@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode
 public class AppointmentDto {
-
-    private Long id;
     private LocalDateTime appointmentDate;
     private boolean finished;
 
@@ -28,7 +26,6 @@ public class AppointmentDto {
     }
 
     private AppointmentDto(Builder builder) {
-        setId(builder.id);
         setAppointmentDate(builder.appointmentDate);
         setFinished(builder.finished);
         setPetDto(builder.petDto);
@@ -37,18 +34,12 @@ public class AppointmentDto {
 
 
     public static final class Builder {
-        private Long id;
         private LocalDateTime appointmentDate;
         private boolean finished;
         private PetDto petDto;
         private DoctorDto doctorDto;
 
         public Builder() {
-        }
-
-        public Builder id(Long val) {
-            id = val;
-            return this;
         }
 
         public Builder appointmentDate(LocalDateTime val) {

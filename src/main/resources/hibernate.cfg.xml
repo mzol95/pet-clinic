@@ -22,6 +22,7 @@
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Doctor"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Client"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Pet"/>
+        <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Address"/>
         <mapping class="pl.zoltowskimarcin.petclinic.repository.entity.Appointment"/>
     </session-factory>
 </hibernate-configuration>

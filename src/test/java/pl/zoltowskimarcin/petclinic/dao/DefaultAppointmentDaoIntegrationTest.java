@@ -41,7 +41,6 @@ class DefaultAppointmentDaoIntegrationTest {
 
         updatedAppointmentDto = new AppointmentDto
                 .Builder()
-                .id(ID_1)
                 .appointmentDate(APPOINTMENT_UPDATED_DATE_TIME_3000_02_02)
                 .finished(APPOINTMENT_STATUS_TRUE)
                 .build();

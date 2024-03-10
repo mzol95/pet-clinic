@@ -38,7 +38,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
     @Override
     public AppointmentDto saveAppointment(AppointmentDto appointmentDto) throws AppointmentSavingFailedException {
         log.info("save " + appointmentDto + ")");
-        Appointment appointmentToPersist = AppointmentMapper.getMapper().map(appointmentDto, Appointment.class);
+        Appointment appointmentToPersist = new AppointmentMapper().mapToEntity(appointmentDto);
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -49,7 +49,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
             throw new AppointmentSavingFailedException("Error while saving appointment");
         }
         log.info("save(...) = " + appointmentToPersist);
-        return AppointmentMapper.getMapper().map(appointmentToPersist, AppointmentDto.class);
+        return new AppointmentMapper().mapToDto(appointmentToPersist, AppointmentDto.class);
     }
 
     //READ - JDBC
@@ -87,7 +87,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
         Appointment appointmentToUpdate = appointmentRepository.findById(id)
                 .orElseThrow(() -> new AppointmentUpdatingFailedException("Appointment with id: " + id + " doesn't exists in database."));
 
-        Appointment updatingAppointment = AppointmentMapper.getMapper().map(appointmentDto, Appointment.class);
+        Appointment updatingAppointment = new AppointmentMapper().mapToEntity(appointmentDto);
 
         appointmentToUpdate.setAppointmentDate(updatingAppointment.getAppointmentDate());
         appointmentToUpdate.setFinished(updatingAppointment.isFinished());
@@ -95,7 +95,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
         appointmentRepository.save(appointmentToUpdate);
 
         log.info("update(...) = " + appointmentToUpdate);
-        return AppointmentMapper.getMapper().map(appointmentToUpdate, AppointmentDto.class);
+        return new AppointmentMapper().mapToDto(appointmentToUpdate, AppointmentDto.class);
     }
 
     //DELETE - JpaStandard

@@ -1,4 +1,4 @@
-package pl.zoltowskimarcin.doctorclinic.mapper;
+package pl.zoltowskimarcin.petclinic.mapper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -13,26 +13,29 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DoctorMapper {
 
-    public DoctorDto mapToDto(Doctor doctor) {
+    public <T> T mapToDto(Doctor doctor, Class<T> type) {
         ModelMapper modelMapper = new ModelMapper();
+
         log.info("Mapping Doctor: " + doctor + "to DoctorDto");
-        DoctorDto mappedDoctor = modelMapper.map(doctor, DoctorDto.class);
+        T mappedDoctor = modelMapper.map(doctor, type);
+
         log.info("Mapped Doctor: " + doctor + "to DoctorDto: " + mappedDoctor);
         return mappedDoctor;
     }
 
     public Doctor mapToEntity(DoctorDto doctorDto) {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(DoctorDto.class, Doctor.class).addMappings(mapper -> mapper.skip(Doctor::setId));
         log.info("Mapping DoctorDto: " + doctorDto + "to Doctor");
         Doctor mappedDoctor = modelMapper.map(doctorDto, Doctor.class);
         log.info("Mapped DoctorDto: " + doctorDto + "to Doctor: " + mappedDoctor);
         return mappedDoctor;
     }
 
-    public List<DoctorDto> mapToDtoList(List<Doctor> doctors) {
+    public <T> List<T> mapToDtoList(List<Doctor> doctors, Class<T> type) {
         log.info("Mapping List<Doctor> to List<DoctorDto>");
-        List<DoctorDto> doctorDtos = doctors.stream()
-                .map(this::mapToDto)
+        List<T> doctorDtos = doctors.stream()
+                .map(src -> mapToDto(src, type))
                 .collect(Collectors.toList());
         return doctorDtos;
     }

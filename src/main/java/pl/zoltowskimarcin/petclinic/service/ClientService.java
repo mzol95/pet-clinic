@@ -6,9 +6,7 @@ import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedExcepti
 import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDao;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.LiteClientDto;
 
@@ -26,20 +24,21 @@ public class ClientService {
         this.clientDao = clientDao;
     }
 
-    public BasicClientDto saveClient(ClientDto clientDto) throws ClientSavingFailedException {
+    public ClientDto saveClient(ClientDto clientDto) throws ClientSavingFailedException {
         log.info("save " + clientDto + ")");
-        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.saveClient(clientDto), BasicClientDto.class);
+
+        ClientDto resultClient = clientDao.saveClient(clientDto);
         log.info("save(...) = " + resultClient);
         return resultClient;
     }
 
-    public Optional<BasicClientDto> getClientById(Long id) throws ClientReadingFailedException {
+    public Optional<ClientDto> getClientById(Long id) throws ClientReadingFailedException {
         log.info("getClientById with id: " + id);
         Optional<ClientDto> client = clientDao.getClientById(id);
-        BasicClientDto resultClient = null;
+        ClientDto resultClient = null;
 
         if (client.isPresent()) { //todo lepiej wyjatek
-            resultClient = ClientMapper.getMapper().map(client.get(), BasicClientDto.class);
+            resultClient = client.get();
             log.info("getClientById(...) = " + resultClient);
         }
         return Optional.ofNullable(resultClient);
@@ -58,20 +57,22 @@ public class ClientService {
 
         List<LiteClientDto> mappedClients = new ArrayList<>();
 
-        clients.stream().forEach(client -> {
-            LiteClientDto mappedClient = ClientMapper.getMapper().map(client, LiteClientDto.class);
-            mappedClients.add(mappedClient);
-        });
+        //todo
+//        clients.stream().forEach(client -> {
+//            LiteClientDto mappedClient = ClientMapper.getMapper().map(client, LiteClientDto.class);
+//            mappedClients.add(mappedClient);
+//        });
 
         log.info("getAllClients(...) = " + mappedClients);
         return mappedClients;
     }
 
-    public BasicClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException {
+    public ClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException {
         log.info("updateClient with id: " + id + " and clientDto: " + clientDto);
-        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.updateClient(id, clientDto), BasicClientDto.class);
-        log.info("updateClient(...) = " + resultClient);
-        return resultClient;
+        //todo
+        //ClientDto resultClient = ClientMapper.getMapper().map(clientDao.updateClient(id, clientDto), ClientDto.class);
+       // log.info("updateClient(...) = " + resultClient);
+        return null;
     }
 
     public void deleteClient(Long id) throws ClientDeletingFailedException {

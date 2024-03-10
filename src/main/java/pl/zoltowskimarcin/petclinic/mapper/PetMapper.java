@@ -13,26 +13,27 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PetMapper {
 
-    public PetDto mapToDto(Pet pet) {
+    public <T> T mapToDto(Pet pet, Class<T> type) {
         ModelMapper modelMapper = new ModelMapper();
         log.info("Mapping Pet: " + pet + "to PetDto");
-        PetDto mappedPet = modelMapper.map(pet, PetDto.class);
+        T mappedPet = modelMapper.map(pet, type);
         log.info("Mapped Pet: " + pet + "to PetDto: " + mappedPet);
         return mappedPet;
     }
 
     public Pet mapToEntity(PetDto petDto) {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(PetDto.class, Pet.class).addMappings(mapper -> mapper.skip(Pet::setId));
         log.info("Mapping PetDto: " + petDto + "to Pet");
         Pet mappedPet = modelMapper.map(petDto, Pet.class);
         log.info("Mapped PetDto: " + petDto + "to Pet: " + mappedPet);
         return mappedPet;
     }
 
-    public List<PetDto> mapToDtoList(List<Pet> pets) {
+    public <T> List<T> mapToDtoList(List<Pet> pets, Class<T> type) {
         log.info("Mapping List<Pet> to List<PetDto>");
-        List<PetDto> petDtos = pets.stream()
-                .map(this::mapToDto)
+        List<T> petDtos = pets.stream()
+                .map(src -> mapToDto(src, type))
                 .collect(Collectors.toList());
         return petDtos;
     }
