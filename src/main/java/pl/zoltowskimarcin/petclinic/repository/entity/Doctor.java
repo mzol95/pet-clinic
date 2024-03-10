@@ -31,6 +31,11 @@ public class Doctor {
         appointments = builder.appointments;
     }
 
+    public Doctor(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
+    }
+
     public void addAppointment(Appointment appointment) {
         appointments.add(appointment);
         appointment.setDoctor(this);

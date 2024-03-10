@@ -20,39 +20,11 @@ public class DoctorDto {
     private DoctorDto() {
     }
 
-    private DoctorDto(Builder builder) {
-        setName(builder.name);
-        setSurname(builder.surname);
-        setAppointmentDtos(builder.appointmentDtos);
+    public DoctorDto(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
     }
 
 
-    public static final class Builder {
-        private String name;
-        private String surname;
-        private List<AppointmentDto> appointmentDtos;
-
-        public Builder() {
-        }
-
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Builder surname(String val) {
-            surname = val;
-            return this;
-        }
-
-        public Builder appointmentDtos(List<AppointmentDto> val) {
-            appointmentDtos = val;
-            return this;
-        }
-
-        public DoctorDto build() {
-            return new DoctorDto(this);
-        }
-    }
 }
 

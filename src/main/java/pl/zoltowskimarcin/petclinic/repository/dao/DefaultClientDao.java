@@ -192,9 +192,6 @@ public class DefaultClientDao implements ClientDao {
         clientToUpdate.setName(client.getName());
         clientToUpdate.setSurname(client.getSurname());
         clientToUpdate.setPhone(client.getPhone());
-//        clientToUpdate.getAddresses().setStreet(clientDto.getStreet());
-//        clientToUpdate.getAddresses().setCity(clientDto.getCity());
-//        clientToUpdate.getAddresses().setPostalCode(clientDto.getPostalCode());
 
         Client updatedClient = clientRepository.save(clientToUpdate);
 

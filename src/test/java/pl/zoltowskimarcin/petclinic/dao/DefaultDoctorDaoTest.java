@@ -9,42 +9,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorException;
+import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultDoctorDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Doctor;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 
 import java.util.Optional;
+
+import static pl.zoltowskimarcin.petclinic.utils.TestUtils.*;
 
 @SpringBootTest
 class DefaultDoctorDaoTest {
 
-    private static final String DOCTOR_TEST_NAME = "Test name";
-    private static final String DOCTOR_TEST_SURNAME = "Test surname";
-    private static final String DOCTOR_UPDATE_SURNAME = "Update surname";
-    private static final String DOCTOR_UPDATE_NAME = "Update name";
-    private static final Long ID_1 = 1L;
-
     @Autowired
     private DefaultDoctorDao doctorDao;
 
-    private DoctorDto doctorDto;
-    private DoctorDto updatedDoctorDto;
+    private Doctor doctorGregory = new Doctor(DOCTOR_NAME_GREGORY, DOCTOR_SURNAME_HOUSE);
+    private Doctor updatedDoctorAllison = new Doctor(UPDATE_DOCTOR_NAME_ALLISON, UPDATE_DOCTOR_SURNAME_CAMERON);
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
-
-        doctorDto = new DoctorDto
-                .Builder()
-                .name(DOCTOR_TEST_NAME)
-                .surname(DOCTOR_TEST_SURNAME)
-                .build();
-
-        updatedDoctorDto = new DoctorDto.Builder()
-                .name(DOCTOR_UPDATE_NAME)
-                .surname(DOCTOR_UPDATE_SURNAME)
-                .build();
     }
 
     @AfterEach
@@ -52,15 +38,17 @@ class DefaultDoctorDaoTest {
         DatabaseInitializer.dropDatabase();
     }
 
+
+
     @Test
     void creating_new_doctor_should_return_created_doctor() throws DoctorException {
         //given
 
         //when
-        DoctorDto returnedDoctor = doctorDao.saveDoctor(doctorDto);
+        Doctor returnedDoctor = doctorDao.saveDoctor(doctorGregory);
 
         //then
-        Assertions.assertEquals(doctorDto, returnedDoctor, "Doctor is not equal");
+        Assertions.assertEquals(doctorGregory, returnedDoctor, "Doctor is not equal");
     }
 
 
@@ -72,17 +60,16 @@ class DefaultDoctorDaoTest {
 
         //then
         Assertions.assertThrows(DoctorUpdatingFailedException.class,
-                () -> doctorDao.updateDoctor(ID_1, updatedDoctorDto), "Exception not thrown");
+                () -> doctorDao.updateDoctor(ID_1, updatedDoctorAllison), "Exception not thrown");
     }
 
 
-
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws DoctorException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws DoctorReadingFailedException {
         //given
 
         //when
-        Optional<DoctorDto> returnedDoctor = doctorDao.getDoctorById(ID_1);
+        Optional<Doctor> returnedDoctor = doctorDao.getDoctorById(ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedDoctor, "Doctor is not empty");
@@ -98,4 +85,5 @@ class DefaultDoctorDaoTest {
         Assertions.assertThrows(DoctorDeletingFailedException.class,
                 () -> doctorDao.deleteDoctor(ID_1), "Exception not thrown");
     }
+
 }

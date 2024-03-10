@@ -10,38 +10,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorException;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorReadingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultDoctorDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Doctor;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
+
+import static pl.zoltowskimarcin.petclinic.utils.TestUtils.*;
 
 @SpringBootTest
 class DefaultDoctorDaoIntegrationTest {
 
-    private static final String DOCTOR_TEST_NAME = "Test name";
-    private static final String DOCTOR_TEST_SURNAME = "Test surname";
-    private static final String DOCTOR_UPDATE_SURNAME = "Update surname";
-    private static final String DOCTOR_UPDATE_NAME = "Update name";
-    private static final Long ID_1 = 1L;
-
     @Autowired
     private DefaultDoctorDao doctorDao;
 
-    private DoctorDto doctorDto;
-    private DoctorDto updatedDoctorDto;
+    private Doctor doctorGregory = new Doctor(DOCTOR_NAME_GREGORY, DOCTOR_SURNAME_HOUSE);
+    private Doctor updatedDoctorAllison = new Doctor(UPDATE_DOCTOR_NAME_ALLISON, UPDATE_DOCTOR_SURNAME_CAMERON);
+
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
-
-        doctorDto = new DoctorDto
-                .Builder()
-                .name(DOCTOR_TEST_NAME)
-                .surname(DOCTOR_TEST_SURNAME)
-                .build();
-
-        updatedDoctorDto = new DoctorDto.Builder()
-                .name(DOCTOR_UPDATE_NAME)
-                .surname(DOCTOR_UPDATE_SURNAME)
-                .build();
     }
 
     @AfterEach
@@ -56,12 +42,20 @@ class DefaultDoctorDaoIntegrationTest {
         //given
 
         //when
-        DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
-        DoctorDto returnedDoctor = doctorDao.getDoctorById(ID_1)
+        doctorDao.saveDoctor(doctorGregory);
+
+        Doctor returnedDoctor = doctorDao.getDoctorById(ID_1)
                 .orElseThrow(DoctorReadingFailedException::new);
 
+        String returnedName = returnedDoctor.getName();
+        String returnedSurname = returnedDoctor.getSurname();
+
+
         //then
-        Assertions.assertEquals(doctorDto, returnedDoctor, "Doctor is not equal");
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(DOCTOR_NAME_GREGORY, returnedName, "Name is not equal"),
+                () -> Assertions.assertEquals(DOCTOR_SURNAME_HOUSE, returnedSurname, "Surname is not equal")
+        );
     }
 
     @Test
@@ -69,13 +63,12 @@ class DefaultDoctorDaoIntegrationTest {
         //given
 
         //when
-        DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
-        DoctorDto updatedDoctor = doctorDao.updateDoctor(ID_1, updatedDoctorDto);
-
+        Doctor savedDoctor = doctorDao.saveDoctor(doctorGregory);
+        Doctor updatedDoctor = doctorDao.updateDoctor(ID_1, updatedDoctorAllison);
+        updatedDoctor.setId(null);
         //then
-        Assertions.assertEquals(updatedDoctorDto, updatedDoctor, "Doctor is not equal");
+        Assertions.assertEquals(updatedDoctorAllison, updatedDoctor, "Doctor is not equal");
     }
-
 
 
     @Test
@@ -83,9 +76,9 @@ class DefaultDoctorDaoIntegrationTest {
         //given
 
         //when
-        DoctorDto persistedDoctor = doctorDao.saveDoctor(doctorDto);
-        doctorDao.deleteDoctor(ID_1);
-        DoctorDto returnedDoctor = doctorDao.getDoctorById(ID_1).orElse(null);
+        Doctor savedDoctor = doctorDao.saveDoctor(doctorGregory);
+        doctorDao.deleteDoctor(savedDoctor.getId());
+        Doctor returnedDoctor = doctorDao.getDoctorById(savedDoctor.getId()).orElse(null);
 
         //then
         Assertions.assertNull(returnedDoctor, "Doctor is not null");

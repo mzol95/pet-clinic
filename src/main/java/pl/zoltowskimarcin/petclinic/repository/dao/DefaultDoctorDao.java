@@ -11,12 +11,10 @@ import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorSavingFailedException
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
-import pl.zoltowskimarcin.petclinic.mapper.DoctorMapper;
 import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Doctor;
 import pl.zoltowskimarcin.petclinic.repository.jpa.DoctorRepository;
-import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,9 +34,10 @@ public class DefaultDoctorDao implements DoctorDao {
 
     //CREATE - Native Hibernate
     @Override
-    public DoctorDto saveDoctor(DoctorDto doctorDto) throws DoctorSavingFailedException {
-        log.info("save " + doctorDto + ")");
-        Doctor doctorToPersist = new DoctorMapper().mapToEntity(doctorDto);
+    public Doctor saveDoctor(Doctor doctor) throws DoctorSavingFailedException {
+        log.info("save " + doctor + ")");
+
+        Doctor doctorToPersist = doctor;
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -49,12 +48,12 @@ public class DefaultDoctorDao implements DoctorDao {
             throw new DoctorSavingFailedException("Error while saving doctor");
         }
         log.info("save(...) = " + doctorToPersist);
-        return new DoctorMapper().mapToDto(doctorToPersist, DoctorDto.class);
+        return doctorToPersist;
     }
 
     //READ - JDBC
     @Override
-    public Optional<DoctorDto> getDoctorById(Long id) throws DoctorReadingFailedException {
+    public Optional<Doctor> getDoctorById(Long id) throws DoctorReadingFailedException {
         log.info("getDoctorById with id: " + id);
 
         try (Connection connection = DataSource.getConnection();
@@ -63,7 +62,7 @@ public class DefaultDoctorDao implements DoctorDao {
             readStatement.setLong(1, id);
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    DoctorDto returnedDoctor = new DoctorDto.Builder()
+                    Doctor returnedDoctor = new Doctor.Builder()
                             .name(resultSet.getString("name"))
                             .surname(resultSet.getString("surname"))
                             .build();
@@ -81,21 +80,16 @@ public class DefaultDoctorDao implements DoctorDao {
     //UPDATE - Spring Data JPA
     @Transactional
     @Override
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) throws DoctorUpdatingFailedException {
-        log.info("update " + doctorDto + " with id: " + id);
-
+    public Doctor updateDoctor(Long id, Doctor doctor) throws DoctorUpdatingFailedException {
+        log.info("update " + doctor + " with id: " + id);
         Doctor doctorToUpdate = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorUpdatingFailedException("Doctor with id: " + id + " doesn't exists in database."));
-
-        Doctor updatingDoctor = new DoctorMapper().mapToEntity(doctorDto);
-
-        doctorToUpdate.setName(updatingDoctor.getName());
-        doctorToUpdate.setSurname(updatingDoctor.getSurname());
-        doctorToUpdate.setAppointments(updatingDoctor.getAppointments());
+        doctorToUpdate.setName(doctor.getName());
+        doctorToUpdate.setSurname(doctor.getSurname());
+        doctorToUpdate.setAppointments(doctor.getAppointments());
         doctorRepository.save(doctorToUpdate);
-
         log.info("update(...) = " + doctorToUpdate);
-        return new DoctorMapper().mapToDto(doctorToUpdate, DoctorDto.class);
+        return doctorToUpdate;
     }
 
     //DELETE - JpaStandard
