@@ -12,41 +12,25 @@ import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentException;
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultAppointmentDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Appointment;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static pl.zoltowskimarcin.petclinic.utils.TestUtils.*;
 
 @SpringBootTest
 class DefaultAppointmentDaoTest {
 
-    private static final LocalDateTime APPOINTMENT_DATE_TIME_2000_01_01 = LocalDateTime.of(2000, 1, 1, 1, 1);
-    private static final LocalDateTime APPOINTMENT_UPDATED_DATE_TIME_3000_02_02 = LocalDateTime.of(3000, 2, 2, 2, 2);
-    private static final boolean APPOINTMENT_STATUS_FALSE = false;
-    private static final boolean APPOINTMENT_STATUS_TRUE = true;
-    private static final long ID_1 = 1L;
-
     @Autowired
     private DefaultAppointmentDao appointmentDao;
-    private AppointmentDto appointmentDto;
-    private AppointmentDto updatedAppointmentDto;
+
+    private Appointment appointment = new Appointment(APPOINTMENT_DATE_TIME, APPOINTMENT_FINISHED);
+    private Appointment updatedAppointment = new Appointment(UPDATE_APPOINTMENT_DATE_TIME, UPDATE_APPOINTMENT_FINISHED);
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
-
-        appointmentDto = new AppointmentDto
-                .Builder()
-                .appointmentDate(APPOINTMENT_DATE_TIME_2000_01_01)
-                .finished(APPOINTMENT_STATUS_FALSE)
-                .build();
-
-        updatedAppointmentDto = new AppointmentDto
-                .Builder()
-                .appointmentDate(APPOINTMENT_UPDATED_DATE_TIME_3000_02_02)
-                .finished(APPOINTMENT_STATUS_TRUE)
-                .build();
     }
 
     @AfterEach
@@ -59,10 +43,10 @@ class DefaultAppointmentDaoTest {
         //given
 
         //when
-        AppointmentDto returnedAppointment = appointmentDao.saveAppointment(appointmentDto);
+        Appointment returnedAppointment = appointmentDao.saveAppointment(appointment);
 
         //then
-        Assertions.assertEquals(appointmentDto, returnedAppointment, "Appointment is not equal");
+        Assertions.assertEquals(appointment, returnedAppointment, "Appointment is not equal");
     }
 
     @Test
@@ -73,16 +57,15 @@ class DefaultAppointmentDaoTest {
 
         //then
         Assertions.assertThrows(AppointmentUpdatingFailedException.class,
-                () -> appointmentDao.updateAppointment(ID_1, updatedAppointmentDto), "Exception not thrown");
+                () -> appointmentDao.updateAppointment(ID_1, updatedAppointment), "Exception not thrown");
     }
-
 
     @Test
     void no_entity_found_while_reading_should_return_empty_optional() throws AppointmentReadingFailedException {
         //given
 
         //when
-        Optional<AppointmentDto> returnedAppointment = appointmentDao.getAppointmentById(ID_1);
+        Optional<Appointment> returnedAppointment = appointmentDao.getAppointmentById(ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedAppointment, "Appointment is not empty");

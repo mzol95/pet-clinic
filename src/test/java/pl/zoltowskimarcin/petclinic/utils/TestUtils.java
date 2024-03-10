@@ -3,6 +3,7 @@ package pl.zoltowskimarcin.petclinic.utils;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TestUtils {
     public static final String CLIENT_NAME_JON = "Jon";
@@ -38,5 +39,13 @@ public class TestUtils {
     public static final String UPDATE_PET_NAME_TOM = "Tom";
     public static final Gender UPDATE_PET_GENDER_MALE = Gender.MALE;
     public static final LocalDate UPDATE_PET_DATE_OF_BIRTH_10_02_1980 = LocalDate.of(1980, 2, 10);
+
+    public static final LocalDateTime APPOINTMENT_DATE_TIME = LocalDateTime.of(1900, 02, 02, 13, 11);
+    public static final boolean APPOINTMENT_FINISHED = true;
+
+
+    public static final LocalDateTime UPDATE_APPOINTMENT_DATE_TIME = LocalDateTime.of(2000, 01, 01, 12, 00);
+    public static final boolean UPDATE_APPOINTMENT_FINISHED = false;
+
 
 }

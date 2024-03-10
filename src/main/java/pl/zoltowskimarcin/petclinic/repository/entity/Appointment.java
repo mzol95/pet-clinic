@@ -31,15 +31,12 @@ public class Appointment {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    Appointment() {
+    public Appointment() {
     }
 
-    private Appointment(Builder builder) {
-        appointmentDate = builder.appointmentDate;
-        finished = builder.finished;
-        client = builder.client;
-        pet = builder.pet;
-        doctor = builder.doctor;
+    public Appointment(LocalDateTime appointmentDate, boolean finished) {
+        this.appointmentDate = appointmentDate;
+        this.finished = finished;
     }
 
     public Long getId() {
@@ -112,43 +109,5 @@ public class Appointment {
                 '}';
     }
 
-    public static final class Builder {
-        private LocalDateTime appointmentDate;
-        private boolean finished;
-        private Client client;
-        private Pet pet;
-        private Doctor doctor;
 
-        public Builder() {
-        }
-
-        public Builder appointmentDate(LocalDateTime val) {
-            appointmentDate = val;
-            return this;
-        }
-
-        public Builder finished(boolean val) {
-            finished = val;
-            return this;
-        }
-
-        public Builder client(Client val) {
-            client = val;
-            return this;
-        }
-
-        public Builder pet(Pet val) {
-            pet = val;
-            return this;
-        }
-
-        public Builder doctor(Doctor val) {
-            doctor = val;
-            return this;
-        }
-
-        public Appointment build() {
-            return new Appointment(this);
-        }
-    }
 }
