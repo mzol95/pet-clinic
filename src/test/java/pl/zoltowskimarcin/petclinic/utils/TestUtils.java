@@ -1,5 +1,9 @@
 package pl.zoltowskimarcin.petclinic.utils;
 
+import pl.zoltowskimarcin.petclinic.web.enums.Gender;
+
+import java.time.LocalDate;
+
 public class TestUtils {
     public static final String CLIENT_NAME_JON = "Jon";
     public static final String CLIENT_SURNAME_SNOW = "Snow";
@@ -27,6 +31,12 @@ public class TestUtils {
     public static final String UPDATE_DOCTOR_SURNAME_CAMERON = "Cameron";
 
 
+    public static final String PET_NAME_GARFIELD = "Garfield";
+    public static final Gender PET_GENDER_MALE = Gender.MALE;
+    public static final LocalDate PET_DATE_OF_BIRTH_19_06_1978 = LocalDate.of(1978, 6, 19);
 
+    public static final String UPDATE_PET_NAME_TOM = "Tom";
+    public static final Gender UPDATE_PET_GENDER_MALE = Gender.MALE;
+    public static final LocalDate UPDATE_PET_DATE_OF_BIRTH_10_02_1980 = LocalDate.of(1980, 2, 10);
 
 }

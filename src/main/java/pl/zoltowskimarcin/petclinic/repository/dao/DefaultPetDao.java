@@ -11,18 +11,17 @@ import pl.zoltowskimarcin.petclinic.exception.pet.PetSavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.pet.PetUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
-import pl.zoltowskimarcin.petclinic.mapper.PetMapper;
 import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Pet;
 import pl.zoltowskimarcin.petclinic.repository.jpa.PetRepository;
 import pl.zoltowskimarcin.petclinic.web.enums.Gender;
-import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
@@ -37,9 +36,9 @@ public class DefaultPetDao implements PetDao {
 
     //CREATE - Native Hibernate
     @Override
-    public PetDto savePet(PetDto petDto) throws PetSavingFailedException {
-        log.info("save " + petDto + ")");
-        Pet petToPersist = new PetMapper().mapToEntity(petDto);
+    public Pet savePet(Pet pet) throws PetSavingFailedException {
+        log.info("save " + pet + ")");
+        Pet petToPersist = pet;
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -50,56 +49,50 @@ public class DefaultPetDao implements PetDao {
             throw new PetSavingFailedException("Error while saving pet");
         }
         log.info("save(...) = " + petToPersist);
-        return new PetMapper().mapToDto(petToPersist, PetDto.class);
+        return petToPersist;
     }
 
     //READ - JDBC
     @Override
-    public Optional<PetDto> getPetById(Long id) throws PetReadingFailedException {
+    public Optional<Pet> getPetById(Long id) throws PetReadingFailedException {
         log.info("getPetById with id: " + id);
-
+        Pet returnedPet = null;
         try (Connection connection = DataSource.getConnection();
              PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_PETS_BY_ID)) {
-
             readStatement.setLong(1, id);
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    PetDto returnedPet = new PetDto.Builder()
-                            .name(resultSet.getString("name"))
-                            .dateOfBirth(resultSet.getDate("date_of_birth").toLocalDate())
-                            .gender(Gender.valueOfLabel(resultSet.getInt("gender")))
-                            .build();
-                    log.info("get(...) = " + returnedPet);
-                    return Optional.ofNullable(returnedPet);
+                    String name = resultSet.getString("name");
+                    Gender gender = Gender.valueOfLabel(resultSet.getInt("gender"));
+                    LocalDate dateOfBirth = resultSet.getDate("date_of_birth").toLocalDate();
+                    returnedPet = new Pet(name, dateOfBirth, gender);
                 }
             }
         } catch (SQLException e) {
             log.error("Error while getting client with id: " + id, e);
             throw new PetReadingFailedException("Error while getting client with id: " + id);
         }
-        return Optional.empty();
+        log.info("get(...) = " + returnedPet);
+        return Optional.ofNullable(returnedPet);
     }
 
     //UPDATE - Spring Data JPA
     @Transactional
     @Override
-    public PetDto updatePet(Long id, PetDto petDto) throws PetUpdatingFailedException {
-        log.info("update " + petDto + " with id: " + id);
+    public Pet updatePet(Long id, Pet pet) throws PetUpdatingFailedException {
+        log.info("update " + pet + " with id: " + id);
 
         Pet petToUpdate = petRepository.findById(id)
                 .orElseThrow(() -> new PetUpdatingFailedException("Pet with id: " + id + " doesn't exists in database."));
 
-        Pet updatingPet = new PetMapper().mapToEntity(petDto);
+        petToUpdate.setName(pet.getName());
+        petToUpdate.setDateOfBirth(pet.getDateOfBirth());
+        petToUpdate.setGender(pet.getGender());
 
-        petToUpdate.setName(updatingPet.getName());
-        petToUpdate.setDateOfBirth(updatingPet.getDateOfBirth());
-        petToUpdate.setAppointments(updatingPet.getAppointments());
-        petToUpdate.setGender(updatingPet.getGender());
-        petToUpdate.setClient(updatingPet.getClient());
         petRepository.save(petToUpdate);
 
         log.info("update(...) = " + petToUpdate);
-        return new PetMapper().mapToDto(petToUpdate, PetDto.class);
+        return petToUpdate;
     }
 
     //DELETE - JpaStandard

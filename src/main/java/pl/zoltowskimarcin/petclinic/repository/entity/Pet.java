@@ -30,19 +30,16 @@ public class Pet {
     @OneToOne(mappedBy = "pet")
     private Appointment appointments;
 
-    Pet() {
+    public Pet() {
     }
 
-    private Pet(Builder builder) {
-        name = builder.name;
-        dateOfBirth = builder.dateOfBirth;
-        gender = builder.gender;
-        client = builder.client;
-        appointments = builder.appointments;
+    public Pet(String name, LocalDate dateOfBirth, Gender gender) {
+        this.name = name;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
     }
 
-    public Long getId() {
-        return id;
+    public Long getId() {        return id;
     }
 
     public void setId(Long id) {
@@ -112,43 +109,5 @@ public class Pet {
                 '}';
     }
 
-    public static final class Builder {
-        private String name;
-        private LocalDate dateOfBirth;
-        private Gender gender;
-        private Client client;
-        private Appointment appointments;
 
-        public Builder() {
-        }
-
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Builder dateOfBirth(LocalDate val) {
-            dateOfBirth = val;
-            return this;
-        }
-
-        public Builder gender(Gender val) {
-            gender = val;
-            return this;
-        }
-
-        public Builder client(Client val) {
-            client = val;
-            return this;
-        }
-
-        public Builder appointments(Appointment val) {
-            appointments = val;
-            return this;
-        }
-
-        public Pet build() {
-            return new Pet(this);
-        }
-    }
 }

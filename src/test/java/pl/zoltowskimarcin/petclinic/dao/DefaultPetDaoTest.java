@@ -9,51 +9,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.zoltowskimarcin.petclinic.exception.pet.PetDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.pet.PetException;
+import pl.zoltowskimarcin.petclinic.exception.pet.PetReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.pet.PetUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultPetDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Pet;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.enums.Gender;
-import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
 
-import java.time.LocalDate;
 import java.util.Optional;
+
+import static pl.zoltowskimarcin.petclinic.utils.TestUtils.*;
 
 @SpringBootTest
 class DefaultPetDaoTest {
 
-    private static final String PET_TEST_NAME = "Test name";
-    private static final LocalDate PET_TEST_DATE = LocalDate.of(2000, 1, 1);
-    private static final Gender PET_TEST_GENDER_MALE = Gender.MALE;
-
-
-    private static final String PET_UPDATE_NAME = "Update name";
-    private static final LocalDate PET_UPDATE_DATE = LocalDate.of(3000, 2, 2);
-    private static final Gender PET_UPDATE_GENDER_FEMALE = Gender.FEMALE;
-    private static final Long PET_ID_1 = 1L;
-
     @Autowired
     private DefaultPetDao petDao;
 
-    private PetDto petDto;
-    private PetDto updatedPetDto;
+    private Pet petGarfield = new Pet(PET_NAME_GARFIELD, PET_DATE_OF_BIRTH_19_06_1978, PET_GENDER_MALE);
+    private Pet updatedPetTom = new Pet(UPDATE_PET_NAME_TOM, UPDATE_PET_DATE_OF_BIRTH_10_02_1980, UPDATE_PET_GENDER_MALE);
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
-
-        petDto = new PetDto
-                .Builder()
-                .name(PET_TEST_NAME)
-                .dateOfBirth(PET_TEST_DATE)
-                .gender(PET_TEST_GENDER_MALE)
-                .build();
-
-        updatedPetDto = new PetDto
-                .Builder()
-                .name(PET_UPDATE_NAME)
-                .dateOfBirth(PET_UPDATE_DATE)
-                .gender(PET_UPDATE_GENDER_FEMALE)
-                .build();
     }
 
     @AfterEach
@@ -61,49 +38,50 @@ class DefaultPetDaoTest {
         DatabaseInitializer.dropDatabase();
     }
 
+
     @Test
-    void creating_new_pet_should_return_created_pet() throws PetException {
+    void creating_new_doctor_should_return_created_doctor() throws PetException {
         //given
 
         //when
-        PetDto returnedPet = petDao.savePet(petDto);
+        Pet returnedPet = petDao.savePet(petGarfield);
 
         //then
-        Assertions.assertEquals(petDto, returnedPet, "Pet is not equal");
+        Assertions.assertEquals(petGarfield, returnedPet, "Pet is not equal");
     }
 
 
     @Test
-    void updating_not_existing_entity_should_throw_pet_updating_failed_exception() {
+    void updating_not_existing_entity_should_throw_doctor_updating_failed_exception() {
         //given
 
         //when
 
         //then
         Assertions.assertThrows(PetUpdatingFailedException.class,
-                () -> petDao.updatePet(PET_ID_1, updatedPetDto), "Exception not thrown");
+                () -> petDao.updatePet(ID_1, updatedPetTom), "Exception not thrown");
     }
 
 
     @Test
-    void no_entity_found_while_reading_should_return_empty_optional() throws PetException {
+    void no_entity_found_while_reading_should_return_empty_optional() throws PetReadingFailedException {
         //given
 
         //when
-        Optional<PetDto> returnedPet = petDao.getPetById(PET_ID_1);
+        Optional<Pet> returnedPet = petDao.getPetById(ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedPet, "Pet is not empty");
     }
 
     @Test
-    void deleting_not_existing_entity_should_throw_pet_deleting_failed_exception() {
+    void deleting_not_existing_entity_should_throw_doctor_deleting_failed_exception() {
         //given
 
         //when
 
         //then
         Assertions.assertThrows(PetDeletingFailedException.class,
-                () -> petDao.deletePet(PET_ID_1), "Exception not thrown");
+                () -> petDao.deletePet(ID_1), "Exception not thrown");
     }
 }

@@ -38,8 +38,6 @@ class DefaultDoctorDaoTest {
         DatabaseInitializer.dropDatabase();
     }
 
-
-
     @Test
     void creating_new_doctor_should_return_created_doctor() throws DoctorException {
         //given
@@ -51,7 +49,6 @@ class DefaultDoctorDaoTest {
         Assertions.assertEquals(doctorGregory, returnedDoctor, "Doctor is not equal");
     }
 
-
     @Test
     void updating_not_existing_entity_should_throw_doctor_updating_failed_exception() {
         //given
@@ -62,7 +59,6 @@ class DefaultDoctorDaoTest {
         Assertions.assertThrows(DoctorUpdatingFailedException.class,
                 () -> doctorDao.updateDoctor(ID_1, updatedDoctorAllison), "Exception not thrown");
     }
-
 
     @Test
     void no_entity_found_while_reading_should_return_empty_optional() throws DoctorReadingFailedException {

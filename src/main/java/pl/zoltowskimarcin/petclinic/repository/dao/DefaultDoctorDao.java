@@ -55,26 +55,25 @@ public class DefaultDoctorDao implements DoctorDao {
     @Override
     public Optional<Doctor> getDoctorById(Long id) throws DoctorReadingFailedException {
         log.info("getDoctorById with id: " + id);
-
+        Doctor returnedDoctor = null;
         try (Connection connection = DataSource.getConnection();
              PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_DOCTORS_BY_ID)) {
 
             readStatement.setLong(1, id);
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    Doctor returnedDoctor = new Doctor.Builder()
+                    returnedDoctor = new Doctor.Builder()
                             .name(resultSet.getString("name"))
                             .surname(resultSet.getString("surname"))
                             .build();
                     log.info("get(...) = " + returnedDoctor);
-                    return Optional.ofNullable(returnedDoctor);
                 }
             }
         } catch (SQLException e) {
             log.error("Error while getting client with id: " + id, e);
             throw new DoctorReadingFailedException("Error while getting client with id: " + id);
         }
-        return Optional.empty();
+        return Optional.ofNullable(returnedDoctor);
     }
 
     //UPDATE - Spring Data JPA

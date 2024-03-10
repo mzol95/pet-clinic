@@ -4,17 +4,18 @@ import pl.zoltowskimarcin.petclinic.exception.pet.PetDeletingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.pet.PetReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.pet.PetSavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.pet.PetUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.web.model.pet.PetDto;
+import pl.zoltowskimarcin.petclinic.repository.entity.Pet;
 
 import java.util.Optional;
 
+
 public interface PetDao {
 
-    PetDto savePet(PetDto petDto) throws PetSavingFailedException;
+    Pet savePet(Pet pet) throws PetSavingFailedException;
 
-    Optional<PetDto> getPetById(Long id) throws PetReadingFailedException;
+    Optional<Pet> getPetById(Long id) throws PetReadingFailedException;
 
-    PetDto updatePet(Long id, PetDto petDto) throws PetUpdatingFailedException;
+    Pet updatePet(Long id, Pet pet) throws PetUpdatingFailedException;
 
     void deletePet(Long id) throws PetDeletingFailedException;
 }

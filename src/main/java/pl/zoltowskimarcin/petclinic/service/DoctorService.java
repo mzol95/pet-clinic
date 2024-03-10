@@ -32,10 +32,11 @@ public class DoctorService {
     //READ
     public DoctorDto getDoctorById(Long id) throws DoctorReadingFailedException {
         log.info("getDoctorById with id: " + id);
-        Doctor resultDoctor = doctorDao.getDoctorById(id)
+        Doctor mappedDoctor = doctorDao.getDoctorById(id)
                 .orElseThrow(() -> new DoctorReadingFailedException("Error while reading doctor"));
+        DoctorDto resultDoctor = new DoctorMapper().mapToDto(mappedDoctor, DoctorDto.class);
         log.info("getDoctorById(...) = " + resultDoctor);
-        return new DoctorMapper().mapToDto(resultDoctor, DoctorDto.class);
+        return resultDoctor;
     }
 
     //UPDATE

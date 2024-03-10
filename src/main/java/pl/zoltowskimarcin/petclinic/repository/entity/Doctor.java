@@ -22,7 +22,7 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
 
-    Doctor() {
+    public Doctor() {
     }
 
     private Doctor(Builder builder) {
