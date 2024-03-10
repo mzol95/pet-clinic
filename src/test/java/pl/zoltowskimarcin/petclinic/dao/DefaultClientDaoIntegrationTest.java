@@ -10,55 +10,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultClientDao;
-import pl.zoltowskimarcin.petclinic.repository.dao.DefaultPetDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.util.List;
+
+import static pl.zoltowskimarcin.petclinic.utils.TestUtils.*;
 
 @SpringBootTest
 class DefaultClientDaoIntegrationTest {
 
-    private static final String TEST_CLIENT_ADDRESS_STREET = "Test street";
-    private static final String TEST_CLIENT_CITY = "Test city";
-    private static final String TEST_CLIENT_POSTAL_CODE = "Test postalCode";
-    private static final String TEST_CLIENT_NAME = "Test name";
-    private static final String TEST_CLIENT_SURNAME = "Test surname";
-    private static final String TEST_CLIENT_PHONE = "Test phone";
-
-    private static final String UPDATE_TEST_CLIENT_ADDRESS_STREET = "Update Test street";
-    private static final String UPDATE_TEST_CLIENT_CITY = "Update Test city";
-    private static final String UPDATE_TEST_CLIENT_POSTAL_CODE = "Update Test postalCode";
-    private static final String UPDATE_TEST_CLIENT_NAME = "Update Test name";
-    private static final String UPDATE_TEST_CLIENT_SURNAME = "Update Test surname";
-    private static final String UPDATE_TEST_CLIENT_PHONE = "Update Test phone";
-    private static final long CLIENT_ID_1 = 1L;
-    private static final int LIST_SIZE_2 = 2;
-    private static final int LIST_SIZE_0 = 0;
-
     @Autowired
     private DefaultClientDao clientDao;
-    @Autowired
-    private DefaultPetDao petDao;
 
-    private ClientDto clientDto;
-    private ClientDto updatedClientDto;
+    private Client clientJon = new Client(CLIENT_NAME_JON, CLIENT_SURNAME_SNOW, CLIENT_PHONE_123_456_789);
+    private Client clientNed = new Client(CLIENT_NAME_NED, CLIENT_SURNAME_STARK, CLIENT_PHONE_123_000_987);
+    private Client clientKhal = new Client(CLIENT_NAME_KHAL, CLIENT_SURNAME_DROGO, CLIENT_PHONE_111_222_333);
+    private Client updatedClientTyrion = new Client(UPDATE_CLIENT_NAME_TYRION, UPDATE_CLIENT_SURNAME_LANNISTER, UPDATE_CLIENT_PHONE_987_654_321);
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
-
-        clientDto = new ClientDto.Builder()
-                .name(TEST_CLIENT_NAME)
-                .surname(TEST_CLIENT_SURNAME)
-                .phone(TEST_CLIENT_PHONE)
-                .build();
-
-        updatedClientDto = new ClientDto.Builder()
-                .name(UPDATE_TEST_CLIENT_NAME)
-                .surname(UPDATE_TEST_CLIENT_SURNAME)
-                .phone(UPDATE_TEST_CLIENT_PHONE)
-                .build();
     }
 
     @AfterEach
@@ -66,39 +38,39 @@ class DefaultClientDaoIntegrationTest {
         DatabaseInitializer.dropDatabase();
     }
 
-
     @Test
     void getting_all_clients_should_return_all_clients_list() throws ClientException {
         //given
 
         //when
-        clientDao.saveClient(clientDto);
-        clientDao.saveClient(clientDto);
+        clientDao.saveClient(clientJon);
+        clientDao.saveClient(clientNed);
 
-        List<ClientDto> clients = clientDao.getAllClients();
+        List<Client> clients = clientDao.getAllClients();
         int listSize = clients.size();
         //then
-        Assertions.assertEquals(LIST_SIZE_2, listSize, "List size isn't equal 2");
+        Assertions.assertEquals(2, listSize, "List size isn't equal 2");
     }
 
     @Test
-    void getting_clients_should_return_client_dto() throws ClientException {
+    void getting_clients_should_return_clients_list() throws ClientException {
         //given
 
         //when
-        clientDao.saveClient(clientDto);
+        Client savedClientJon = clientDao.saveClient(clientJon);
+        Client savedClientNed = clientDao.saveClient(clientNed);
+        List<Client> clients = clientDao.getAllClients();
 
-        List<ClientDto> clients = clientDao.getAllClients();
-        String resultName = clients.get(0).getName();
-        String resultSurname = clients.get(0).getSurname();
+        boolean containsSavedClientJon = clients.contains(savedClientJon);
+        boolean containsSavedClientNed = clients.contains(savedClientNed);
 
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals(TEST_CLIENT_NAME, resultName, "Names are not equal"),
-                () -> Assertions.assertEquals(TEST_CLIENT_SURNAME, resultSurname, "Surnames are not equal")
+                () -> Assertions.assertEquals(LIST_SIZE_2, clients.size(), "List size isn't equal 2"),
+                () -> Assertions.assertTrue(containsSavedClientJon, "List doesn't contain savedClientJon"),
+                () -> Assertions.assertTrue(containsSavedClientNed, "List doesn't contain savedClientNed")
         );
     }
-
 
 
     @Test
@@ -106,12 +78,21 @@ class DefaultClientDaoIntegrationTest {
         //given
 
         //when
-        ClientDto persistedClient = clientDao.saveClient(clientDto);
+        clientDao.saveClient(clientKhal);
 
-        ClientDto returnedClient = clientDao.getClientById(CLIENT_ID_1)
+        Client returnedClient = clientDao.getClientById(ID_1)
                 .orElseThrow(ClientReadingFailedException::new);
+
+        String returnedName = returnedClient.getName();
+        String returnedSurname = returnedClient.getSurname();
+        String returnedPhone = returnedClient.getPhone();
+
         //then
-        Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(CLIENT_NAME_KHAL, returnedName, "Name is not equal"),
+                () -> Assertions.assertEquals(CLIENT_SURNAME_DROGO, returnedSurname, "Surname is not equal"),
+                () -> Assertions.assertEquals(CLIENT_PHONE_111_222_333, returnedPhone, "Phone is not equal")
+        );
     }
 
     @Test
@@ -119,12 +100,11 @@ class DefaultClientDaoIntegrationTest {
         //given
 
         //when
-        ClientDto persistedClient = clientDao.saveClient(clientDto);
-
-        ClientDto updatedClient = clientDao.updateClient(CLIENT_ID_1, updatedClientDto);
-
+        Client savedClient = clientDao.saveClient(clientJon);
+        Client updatedClient = clientDao.updateClient(ID_1, updatedClientTyrion);
+        updatedClient.setId(null);
         //then
-        Assertions.assertEquals(updatedClientDto, updatedClient, "Client is not equal");
+        Assertions.assertEquals(updatedClientTyrion, updatedClient, "Client is not equal");
     }
 
 
@@ -133,9 +113,9 @@ class DefaultClientDaoIntegrationTest {
         //given
 
         //when
-        ClientDto persistedClient = clientDao.saveClient(clientDto);
-        clientDao.deleteClient(CLIENT_ID_1);
-        ClientDto returnedClient = clientDao.getClientById(CLIENT_ID_1).orElse(null);
+        Client savedClient = clientDao.saveClient(clientJon);
+        clientDao.deleteClient(savedClient.getId());
+        Client returnedClient = clientDao.getClientById(savedClient.getId()).orElse(null);
 
         //then
         Assertions.assertNull(returnedClient, "Client is not null");

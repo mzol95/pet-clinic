@@ -12,56 +12,28 @@ import pl.zoltowskimarcin.petclinic.exception.client.ClientException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.repository.dao.DefaultClientDao;
-import pl.zoltowskimarcin.petclinic.repository.dao.DefaultPetDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 import pl.zoltowskimarcin.petclinic.utils.DatabaseInitializer;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.util.List;
 import java.util.Optional;
 
+import static pl.zoltowskimarcin.petclinic.utils.TestUtils.*;
+
 @SpringBootTest
 class DefaultClientDaoTest {
 
-    private static final String TEST_CLIENT_ADDRESS_STREET = "Test street";
-    private static final String TEST_CLIENT_CITY = "Test city";
-    private static final String TEST_CLIENT_POSTAL_CODE = "Test postalCode";
-    private static final String TEST_CLIENT_NAME = "Test name";
-    private static final String TEST_CLIENT_SURNAME = "Test surname";
-    private static final String TEST_CLIENT_PHONE = "Test phone";
-
-    private static final String UPDATE_TEST_CLIENT_ADDRESS_STREET = "Update Test street";
-    private static final String UPDATE_TEST_CLIENT_CITY = "Update Test city";
-    private static final String UPDATE_TEST_CLIENT_POSTAL_CODE = "Update Test postalCode";
-    private static final String UPDATE_TEST_CLIENT_NAME = "Update Test name";
-    private static final String UPDATE_TEST_CLIENT_SURNAME = "Update Test surname";
-    private static final String UPDATE_TEST_CLIENT_PHONE = "Update Test phone";
-    private static final long CLIENT_ID_1 = 1L;
-    private static final int LIST_SIZE_2 = 2;
-    private static final int LIST_SIZE_0 = 0;
-
     @Autowired
     private DefaultClientDao clientDao;
-    @Autowired
-    private DefaultPetDao petDao;
 
-    private ClientDto clientDto;
-    private ClientDto updatedClientDto;
+    private Client clientJon = new Client(CLIENT_NAME_JON, CLIENT_SURNAME_SNOW, CLIENT_PHONE_123_456_789);
+    private Client clientNed = new Client(CLIENT_NAME_NED, CLIENT_SURNAME_STARK, CLIENT_PHONE_123_000_987);
+    private Client clientKhal = new Client(CLIENT_NAME_KHAL, CLIENT_SURNAME_DROGO, CLIENT_PHONE_111_222_333);
+    private Client updatedClientTyrion = new Client(UPDATE_CLIENT_NAME_TYRION, UPDATE_CLIENT_SURNAME_LANNISTER, UPDATE_CLIENT_PHONE_987_654_321);
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
         DatabaseInitializer.initializeDatabase();
-
-        clientDto = new ClientDto.Builder()
-                .name(TEST_CLIENT_NAME)
-                .surname(TEST_CLIENT_SURNAME)
-                .phone(TEST_CLIENT_PHONE)
-                .build();
-
-        updatedClientDto = new ClientDto.Builder()
-                .name(UPDATE_TEST_CLIENT_NAME)
-                .surname(UPDATE_TEST_CLIENT_SURNAME)
-                .phone(UPDATE_TEST_CLIENT_PHONE)
-                .build();
     }
 
     @AfterEach
@@ -69,17 +41,16 @@ class DefaultClientDaoTest {
         DatabaseInitializer.dropDatabase();
     }
 
-
     @Test
     void getting_empty_table_should_return_empty_list() throws ClientReadingFailedException {
         //given
 
         //when
-        List<ClientDto> clients = clientDao.getAllClients();
+        List<Client> clients = clientDao.getAllClients();
         int listSize = clients.size();
 
         //then
-        Assertions.assertEquals(LIST_SIZE_0, listSize, "List size isn't equal 0");
+        Assertions.assertEquals(0, listSize, "List size isn't equal 0");
     }
 
 
@@ -88,10 +59,10 @@ class DefaultClientDaoTest {
         //given
 
         //when
-        ClientDto returnedClient = clientDao.saveClient(clientDto);
+        Client returnedClient = clientDao.saveClient(clientJon);
 
         //then
-        Assertions.assertEquals(clientDto, returnedClient, "Client is not equal");
+        Assertions.assertEquals(clientJon, returnedClient, "Client is not equal");
     }
 
 
@@ -103,7 +74,7 @@ class DefaultClientDaoTest {
 
         //then
         Assertions.assertThrows(ClientUpdatingFailedException.class,
-                () -> clientDao.updateClient(CLIENT_ID_1, updatedClientDto), "Exception not thrown");
+                () -> clientDao.updateClient(ID_1, updatedClientTyrion), "Exception not thrown");
     }
 
 
@@ -112,7 +83,7 @@ class DefaultClientDaoTest {
         //given
 
         //when
-        Optional<ClientDto> returnedClient = clientDao.getClientById(CLIENT_ID_1);
+        Optional<Client> returnedClient = clientDao.getClientById(ID_1);
 
         //then
         Assertions.assertEquals(Optional.empty(), returnedClient, "Client is not empty");
@@ -126,7 +97,7 @@ class DefaultClientDaoTest {
 
         //then
         Assertions.assertThrows(ClientDeletingFailedException.class,
-                () -> clientDao.deleteClient(CLIENT_ID_1), "Exception not thrown");
+                () -> clientDao.deleteClient(ID_1), "Exception not thrown");
     }
 
 }

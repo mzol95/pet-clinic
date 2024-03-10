@@ -11,12 +11,10 @@ import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException
 import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
-import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
 import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 import pl.zoltowskimarcin.petclinic.repository.jpa.ClientRepository;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,9 +36,10 @@ public class DefaultClientDao implements ClientDao {
 
     //CREATE - Native Hibernate
     @Override
-    public ClientDto saveClient(ClientDto client) throws ClientSavingFailedException {
+    public Client saveClient(Client client) throws ClientSavingFailedException {
         log.info("save " + client + ")");
-        Client clientToPersist = new ClientMapper().mapToEntity(client);
+
+        Client clientToPersist = client;
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -51,14 +50,14 @@ public class DefaultClientDao implements ClientDao {
             throw new ClientSavingFailedException("Error while saving client");
         }
         log.info("save(...) = " + clientToPersist);
-        return new ClientMapper().mapToDto(clientToPersist, ClientDto.class);
+        return clientToPersist;
     }
 
     @Override
-    public Optional<ClientDto> getClientById(Long id) throws ClientReadingFailedException {
+    public Optional<Client> getClientById(Long id) throws ClientReadingFailedException {
         log.info("getClientById with id: " + id);
 
-        ClientDto returnedClient = null;
+        Client returnedClient = null;
 
         try (Connection connection = DataSource.getConnection();
              PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_CLIENT_BY_ID)) {
@@ -67,11 +66,12 @@ public class DefaultClientDao implements ClientDao {
 
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    returnedClient = new ClientDto.Builder()
-                            .name(resultSet.getString("name"))
-                            .surname(resultSet.getString("surname"))
-                            .phone(resultSet.getString("phone"))
-                            .build();
+                    String name = resultSet.getString("name");
+                    String surname = resultSet.getString("surname");
+                    String phone = resultSet.getString("phone");
+
+                    returnedClient = new Client(name, surname, phone);
+
                     log.info("get(...) = " + returnedClient);
                 }
             }
@@ -84,7 +84,7 @@ public class DefaultClientDao implements ClientDao {
 
     //todo group by distinct
     @Override
-    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws ClientReadingFailedException {
+    public Optional<Client> getClientByIdWithDetails(Long id) throws ClientReadingFailedException {
 //        log.info("getClientByIdWithDetails with id: " + id);
 //
 //        ClientDto returnedClient = null;
@@ -150,21 +150,23 @@ public class DefaultClientDao implements ClientDao {
 
     //READ ALL - JDBC
     @Override
-    public List<ClientDto> getAllClients() throws ClientReadingFailedException {
+    public List<Client> getAllClients() throws ClientReadingFailedException {
         log.info("getAllClients()");
 
-        List<ClientDto> returnedClients = new ArrayList<>();
+        List<Client> returnedClients = new ArrayList<>();
 
         try (Connection connection = DataSource.getConnection();
              PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_ALL_CLIENTS)) {
 
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    ClientDto returnedClient = new ClientDto.Builder()
-                            .name(resultSet.getString("name"))
-                            .surname(resultSet.getString("surname"))
-                            .phone(resultSet.getString("phone"))
-                            .build();
+                    Long id = resultSet.getLong("id");
+                    String name = resultSet.getString("name");
+                    String surname = resultSet.getString("surname");
+                    String phone = resultSet.getString("phone");
+
+                    Client returnedClient = new Client(name, surname, phone);
+                    returnedClient.setId(id);
 
                     returnedClients.add(returnedClient);
                 }
@@ -181,15 +183,15 @@ public class DefaultClientDao implements ClientDao {
     //UPDATE - Spring Data JPA
     @Override
     @Transactional
-    public ClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException {
-        log.info("update " + clientDto + " with id: " + id);
+    public Client updateClient(Long id, Client client) throws ClientUpdatingFailedException {
+        log.info("update " + client + " with id: " + id);
 
         Client clientToUpdate = clientRepository.findById(id)
                 .orElseThrow(() -> new ClientUpdatingFailedException("Client with id: " + id + " doesn't exists in database."));
 
-        clientToUpdate.setName(clientDto.getName());
-        clientToUpdate.setSurname(clientDto.getSurname());
-        clientToUpdate.setPhone(clientDto.getPhone());
+        clientToUpdate.setName(client.getName());
+        clientToUpdate.setSurname(client.getSurname());
+        clientToUpdate.setPhone(client.getPhone());
 //        clientToUpdate.getAddresses().setStreet(clientDto.getStreet());
 //        clientToUpdate.getAddresses().setCity(clientDto.getCity());
 //        clientToUpdate.getAddresses().setPostalCode(clientDto.getPostalCode());
@@ -197,7 +199,7 @@ public class DefaultClientDao implements ClientDao {
         Client updatedClient = clientRepository.save(clientToUpdate);
 
         log.info("update(...) = " + clientToUpdate);
-        return new ClientMapper().mapToDto(updatedClient, ClientDto.class);
+        return updatedClient;
     }
 
     //DELETE - JpaStandard
