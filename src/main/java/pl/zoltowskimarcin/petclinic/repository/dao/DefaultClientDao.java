@@ -70,7 +70,7 @@ public class DefaultClientDao implements ClientDao {
                     String surname = resultSet.getString("surname");
                     String phone = resultSet.getString("phone");
 
-                    returnedClient = new Client(name, surname, phone);
+                    returnedClient = new Client(name, surname, phone, null, null, null);
 
                     log.info("get(...) = " + returnedClient);
                 }
@@ -165,7 +165,7 @@ public class DefaultClientDao implements ClientDao {
                     String surname = resultSet.getString("surname");
                     String phone = resultSet.getString("phone");
 
-                    Client returnedClient = new Client(name, surname, phone);
+                    Client returnedClient = new Client(name, surname, phone, null, null, null);
                     returnedClient.setId(id);
 
                     returnedClients.add(returnedClient);

@@ -8,15 +8,15 @@ import java.time.LocalDateTime;
 public class TestUtils {
     public static final String CLIENT_NAME_JON = "Jon";
     public static final String CLIENT_SURNAME_SNOW = "Snow";
-    public static final String CLIENT_PHONE_123_456_789 = "123-456-789";
+    public static final String CLIENT_JON_PHONE_123_456_789 = "123-456-789";
 
     public static final String CLIENT_NAME_NED = "Ned";
     public static final String CLIENT_SURNAME_STARK = "Stark";
-    public static final String CLIENT_PHONE_123_000_987 = "123-000-987";
+    public static final String CLIENT_NED_PHONE_123_000_987 = "123-000-987";
 
     public static final String CLIENT_NAME_KHAL = "Khal";
     public static final String CLIENT_SURNAME_DROGO = "Drogo";
-    public static final String CLIENT_PHONE_111_222_333 = "111-222-333";
+    public static final String CLIENT_KHAL_PHONE_111_222_333 = "111-222-333";
 
     public static final String UPDATE_CLIENT_NAME_TYRION = "Tyrion";
     public static final String UPDATE_CLIENT_SURNAME_LANNISTER = "Lannister";

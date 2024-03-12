@@ -36,11 +36,13 @@ public class Client {
     public Client() {
     }
 
-
-    public Client(String name, String surname, String phone) {
+    public Client(String name, String surname, String phone, Address address, List<Pet> pets, List<Appointment> appointments) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
+        this.address = address;
+        this.pets = pets;
+        this.appointments = appointments;
     }
 
     public Long getId() {

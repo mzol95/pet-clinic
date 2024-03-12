@@ -23,10 +23,10 @@ class DefaultClientDaoIntegrationTest {
     @Autowired
     private DefaultClientDao clientDao;
 
-    private Client clientJon = new Client(CLIENT_NAME_JON, CLIENT_SURNAME_SNOW, CLIENT_PHONE_123_456_789);
-    private Client clientNed = new Client(CLIENT_NAME_NED, CLIENT_SURNAME_STARK, CLIENT_PHONE_123_000_987);
-    private Client clientKhal = new Client(CLIENT_NAME_KHAL, CLIENT_SURNAME_DROGO, CLIENT_PHONE_111_222_333);
-    private Client updatedClientTyrion = new Client(UPDATE_CLIENT_NAME_TYRION, UPDATE_CLIENT_SURNAME_LANNISTER, UPDATE_CLIENT_PHONE_987_654_321);
+    private Client clientJon = new Client(CLIENT_NAME_JON, CLIENT_SURNAME_SNOW, CLIENT_JON_PHONE_123_456_789, null, null, null);
+    private Client clientNed = new Client(CLIENT_NAME_NED, CLIENT_SURNAME_STARK, CLIENT_NED_PHONE_123_000_987, null, null, null);
+    private Client clientKhal = new Client(CLIENT_NAME_KHAL, CLIENT_SURNAME_DROGO, CLIENT_KHAL_PHONE_111_222_333, null, null, null);
+    private Client updatedClientTyrion = new Client(UPDATE_CLIENT_NAME_TYRION, UPDATE_CLIENT_SURNAME_LANNISTER, UPDATE_CLIENT_PHONE_987_654_321, null, null, null);
 
     @BeforeEach
     void setUp() throws CommandExecutionException {
@@ -91,7 +91,7 @@ class DefaultClientDaoIntegrationTest {
         Assertions.assertAll(
                 () -> Assertions.assertEquals(CLIENT_NAME_KHAL, returnedName, "Name is not equal"),
                 () -> Assertions.assertEquals(CLIENT_SURNAME_DROGO, returnedSurname, "Surname is not equal"),
-                () -> Assertions.assertEquals(CLIENT_PHONE_111_222_333, returnedPhone, "Phone is not equal")
+                () -> Assertions.assertEquals(CLIENT_KHAL_PHONE_111_222_333, returnedPhone, "Phone is not equal")
         );
     }
 

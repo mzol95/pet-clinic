@@ -27,59 +27,12 @@ public class ClientDto {
     private ClientDto() {
     }
 
-    private ClientDto(Builder builder) {
-        setName(builder.name);
-        setSurname(builder.surname);
-        setPhone(builder.phone);
-        setAddress(builder.address);
-        setPetDtos(builder.petDtos);
-        setAppointmentDtos(builder.appointmentDtos);
-    }
-
-
-    public static final class Builder {
-        private String name;
-        private String surname;
-        private String phone;
-        private Address address;
-        private List<BasicPetDto> petDtos;
-        private List<BasicAppointmentDto> appointmentDtos;
-
-        public Builder() {
-        }
-
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Builder surname(String val) {
-            surname = val;
-            return this;
-        }
-
-        public Builder phone(String val) {
-            phone = val;
-            return this;
-        }
-
-        public Builder address(Address val) {
-            address = val;
-            return this;
-        }
-
-        public Builder petDtos(List<BasicPetDto> val) {
-            petDtos = val;
-            return this;
-        }
-
-        public Builder appointmentDtos(List<BasicAppointmentDto> val) {
-            appointmentDtos = val;
-            return this;
-        }
-
-        public ClientDto build() {
-            return new ClientDto(this);
-        }
+    public ClientDto(String name, String surname, String phone, Address address, List<BasicPetDto> petDtos, List<BasicAppointmentDto> appointmentDtos) {
+        this.name = name;
+        this.surname = surname;
+        this.phone = phone;
+        this.address = address;
+        this.petDtos = petDtos;
+        this.appointmentDtos = appointmentDtos;
     }
 }
