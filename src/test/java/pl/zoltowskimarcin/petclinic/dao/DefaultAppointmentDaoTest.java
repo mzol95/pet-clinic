@@ -25,7 +25,7 @@ class DefaultAppointmentDaoTest {
     @Autowired
     private DefaultAppointmentDao appointmentDao;
 
-    private Appointment appointment = new Appointment(APPOINTMENT_DATE_TIME, APPOINTMENT_FINISHED);
+    private Appointment appointment = new Appointment(APPOINTMENT_DATE_TIME_1, APPOINTMENT_FINISHED_TRUE);
     private Appointment updatedAppointment = new Appointment(UPDATE_APPOINTMENT_DATE_TIME, UPDATE_APPOINTMENT_FINISHED);
 
     @BeforeEach

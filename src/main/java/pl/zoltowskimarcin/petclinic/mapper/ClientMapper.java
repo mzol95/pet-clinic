@@ -16,23 +16,26 @@ public class ClientMapper {
     public <T> T mapToDto(Client client, Class<T> type) {
         ModelMapper modelMapper = new ModelMapper();
         log.info("Mapping Client: " + client + "to ClientDto");
+        modelMapper.typeMap(Client.class, ClientDto.class).addMapping(Client::getPets, ClientDto::setPetDtos);
+        modelMapper.typeMap(Client.class, ClientDto.class).addMapping(Client::getAppointments, ClientDto::setAppointmentDtos);
         T mappedClient = modelMapper.map(client, type);
         log.info("Mapped Client: " + client + "to ClientDto: " + mappedClient);
         return mappedClient;
     }
 
-
     public Client mapToEntity(ClientDto clientDto) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.typeMap(ClientDto.class, Client.class).addMappings(mapper -> mapper.skip(Client::setId));
+        modelMapper.typeMap(ClientDto.class, Client.class).addMapping(ClientDto::getPetDtos, Client::setPets);
+        modelMapper.typeMap(ClientDto.class, Client.class).addMapping(ClientDto::getAppointmentDtos, Client::setAppointments);
         log.info("Mapping ClientDto: " + clientDto + "to Client");
         Client mappedClient = modelMapper.map(clientDto, Client.class);
-        log.info("Mapped ClientDto: " + clientDto + "to Client: " + mappedClient);
+        log.info("Mapped ClientDto: " + clientDto + " to Client: " + mappedClient);
         return mappedClient;
     }
 
     public <T> List<T> mapToDtoList(List<Client> clients, Class<T> type) {
-        log.info("Mapping List<Client> to List<ClientDto>");
+        log.info("Mapping List<Client> to List<T>");
         List<T> clientDtos = clients.stream()
                 .map(src -> mapToDto(src, type))
                 .collect(Collectors.toList());

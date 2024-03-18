@@ -23,7 +23,7 @@ class DefaultAppointmentDaoIntegrationTest {
     @Autowired
     private DefaultAppointmentDao appointmentDao;
 
-    private Appointment appointment = new Appointment(APPOINTMENT_DATE_TIME, APPOINTMENT_FINISHED);
+    private Appointment appointment = new Appointment(APPOINTMENT_DATE_TIME_1, APPOINTMENT_FINISHED_TRUE);
     private Appointment updatingAppointment = new Appointment(UPDATE_APPOINTMENT_DATE_TIME, UPDATE_APPOINTMENT_FINISHED);
 
 
@@ -53,8 +53,8 @@ class DefaultAppointmentDaoIntegrationTest {
 
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals(APPOINTMENT_DATE_TIME, returnedLocalDateTime, "Date is not equal"),
-                () -> Assertions.assertEquals(APPOINTMENT_FINISHED, returnedFinished, "Finished is not equal")
+                () -> Assertions.assertEquals(APPOINTMENT_DATE_TIME_1, returnedLocalDateTime, "Date is not equal"),
+                () -> Assertions.assertEquals(APPOINTMENT_FINISHED_TRUE, returnedFinished, "Finished is not equal")
         );
     }
 
