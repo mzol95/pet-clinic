@@ -6,10 +6,10 @@ import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentDeletingFai
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentSavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.mapper.AppointmentMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.AppointmentDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Appointment;
 import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -21,23 +21,30 @@ public class AppointmentService {
         this.appointmentDao = appointmentDao;
     }
 
-    public AppointmentDto saveAppointment(AppointmentDto appointmentDto) throws AppointmentSavingFailedException {
-        log.info("save " + appointmentDto + ")");
-        AppointmentDto resultAppointment = appointmentDao.saveAppointment(appointmentDto);
+    public AppointmentDto saveAppointment(Appointment appointment) throws AppointmentSavingFailedException {
+        log.info("save " + appointment + ")");
+        Appointment returnedAppointment = appointmentDao.saveAppointment(appointment);
+        AppointmentDto resultAppointment = new AppointmentMapper().mapToDto(returnedAppointment, AppointmentDto.class);
         log.info("save(...) = " + resultAppointment);
         return resultAppointment;
     }
 
-    public Optional<AppointmentDto> getAppointmentById(Long id) throws AppointmentReadingFailedException {
+    public AppointmentDto getAppointmentById(Long id) throws AppointmentReadingFailedException {
         log.info("getAppointmentById with id: " + id);
-        Optional<AppointmentDto> resultAppointment = appointmentDao.getAppointmentById(id);
+
+        Appointment returnedAppointment = appointmentDao.getAppointmentById(id)
+                .orElseThrow(() -> new AppointmentReadingFailedException("Error while reading appointment"));
+
+        AppointmentDto resultAppointment = new AppointmentMapper().mapToDto(returnedAppointment, AppointmentDto.class);
+
         log.info("getAppointmentById(...) = " + resultAppointment);
         return resultAppointment;
     }
 
-    public AppointmentDto updateAppointment(Long id, AppointmentDto appointmentDto) throws AppointmentUpdatingFailedException {
-        log.info("updateAppointment with id: " + id + " and appointmentDto: " + appointmentDto);
-        AppointmentDto resultAppointment = appointmentDao.updateAppointment(id, appointmentDto);
+    public AppointmentDto updateAppointment(Long id, Appointment appointment) throws AppointmentUpdatingFailedException {
+        log.info("updateAppointment with id: " + id + " and appointmentDto: " + appointment);
+        Appointment updatedAppointment = appointmentDao.updateAppointment(id, appointment);
+        AppointmentDto resultAppointment = new AppointmentMapper().mapToDto(updatedAppointment, AppointmentDto.class);
         log.info("updateAppointment(...) = " + resultAppointment);
         return resultAppointment;
     }

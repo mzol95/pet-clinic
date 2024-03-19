@@ -4,22 +4,22 @@ import pl.zoltowskimarcin.petclinic.exception.client.ClientDeletingFailedExcepti
 import pl.zoltowskimarcin.petclinic.exception.client.ClientReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
+import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ClientDao {
 
-    ClientDto saveClient(ClientDto basicClient) throws ClientSavingFailedException;
+    Client saveClient(Client client) throws ClientSavingFailedException;
 
-    Optional<ClientDto> getClientById(Long id) throws ClientReadingFailedException;
+    Optional<Client> getClientById(Long id) throws ClientReadingFailedException;
 
-    Optional<ClientDto> getClientByIdWithDetails(Long id) throws ClientReadingFailedException;
+    Optional<Client> getClientByIdWithDetails(Long id) throws ClientReadingFailedException;
 
-    List<ClientDto> getAllClients() throws ClientReadingFailedException;
+    List<Client> getAllClients() throws ClientReadingFailedException;
 
-    ClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException;
+    Client updateClient(Long id, Client client) throws ClientUpdatingFailedException;
 
     void deleteClient(Long id) throws ClientDeletingFailedException;
 }

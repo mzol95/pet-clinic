@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class PropertyManager {
 
     private static final Logger LOGGER = Logger.getLogger(PropertyManager.class.getName());
-    private static final String PROPERTY_FILE_NAME = "jdbc.properties";
+    private static final String PROPERTY_FILE_NAME = "parameters.properties";
     private static final Properties properties;
 
     static {

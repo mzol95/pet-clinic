@@ -1,41 +1,53 @@
 package pl.zoltowskimarcin.petclinic.mapper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import pl.zoltowskimarcin.petclinic.repository.entity.Client;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
+@Slf4j
 public class ClientMapper {
 
-    private static ModelMapper modelMapper;
+    public <T> T mapToDto(Client client, Class<T> type) {
+        ModelMapper modelMapper = new ModelMapper();
+        log.info("Mapping Client: " + client + "to ClientDto");
+        modelMapper.typeMap(Client.class, ClientDto.class).addMapping(Client::getPets, ClientDto::setPetDtos);
+        modelMapper.typeMap(Client.class, ClientDto.class).addMapping(Client::getAppointments, ClientDto::setAppointmentDtos);
+        T mappedClient = modelMapper.map(client, type);
+        log.info("Mapped Client: " + client + "to ClientDto: " + mappedClient);
+        return mappedClient;
+    }
 
-    public static ModelMapper getMapper() {
-        if (modelMapper == null) {
-            modelMapper = new ModelMapper();
-            modelMapper.typeMap(Client.class, ClientDto.class)
-                    .addMapping(src -> src.getAddresses().getStreet(), ClientDto::setStreet)
-                    .addMapping(src -> src.getAddresses().getCity(), ClientDto::setCity)
-                    .addMapping(src -> src.getAddresses().getPostalCode(), ClientDto::setPostalCode);
+    public Client mapToEntity(ClientDto clientDto) {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(ClientDto.class, Client.class).addMappings(mapper -> mapper.skip(Client::setId));
+        modelMapper.typeMap(ClientDto.class, Client.class).addMapping(ClientDto::getPetDtos, Client::setPets);
+        modelMapper.typeMap(ClientDto.class, Client.class).addMapping(ClientDto::getAppointmentDtos, Client::setAppointments);
+        log.info("Mapping ClientDto: " + clientDto + "to Client");
+        Client mappedClient = modelMapper.map(clientDto, Client.class);
+        log.info("Mapped ClientDto: " + clientDto + " to Client: " + mappedClient);
+        return mappedClient;
+    }
 
-            modelMapper.typeMap(ClientDto.class, Client.class)
-                    .addMappings(mapper -> mapper.skip(Client::setId))
-                    .addMapping(ClientDto::getStreet, (entity, value) -> entity.getAddresses().setStreet((String) value))
-                    .addMapping(ClientDto::getCity, (entity, value) -> entity.getAddresses().setCity((String) value))
-                    .addMapping(ClientDto::getPostalCode, (entity, value) -> entity.getAddresses().setPostalCode((String) value));
+    public <T> List<T> mapToDtoList(List<Client> clients, Class<T> type) {
+        log.info("Mapping List<Client> to List<T>");
+        List<T> clientDtos = clients.stream()
+                .map(src -> mapToDto(src, type))
+                .collect(Collectors.toList());
+        return clientDtos;
+    }
 
-            modelMapper.typeMap(Client.class, BasicClientDto.class)
-                    .addMapping(src -> src.getAddresses().getStreet(), BasicClientDto::setStreet)
-                    .addMapping(src -> src.getAddresses().getCity(), BasicClientDto::setCity)
-                    .addMapping(src -> src.getAddresses().getPostalCode(), BasicClientDto::setPostalCode);
-
-            modelMapper.typeMap(BasicClientDto.class, Client.class)
-                    .addMapping(BasicClientDto::getStreet, (entity, value) -> entity.getAddresses().setStreet((String) value))
-                    .addMapping(BasicClientDto::getCity, (entity, value) -> entity.getAddresses().setCity((String) value))
-                    .addMapping(BasicClientDto::getPostalCode, (entity, value) -> entity.getAddresses().setPostalCode((String) value));
-        }
-        return modelMapper;
+    public List<Client> mapToEntityList(List<ClientDto> clientDtos) {
+        log.info("Mapping List<ClientDto> to List<Client>");
+        List<Client> clients = clientDtos.stream()
+                .map(this::mapToEntity)
+                .collect(Collectors.toList());
+        return clients;
     }
 
 }

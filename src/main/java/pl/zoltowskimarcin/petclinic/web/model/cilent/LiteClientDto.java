@@ -11,7 +11,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class LiteClientDto {
 
-    private Long id;
     private String name;
     private String surname;
 
@@ -19,23 +18,16 @@ public class LiteClientDto {
     }
 
     private LiteClientDto(Builder builder) {
-        setId(builder.id);
         setName(builder.name);
         setSurname(builder.surname);
     }
 
 
     public static final class Builder {
-        private Long id;
         private String name;
         private String surname;
 
         public Builder() {
-        }
-
-        public Builder id(Long val) {
-            id = val;
-            return this;
         }
 
         public Builder name(String val) {

@@ -3,6 +3,7 @@ package pl.zoltowskimarcin.petclinic.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import pl.zoltowskimarcin.petclinic.utils.PropertyManager;
 
 
 public class JpaStandardUtils {
@@ -12,7 +13,7 @@ public class JpaStandardUtils {
 
     static {
         entityManagerFactory =
-                Persistence.createEntityManagerFactory("pet-clinic");
+                Persistence.createEntityManagerFactory(PropertyManager.getProperty("entityUnit.persistanceUnit"));
     }
 
     private JpaStandardUtils() {

@@ -1,13 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>list of clients</title>
+    <title>Add Client</title>
+    <style>
+        .fieldset-container {
+            float: left;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .button-container {
+            clear: both;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-label {
+            display: inline-block;
+            width: 80px; /* Szerokość etykiety */
+            text-align: left; /* Wyrównanie etykiety do prawej */
+        }
+    </style>
 </head>
 <body>
-<div>
-    <h1>List of clients</h1>
-    <div th:text="${clients}"> clients </div>
-</div>
+<!--/*@thymesVar id="client" type="pl.zoltowskimarcin.petclinic.repository.entity.Client"*/-->
+<form action="#" th:action="@{/clients}" th:object="${client}" method="post">
+    <div class="fieldset-container">
+        <fieldset>
+            <legend>Add new client</legend>
+            <div class="fieldset-container">
+                <fieldset>
+                    <legend>Client Information</legend>
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" id="name" th:field="*{name}" required><br>
+
+                    <label for="surname" class="form-label">Surname:</label>
+                    <input type="text" id="surname" th:field="*{surname}" required><br>
+
+                    <label for="phone" class="form-label">Phone:</label>
+                    <input type="text" id="phone" th:field="*{phone}" required><br>
+                </fieldset>
+            </div>
+            <div class="fieldset-container">
+                <fieldset>
+                    <legend>Address Information</legend>
+                    <label for="street" class="form-label">Street:</label>
+                    <input type="text" id="street" th:field="*{address.street}" required><br>
+
+                    <label for="city" class="form-label">City:</label>
+                    <input type="text" id="city" th:field="*{address.city}" required><br>
+
+                    <label for="postalCode" class="form-label">Postal code:</label>
+                    <input type="text" id="postalCode" th:field="*{address.postalCode}" required><br>
+                </fieldset>
+            </div>
+        </fieldset>
+    </div>
+    <div class="clearfix"></div>
+    <div class="button-container">
+        <button onclick="window.location.href='/menu'">Back</button>
+        <button type="submit">Save</button>
+    </div>
+
+</form>
 </body>
 </html>
+
+

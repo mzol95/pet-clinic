@@ -4,9 +4,10 @@
              http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
              version="2.1">
 
-    <persistence-unit name="pet-clinic">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <persistence-unit name="pet-clinic-test">
 
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Client</class>
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Appointment</class>
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Pet</class>
@@ -15,7 +16,7 @@
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:h2:file:~/pet-clinic;DB_CLOSE_DELAY=-1"/>
+                      value="jdbc:h2:mem:pet-clinic;DB_CLOSE_DELAY=-1"/>
             <property name="jakarta.persistence.jdbc.user" value="sa"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
             <property name="hibernate.show_sql" value="true"/>

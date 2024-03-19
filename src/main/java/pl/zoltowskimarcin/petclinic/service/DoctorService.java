@@ -6,10 +6,10 @@ import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorDeletingFailedExcepti
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorReadingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorSavingFailedException;
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorUpdatingFailedException;
+import pl.zoltowskimarcin.petclinic.mapper.DoctorMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.DoctorDao;
+import pl.zoltowskimarcin.petclinic.repository.entity.Doctor;
 import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -22,27 +22,29 @@ public class DoctorService {
     }
 
     //CREATE
-    public DoctorDto saveDoctor(DoctorDto doctorDto) throws DoctorSavingFailedException {
-        log.info("saveDoctor(" + doctorDto + ")");
-        DoctorDto resultDoctor = doctorDao.saveDoctor(doctorDto);
+    public DoctorDto saveDoctor(Doctor doctor) throws DoctorSavingFailedException {
+        log.info("saveDoctor(" + doctor + ")");
+        Doctor resultDoctor = doctorDao.saveDoctor(doctor);
         log.info("saveDoctor(...) = " + resultDoctor);
-        return resultDoctor;
+        return new DoctorMapper().mapToDto(resultDoctor, DoctorDto.class);
     }
 
     //READ
-    public Optional<DoctorDto> getDoctorById(Long id) throws DoctorReadingFailedException {
+    public DoctorDto getDoctorById(Long id) throws DoctorReadingFailedException {
         log.info("getDoctorById with id: " + id);
-        Optional<DoctorDto> resultDoctor = doctorDao.getDoctorById(id);
+        Doctor mappedDoctor = doctorDao.getDoctorById(id)
+                .orElseThrow(() -> new DoctorReadingFailedException("Error while reading doctor"));
+        DoctorDto resultDoctor = new DoctorMapper().mapToDto(mappedDoctor, DoctorDto.class);
         log.info("getDoctorById(...) = " + resultDoctor);
         return resultDoctor;
     }
 
     //UPDATE
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) throws DoctorUpdatingFailedException {
-        log.info("updateDoctor with id: " + id + " and doctorDto: " + doctorDto);
-        DoctorDto resultDoctor = doctorDao.updateDoctor(id, doctorDto);
+    public DoctorDto updateDoctor(Long id, Doctor doctor) throws DoctorUpdatingFailedException {
+        log.info("updateDoctor with id: " + id + " and doctorDto: " + doctor);
+        Doctor resultDoctor = doctorDao.updateDoctor(id, doctor);
         log.info("updateDoctor(...) = " + resultDoctor);
-        return resultDoctor;
+        return new DoctorMapper().mapToDto(resultDoctor, DoctorDto.class);
     }
 
     //DELETE

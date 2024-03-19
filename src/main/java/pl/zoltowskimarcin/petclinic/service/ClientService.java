@@ -8,13 +8,11 @@ import pl.zoltowskimarcin.petclinic.exception.client.ClientSavingFailedException
 import pl.zoltowskimarcin.petclinic.exception.client.ClientUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.mapper.ClientMapper;
 import pl.zoltowskimarcin.petclinic.repository.dao.ClientDao;
-import pl.zoltowskimarcin.petclinic.web.model.cilent.BasicClientDto;
+import pl.zoltowskimarcin.petclinic.repository.entity.Client;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.ClientDto;
 import pl.zoltowskimarcin.petclinic.web.model.cilent.LiteClientDto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,52 +24,47 @@ public class ClientService {
         this.clientDao = clientDao;
     }
 
-    public BasicClientDto saveClient(ClientDto clientDto) throws ClientSavingFailedException {
-        log.info("save " + clientDto + ")");
-        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.saveClient(clientDto), BasicClientDto.class);
+    public ClientDto saveClient(Client client) throws ClientSavingFailedException {
+        log.info("save " + client + ")");
+        Client resultClient = clientDao.saveClient(client);
         log.info("save(...) = " + resultClient);
-        return resultClient;
+        return new ClientMapper().mapToDto(resultClient, ClientDto.class);
     }
 
-    public Optional<BasicClientDto> getClientById(Long id) throws ClientReadingFailedException {
+    public ClientDto getClientById(Long id) throws ClientReadingFailedException {
         log.info("getClientById with id: " + id);
-        Optional<ClientDto> client = clientDao.getClientById(id);
-        BasicClientDto resultClient = null;
 
-        if (client.isPresent()) { //todo lepiej wyjatek
-            resultClient = ClientMapper.getMapper().map(client.get(), BasicClientDto.class);
-            log.info("getClientById(...) = " + resultClient);
-        }
-        return Optional.ofNullable(resultClient);
+        Client resultClient = clientDao.getClientById(id)
+                .orElseThrow(() -> new ClientReadingFailedException("Client not found"));
+
+        log.info("getClientById(...) = " + resultClient);
+
+        return new ClientMapper().mapToDto(resultClient, ClientDto.class);
     }
 
-    public Optional<ClientDto> getClientByIdWithDetails(Long id) throws ClientReadingFailedException {
+    public ClientDto getClientByIdWithDetails(Long id) throws ClientReadingFailedException {
         log.info("getClientByIdWithDetails with id: " + id);
-        Optional<ClientDto> clientWithDetails = clientDao.getClientByIdWithDetails(id);
-        log.info("getClientByIdWithDetails(...) = " + clientWithDetails);
-        return clientWithDetails;
+
+        Client resultClient = clientDao.getClientByIdWithDetails(id)
+                .orElseThrow(() -> new ClientReadingFailedException("Client not found"));
+
+        log.info("getClientByIdWithDetails(...) = " + resultClient);
+        return new ClientMapper().mapToDto(resultClient, ClientDto.class);
     }
 
     public List<LiteClientDto> getAllClients() throws ClientReadingFailedException {
         log.info("getAllClients()");
-        List<ClientDto> clients = clientDao.getAllClients();
-
-        List<LiteClientDto> mappedClients = new ArrayList<>();
-
-        clients.stream().forEach(client -> {
-            LiteClientDto mappedClient = ClientMapper.getMapper().map(client, LiteClientDto.class);
-            mappedClients.add(mappedClient);
-        });
-
+        List<Client> clients = clientDao.getAllClients();
+        List<LiteClientDto> mappedClients = new ClientMapper().mapToDtoList(clients, LiteClientDto.class);
         log.info("getAllClients(...) = " + mappedClients);
         return mappedClients;
     }
 
-    public BasicClientDto updateClient(Long id, ClientDto clientDto) throws ClientUpdatingFailedException {
-        log.info("updateClient with id: " + id + " and clientDto: " + clientDto);
-        BasicClientDto resultClient = ClientMapper.getMapper().map(clientDao.updateClient(id, clientDto), BasicClientDto.class);
+    public ClientDto updateClient(Long id, Client client) throws ClientUpdatingFailedException {
+        log.info("updateClient with id: " + id + " and client: " + client);
+        Client resultClient = clientDao.updateClient(id, client);
         log.info("updateClient(...) = " + resultClient);
-        return resultClient;
+        return new ClientMapper().mapToDto(resultClient, ClientDto.class);
     }
 
     public void deleteClient(Long id) throws ClientDeletingFailedException {

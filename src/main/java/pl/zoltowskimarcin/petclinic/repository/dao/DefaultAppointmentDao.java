@@ -11,17 +11,16 @@ import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentSavingFaile
 import pl.zoltowskimarcin.petclinic.exception.appointment.AppointmentUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
-import pl.zoltowskimarcin.petclinic.mapper.AppointmentMapper;
 import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Appointment;
 import pl.zoltowskimarcin.petclinic.repository.jpa.AppointmentRepository;
-import pl.zoltowskimarcin.petclinic.web.model.appointment.AppointmentDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -36,9 +35,9 @@ public class DefaultAppointmentDao implements AppointmentDao {
 
     //CREATE - Native Hibernate
     @Override
-    public AppointmentDto saveAppointment(AppointmentDto appointmentDto) throws AppointmentSavingFailedException {
-        log.info("save " + appointmentDto + ")");
-        Appointment appointmentToPersist = AppointmentMapper.getMapper().map(appointmentDto, Appointment.class);
+    public Appointment saveAppointment(Appointment appointment) throws AppointmentSavingFailedException {
+        log.info("save " + appointment + ")");
+        Appointment appointmentToPersist = appointment;
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -49,45 +48,43 @@ public class DefaultAppointmentDao implements AppointmentDao {
             throw new AppointmentSavingFailedException("Error while saving appointment");
         }
         log.info("save(...) = " + appointmentToPersist);
-        return AppointmentMapper.getMapper().map(appointmentToPersist, AppointmentDto.class);
+        return appointmentToPersist;
     }
 
     //READ - JDBC
     @Override
-    public Optional<AppointmentDto> getAppointmentById(Long id) throws AppointmentReadingFailedException {
+    public Optional<Appointment> getAppointmentById(Long id) throws AppointmentReadingFailedException {
         log.info("getAppointmentById with id: " + id);
-
+        Appointment returnedAppointment = null;
         try (Connection connection = DataSource.getConnection();
              PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_APPOINTMENT_BY_ID)) {
 
             readStatement.setLong(1, id);
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    AppointmentDto returnedAppointment = new AppointmentDto.Builder()
-                            .appointmentDate(resultSet.getTimestamp("appointment_date").toLocalDateTime())
-                            .finished(resultSet.getBoolean("finished"))
-                            .build();
+                    LocalDateTime appointmentDate = resultSet.getTimestamp("appointment_date").toLocalDateTime();
+                    boolean finished = resultSet.getBoolean("finished");
+                    returnedAppointment = new Appointment(appointmentDate, finished);
                     log.info("get(...) = " + returnedAppointment);
-                    return Optional.ofNullable(returnedAppointment);
                 }
             }
         } catch (SQLException e) {
             log.error("Error while getting client with id: " + id, e);
             throw new AppointmentReadingFailedException("Error while getting client with id: " + id);
         }
-        return Optional.empty();
+        return Optional.ofNullable(returnedAppointment);
     }
 
     //UPDATE - Spring Data JPA
     @Transactional
     @Override
-    public AppointmentDto updateAppointment(Long id, AppointmentDto appointmentDto) throws AppointmentUpdatingFailedException {
-        log.info("update " + appointmentDto + " with id: " + id);
+    public Appointment updateAppointment(Long id, Appointment appointment) throws AppointmentUpdatingFailedException {
+        log.info("update " + appointment + " with id: " + id);
 
         Appointment appointmentToUpdate = appointmentRepository.findById(id)
                 .orElseThrow(() -> new AppointmentUpdatingFailedException("Appointment with id: " + id + " doesn't exists in database."));
 
-        Appointment updatingAppointment = AppointmentMapper.getMapper().map(appointmentDto, Appointment.class);
+        Appointment updatingAppointment = appointment;
 
         appointmentToUpdate.setAppointmentDate(updatingAppointment.getAppointmentDate());
         appointmentToUpdate.setFinished(updatingAppointment.isFinished());
@@ -95,7 +92,7 @@ public class DefaultAppointmentDao implements AppointmentDao {
         appointmentRepository.save(appointmentToUpdate);
 
         log.info("update(...) = " + appointmentToUpdate);
-        return AppointmentMapper.getMapper().map(appointmentToUpdate, AppointmentDto.class);
+        return appointmentToUpdate;
     }
 
     //DELETE - JpaStandard

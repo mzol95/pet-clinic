@@ -11,12 +11,10 @@ import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorSavingFailedException
 import pl.zoltowskimarcin.petclinic.exception.doctor.DoctorUpdatingFailedException;
 import pl.zoltowskimarcin.petclinic.jdbc.DataSource;
 import pl.zoltowskimarcin.petclinic.jdbc.JdbcQueries;
-import pl.zoltowskimarcin.petclinic.mapper.DoctorMapper;
 import pl.zoltowskimarcin.petclinic.repository.JpaStandardUtils;
 import pl.zoltowskimarcin.petclinic.repository.NativeHibernateUtils;
 import pl.zoltowskimarcin.petclinic.repository.entity.Doctor;
 import pl.zoltowskimarcin.petclinic.repository.jpa.DoctorRepository;
-import pl.zoltowskimarcin.petclinic.web.model.DoctorDto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,9 +34,10 @@ public class DefaultDoctorDao implements DoctorDao {
 
     //CREATE - Native Hibernate
     @Override
-    public DoctorDto saveDoctor(DoctorDto doctorDto) throws DoctorSavingFailedException {
-        log.info("save " + doctorDto + ")");
-        Doctor doctorToPersist = DoctorMapper.getMapper().map(doctorDto, Doctor.class);
+    public Doctor saveDoctor(Doctor doctor) throws DoctorSavingFailedException {
+        log.info("save " + doctor + ")");
+
+        Doctor doctorToPersist = doctor;
 
         try (Session session = NativeHibernateUtils.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -49,53 +48,47 @@ public class DefaultDoctorDao implements DoctorDao {
             throw new DoctorSavingFailedException("Error while saving doctor");
         }
         log.info("save(...) = " + doctorToPersist);
-        return DoctorMapper.getMapper().map(doctorToPersist, DoctorDto.class);
+        return doctorToPersist;
     }
 
     //READ - JDBC
     @Override
-    public Optional<DoctorDto> getDoctorById(Long id) throws DoctorReadingFailedException {
+    public Optional<Doctor> getDoctorById(Long id) throws DoctorReadingFailedException {
         log.info("getDoctorById with id: " + id);
-
+        Doctor returnedDoctor = null;
         try (Connection connection = DataSource.getConnection();
              PreparedStatement readStatement = connection.prepareStatement(JdbcQueries.FIND_DOCTORS_BY_ID)) {
 
             readStatement.setLong(1, id);
             try (ResultSet resultSet = readStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    DoctorDto returnedDoctor = new DoctorDto.Builder()
+                    returnedDoctor = new Doctor.Builder()
                             .name(resultSet.getString("name"))
                             .surname(resultSet.getString("surname"))
                             .build();
                     log.info("get(...) = " + returnedDoctor);
-                    return Optional.ofNullable(returnedDoctor);
                 }
             }
         } catch (SQLException e) {
             log.error("Error while getting client with id: " + id, e);
             throw new DoctorReadingFailedException("Error while getting client with id: " + id);
         }
-        return Optional.empty();
+        return Optional.ofNullable(returnedDoctor);
     }
 
     //UPDATE - Spring Data JPA
     @Transactional
     @Override
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) throws DoctorUpdatingFailedException {
-        log.info("update " + doctorDto + " with id: " + id);
-
+    public Doctor updateDoctor(Long id, Doctor doctor) throws DoctorUpdatingFailedException {
+        log.info("update " + doctor + " with id: " + id);
         Doctor doctorToUpdate = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorUpdatingFailedException("Doctor with id: " + id + " doesn't exists in database."));
-
-        Doctor updatingDoctor = DoctorMapper.getMapper().map(doctorDto, Doctor.class);
-
-        doctorToUpdate.setName(updatingDoctor.getName());
-        doctorToUpdate.setSurname(updatingDoctor.getSurname());
-        doctorToUpdate.setAppointments(updatingDoctor.getAppointments());
+        doctorToUpdate.setName(doctor.getName());
+        doctorToUpdate.setSurname(doctor.getSurname());
+        doctorToUpdate.setAppointments(doctor.getAppointments());
         doctorRepository.save(doctorToUpdate);
-
         log.info("update(...) = " + doctorToUpdate);
-        return DoctorMapper.getMapper().map(doctorToUpdate, DoctorDto.class);
+        return doctorToUpdate;
     }
 
     //DELETE - JpaStandard

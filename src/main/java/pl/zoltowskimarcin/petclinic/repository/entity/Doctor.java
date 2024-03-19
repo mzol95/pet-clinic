@@ -22,13 +22,18 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
 
-    Doctor() {
+    public Doctor() {
     }
 
     private Doctor(Builder builder) {
         name = builder.name;
         surname = builder.surname;
         appointments = builder.appointments;
+    }
+
+    public Doctor(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
     }
 
     public void addAppointment(Appointment appointment) {
