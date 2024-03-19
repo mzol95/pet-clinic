@@ -14,7 +14,6 @@
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Address</class>
         <class>pl.zoltowskimarcin.petclinic.repository.entity.Doctor</class>
         <properties>
-        <property name="" value=""/>
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:h2:mem:pet-clinic;DB_CLOSE_DELAY=-1"/>
