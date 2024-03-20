@@ -31,14 +31,19 @@
 
         .form-label {
             display: inline-block;
-            width: 80px; /* Szerokość etykiety */
-            text-align: left; /* Wyrównanie etykiety do prawej */
+            width: 80px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
+
+<div th:replace="~{menu/defaultnavbar::header}"></div>
+<div th:replace="~{menu/clientsnavbar::header}"></div>
+<br>
 <!--/*@thymesVar id="client" type="pl.zoltowskimarcin.petclinic.repository.entity.Client"*/-->
-<form action="#" th:action="@{/clients}" th:object="${client}" method="post">
+
+<form action="#" th:action="@{/clients}" th:object="${client}" method="post" >
     <div class="fieldset-container">
         <fieldset>
             <legend>Add new client</legend>
@@ -75,7 +80,6 @@
         <button onclick="window.location.href='/menu'">Back</button>
         <button type="submit">Save</button>
     </div>
-
 </form>
 </body>
 </html>
