@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <title>Static Navigation Bar</title>
+    <style>
+        .defaultnavbar {
+            overflow: hidden;
+            background-color: #4e9ffd;
+        }
+
+        .defaultnavbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 10px 16px;
+            text-decoration: none;
+        }
+
+        .defaultnavbar a:hover {
+            background-color: #6caff8;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+<div class="defaultnavbar" th:fragment="header">
+    <a href="/clients">Clients</a>
+    <a href="/pets">Pets</a>
+    <a href="/doctors">Doctors</a>
+    <a href="/appointments">Appointments</a>
+</div>
+</body>
+</html>

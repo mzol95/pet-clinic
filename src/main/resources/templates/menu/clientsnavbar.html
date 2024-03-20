@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <title>Static Navigation Bar</title>
+    <style>
+        .navbar {
+            overflow: hidden;
+            background-color: #7eb5fa;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 10px 16px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #6caff8;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar" th:fragment="header">
+    <a href="/clients/create">Create</a>
+    <a href="/clients/read">Read</a>
+    <a href="/clients/update">Update</a>
+    <a href="/clients/delete">Delete</a>
+</div>
+</body>
+</html>

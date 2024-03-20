@@ -1,6 +1,7 @@
 package pl.zoltowskimarcin.petclinic.web.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +19,23 @@ public class ClientWebController {
         this.clientService = clientService;
     }
 
-    @GetMapping
-    public String addClient1(Client client) {
-        return "clients/clients.html";
+    @GetMapping("/create")
+    public String showAddClientPage(Model model) {
+        Client client = new Client();
+        model.addAttribute("client", client);
+        return "clients/add-client.html";
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public String addClient(Client client) throws ClientSavingFailedException {
         clientService.saveClient(client);
-        return "clients/clients.html";
+        return "clients/add-client.html";
+    }
+
+    @GetMapping("/read")
+    public String showReadClientPage(Model model) {
+        Client client = new Client();
+        model.addAttribute("client", client);
+        return "clients/read-client.html";
     }
 }
