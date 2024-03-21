@@ -69,8 +69,10 @@ public class DefaultClientDao implements ClientDao {
                     String name = resultSet.getString("name");
                     String surname = resultSet.getString("surname");
                     String phone = resultSet.getString("phone");
+                    Long idFromDb = resultSet.getLong("id");
 
                     returnedClient = new Client(name, surname, phone, null, null, null);
+                    returnedClient.setId(idFromDb);
 
                     log.info("get(...) = " + returnedClient);
                 }

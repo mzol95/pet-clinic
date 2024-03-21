@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Client</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .fieldset-container {
+            float: left;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .button-container {
+            clear: both;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-label {
+            display: inline-block;
+            width: 80px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{menu/defaultnavbar::header}"></div>
+<div th:replace="~{menu/clientsnavbar::header}"></div>
+<br>
+
+
+<form action="#" th:action="@{/clients/read}" method="get">
+    <input type="text" id="clientId" name="clientId" required>
+    <button type="submit">Show Client</button>
+</form>
+
+<div th:if="${client != null}">
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Phone</th>
+        </tr>
+        <tr>
+            <td th:text="${client.id}">Id</td>
+            <td th:text="${client.name}">Name</td>
+            <td th:text="${client.surname}">Surname</td>
+            <td th:text="${client.phone}">Phone</td>
+        </tr>
+    </table>
+</div>
+
+<div th:if="${client == null}">
+    <p>Client not found</p>
+</div>
+</body>
+</html>
+
+

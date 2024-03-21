@@ -11,37 +11,17 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class LiteClientDto {
 
+
+    private Long id;
     private String name;
     private String surname;
 
     LiteClientDto() {
     }
 
-    private LiteClientDto(Builder builder) {
-        setName(builder.name);
-        setSurname(builder.surname);
-    }
-
-
-    public static final class Builder {
-        private String name;
-        private String surname;
-
-        public Builder() {
-        }
-
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Builder surname(String val) {
-            surname = val;
-            return this;
-        }
-
-        public LiteClientDto build() {
-            return new LiteClientDto(this);
-        }
+    public LiteClientDto(Long id, String name, String surname) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
     }
 }
